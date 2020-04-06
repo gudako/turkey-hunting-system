@@ -1,0 +1,843 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0C1A81D9-0C6F-4EE8-A5D5-DD8989FD2B53}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Turkey_hunting_system.My.MyApplication</StartupObject>
+    <RootNamespace>Turkey_hunting_system</RootNamespace>
+    <AssemblyName>Turkey hunting system</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Turkey hunting system.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Turkey hunting system.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>turkey.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="debug.Designer.vb">
+      <DependentUpon>debug.vb</DependentUpon>
+    </Compile>
+    <Compile Include="debug.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.vb">
+      <DependentUpon>Form1.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form10.Designer.vb">
+      <DependentUpon>Form10.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form10.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form11.Designer.vb">
+      <DependentUpon>Form11.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form11.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form12.Designer.vb">
+      <DependentUpon>Form12.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form12.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form13.Designer.vb">
+      <DependentUpon>Form13.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form13.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form14.Designer.vb">
+      <DependentUpon>Form14.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form14.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form15.Designer.vb">
+      <DependentUpon>Form15.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form15.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form16.Designer.vb">
+      <DependentUpon>Form16.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form16.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form17.Designer.vb">
+      <DependentUpon>Form17.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form17.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form18.Designer.vb">
+      <DependentUpon>Form18.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form18.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form19.Designer.vb">
+      <DependentUpon>Form19.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form19.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form2.Designer.vb">
+      <DependentUpon>Form2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form2.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form20.Designer.vb">
+      <DependentUpon>Form20.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form20.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form3.Designer.vb">
+      <DependentUpon>Form3.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form3.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form4.Designer.vb">
+      <DependentUpon>Form4.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form4.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form5.Designer.vb">
+      <DependentUpon>Form5.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form5.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form6.Designer.vb">
+      <DependentUpon>Form6.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form6.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form7.Designer.vb">
+      <DependentUpon>Form7.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form7.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form8.Designer.vb">
+      <DependentUpon>Form8.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form8.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form9.Designer.vb">
+      <DependentUpon>Form9.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form9.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="debug.resx">
+      <DependentUpon>debug.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form10.resx">
+      <DependentUpon>Form10.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form11.resx">
+      <DependentUpon>Form11.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form12.resx">
+      <DependentUpon>Form12.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form13.resx">
+      <DependentUpon>Form13.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form14.resx">
+      <DependentUpon>Form14.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form15.resx">
+      <DependentUpon>Form15.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form16.resx">
+      <DependentUpon>Form16.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form17.resx">
+      <DependentUpon>Form17.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form18.resx">
+      <DependentUpon>Form18.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form19.resx">
+      <DependentUpon>Form19.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form2.resx">
+      <DependentUpon>Form2.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form20.resx">
+      <DependentUpon>Form20.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form3.resx">
+      <DependentUpon>Form3.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form4.resx">
+      <DependentUpon>Form4.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form5.resx">
+      <DependentUpon>Form5.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form6.resx">
+      <DependentUpon>Form6.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form7.resx">
+      <DependentUpon>Form7.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form8.resx">
+      <DependentUpon>Form8.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form9.resx">
+      <DependentUpon>Form9.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+    <None Include="Resources\0H2SO4.png1" />
+    <None Include="Resources\amber corridor.jpg1" />
+    <None Include="Resources\amber toilet.jpg1" />
+    <None Include="Resources\ancient world.jpg1" />
+    <None Include="Resources\applause.wav1" />
+    <None Include="Resources\arrow.wav1" />
+    <None Include="Resources\art room.jpg1" />
+    <None Include="Resources\artifact location.png1" />
+    <None Include="Resources\artifact recipe.png1" />
+    <None Include="Resources\Atropos phone.png1" />
+    <None Include="Resources\Atropos spell.png1" />
+    <None Include="Resources\Atropos statue1.png1" />
+    <None Include="Resources\Atropos statue2.png1" />
+    <None Include="Resources\Atropos with gem.png1" />
+    <None Include="Resources\Atropos.png1" />
+    <None Include="Resources\aurora ghost pure.png1" />
+    <None Include="Resources\aurora ghost.png1" />
+    <None Include="Resources\aurora indoor.jpg1" />
+    <None Include="Resources\aurora music room.jpeg1" />
+    <None Include="Resources\aurora palace1.jpg1" />
+    <None Include="Resources\aurorapalace1.jpg1" />
+    <None Include="Resources\Avogadro turkey.png1" />
+    <None Include="Resources\A_turkey.wav1" />
+    <None Include="Resources\background1.jpg1" />
+    <None Include="Resources\backroom1.jpg1" />
+    <None Include="Resources\backroom10.jpg1" />
+    <None Include="Resources\backroom11.jpg1" />
+    <None Include="Resources\backroom12.jpg1" />
+    <None Include="Resources\backroom2.jpg1" />
+    <None Include="Resources\backroom3.jpg1" />
+    <None Include="Resources\backroom4.jpg1" />
+    <None Include="Resources\backroom5.jpg1" />
+    <None Include="Resources\backroom6.jpg1" />
+    <None Include="Resources\backroom7.jpg1" />
+    <None Include="Resources\backroom8.jpg1" />
+    <None Include="Resources\backroom9.JPG1" />
+    <None Include="Resources\barrack1.jpg1" />
+    <None Include="Resources\barrack10.jpg1" />
+    <None Include="Resources\barrack11.jpg1" />
+    <None Include="Resources\barrack2.jpg1" />
+    <None Include="Resources\barrack3.jpg1" />
+    <None Include="Resources\barrack4.jpg1" />
+    <None Include="Resources\barrack5.jpg1" />
+    <None Include="Resources\barrack6.jpg1" />
+    <None Include="Resources\barrack7.jpg1" />
+    <None Include="Resources\barrack8.jpg1" />
+    <None Include="Resources\barrack9.jpg1" />
+    <None Include="Resources\battler5_4.png1" />
+    <None Include="Resources\big milk cow.png1" />
+    <None Include="Resources\big white hen.png1" />
+    <None Include="Resources\Biochemistry lab 01.jpg1" />
+    <None Include="Resources\Biochemistry lab 02.jpg1" />
+    <None Include="Resources\biochemistry last lab.jpg1" />
+    <None Include="Resources\biology lab.jpg1" />
+    <None Include="Resources\bio_lab.jpg1" />
+    <None Include="Resources\bite.wav1" />
+    <None Include="Resources\blank.jpg1" />
+    <None Include="Resources\break.wav1" />
+    <None Include="Resources\burned tarecgosa.png1" />
+    <None Include="Resources\byroad.jpg1" />
+    <None Include="Resources\canteen outside.jpg1" />
+    <None Include="Resources\canteen.jpg1" />
+    <None Include="Resources\cardback.jpg1" />
+    <None Include="Resources\castle_explode.jpg1" />
+    <None Include="Resources\castle_exploded.jpg1" />
+    <None Include="Resources\Chemistry lab 01.jpg1" />
+    <None Include="Resources\Chemistry lab 02.jpg1" />
+    <None Include="Resources\chemistry lab 03.jpg1" />
+    <None Include="Resources\chemistry lab.jpg1" />
+    <None Include="Resources\chicken.png1" />
+    <None Include="Resources\chop.wav1" />
+    <None Include="Resources\Christmas room.jpg1" />
+    <None Include="Resources\Christmas.jpg1" />
+    <None Include="Resources\class start.wav1" />
+    <None Include="Resources\class6.jpg1" />
+    <None Include="Resources\comprehensive building.jpg1" />
+    <None Include="Resources\computer_image_hcl.JPG1" />
+    <None Include="Resources\computer_IMG_0486.JPG1" />
+    <None Include="Resources\computer_IMG_0487.JPG1" />
+    <None Include="Resources\computer_IMG_0488.JPG1" />
+    <None Include="Resources\corona ball.png1" />
+    <None Include="Resources\corona ball.wav1" />
+    <None Include="Resources\cow.wav1" />
+    <None Include="Resources\cowmilk.wav1" />
+    <None Include="Resources\Cs.png1" />
+    <None Include="Resources\Cu.png1" />
+    <None Include="Resources\curse.wav1" />
+    <None Include="Resources\dawn.jpg1" />
+    <None Include="Resources\deadend1.jpg1" />
+    <None Include="Resources\defeatsign.png1" />
+    <None Include="Resources\dialogue1.wav1" />
+    <None Include="Resources\dialogue10.wav1" />
+    <None Include="Resources\dialogue100.wav1" />
+    <None Include="Resources\dialogue101.wav1" />
+    <None Include="Resources\dialogue11.wav1" />
+    <None Include="Resources\dialogue12.wav1" />
+    <None Include="Resources\dialogue13.wav1" />
+    <None Include="Resources\dialogue14.wav1" />
+    <None Include="Resources\dialogue15.wav1" />
+    <None Include="Resources\dialogue16.wav1" />
+    <None Include="Resources\dialogue17.wav1" />
+    <None Include="Resources\dialogue18.wav1" />
+    <None Include="Resources\dialogue19.wav1" />
+    <None Include="Resources\dialogue2.wav1" />
+    <None Include="Resources\dialogue20.wav1" />
+    <None Include="Resources\dialogue21.wav1" />
+    <None Include="Resources\dialogue22.wav1" />
+    <None Include="Resources\dialogue23.wav1" />
+    <None Include="Resources\dialogue24.wav1" />
+    <None Include="Resources\dialogue25.wav1" />
+    <None Include="Resources\dialogue26.wav1" />
+    <None Include="Resources\dialogue27.wav1" />
+    <None Include="Resources\dialogue28.wav1" />
+    <None Include="Resources\dialogue29.wav1" />
+    <None Include="Resources\dialogue3.wav1" />
+    <None Include="Resources\dialogue30.wav1" />
+    <None Include="Resources\dialogue31.wav1" />
+    <None Include="Resources\dialogue32.wav1" />
+    <None Include="Resources\dialogue33.wav1" />
+    <None Include="Resources\dialogue34.wav1" />
+    <None Include="Resources\dialogue35.wav1" />
+    <None Include="Resources\dialogue36.wav1" />
+    <None Include="Resources\dialogue37.wav1" />
+    <None Include="Resources\dialogue38.wav1" />
+    <None Include="Resources\dialogue39.wav1" />
+    <None Include="Resources\dialogue4.wav1" />
+    <None Include="Resources\dialogue40.wav1" />
+    <None Include="Resources\dialogue41.wav1" />
+    <None Include="Resources\dialogue42.wav1" />
+    <None Include="Resources\dialogue43.wav1" />
+    <None Include="Resources\dialogue44.wav1" />
+    <None Include="Resources\dialogue45.wav1" />
+    <None Include="Resources\dialogue46.wav1" />
+    <None Include="Resources\dialogue47.wav1" />
+    <None Include="Resources\dialogue48.wav1" />
+    <None Include="Resources\dialogue49.wav1" />
+    <None Include="Resources\dialogue5.wav1" />
+    <None Include="Resources\dialogue50.wav1" />
+    <None Include="Resources\dialogue51.wav1" />
+    <None Include="Resources\dialogue52.wav1" />
+    <None Include="Resources\dialogue53.wav1" />
+    <None Include="Resources\dialogue54.wav1" />
+    <None Include="Resources\dialogue55.wav1" />
+    <None Include="Resources\dialogue57.wav1" />
+    <None Include="Resources\dialogue58.wav1" />
+    <None Include="Resources\dialogue59.wav1" />
+    <None Include="Resources\dialogue6.wav1" />
+    <None Include="Resources\dialogue60.wav1" />
+    <None Include="Resources\dialogue61.wav1" />
+    <None Include="Resources\dialogue62.wav1" />
+    <None Include="Resources\dialogue63.wav1" />
+    <None Include="Resources\dialogue64.wav1" />
+    <None Include="Resources\dialogue65.wav1" />
+    <None Include="Resources\dialogue66.wav1" />
+    <None Include="Resources\dialogue67.wav1" />
+    <None Include="Resources\dialogue68.wav1" />
+    <None Include="Resources\dialogue69.wav1" />
+    <None Include="Resources\dialogue7.wav1" />
+    <None Include="Resources\dialogue70.wav1" />
+    <None Include="Resources\dialogue71.wav1" />
+    <None Include="Resources\dialogue72.wav1" />
+    <None Include="Resources\dialogue73.wav1" />
+    <None Include="Resources\dialogue74.wav1" />
+    <None Include="Resources\dialogue75.wav1" />
+    <None Include="Resources\dialogue76.wav1" />
+    <None Include="Resources\dialogue77.wav1" />
+    <None Include="Resources\dialogue78.wav1" />
+    <None Include="Resources\dialogue79.wav1" />
+    <None Include="Resources\dialogue8.wav1" />
+    <None Include="Resources\dialogue80.wav1" />
+    <None Include="Resources\dialogue81.wav1" />
+    <None Include="Resources\dialogue82.wav1" />
+    <None Include="Resources\dialogue83.wav1" />
+    <None Include="Resources\dialogue84.wav1" />
+    <None Include="Resources\dialogue85.wav1" />
+    <None Include="Resources\dialogue86.wav1" />
+    <None Include="Resources\dialogue87.wav1" />
+    <None Include="Resources\dialogue88.wav1" />
+    <None Include="Resources\dialogue9.wav1" />
+    <None Include="Resources\dialogue90.wav1" />
+    <None Include="Resources\dialogue91.wav1" />
+    <None Include="Resources\dialogue92.wav1" />
+    <None Include="Resources\dialogue93.wav1" />
+    <None Include="Resources\dialogue94.wav1" />
+    <None Include="Resources\dialogue95.wav1" />
+    <None Include="Resources\dialogue96.wav1" />
+    <None Include="Resources\dialogue97.wav1" />
+    <None Include="Resources\dialogue98.wav1" />
+    <None Include="Resources\dialogue99.wav1" />
+    <None Include="Resources\disguised god.png1" />
+    <None Include="Resources\distort.wav1" />
+    <None Include="Resources\dive.wav1" />
+    <None Include="Resources\down.wav1" />
+    <None Include="Resources\down1.wav1" />
+    <None Include="Resources\drillmaster.png1" />
+    <None Include="Resources\drop.wav1" />
+    <None Include="Resources\duck grassland.jpg1" />
+    <None Include="Resources\duck southern gate.jpg1" />
+    <None Include="Resources\duck.wav1" />
+    <None Include="Resources\duckcastle0.jpg1" />
+    <None Include="Resources\duckcastle1.jpg1" />
+    <None Include="Resources\duckcastle2.jpg1" />
+    <None Include="Resources\duckcastle3.jpg1" />
+    <None Include="Resources\duckcastle4.jpg1" />
+    <None Include="Resources\duckcastle5.jpg1" />
+    <None Include="Resources\duckpool0.jpg1" />
+    <None Include="Resources\duckpool1.jpg1" />
+    <None Include="Resources\duckpool2.jpg1" />
+    <None Include="Resources\duckpool3.jpg1" />
+    <None Include="Resources\duckpool4.jpg1" />
+    <None Include="Resources\duckpool5.jpg1" />
+    <None Include="Resources\duckpool6.jpg1" />
+    <None Include="Resources\end of capture1.jpg1" />
+    <None Include="Resources\explode.wav1" />
+    <None Include="Resources\floating cow.png1" />
+    <None Include="Resources\floor2_left.jpg1" />
+    <None Include="Resources\floor2_right.jpg1" />
+    <None Include="Resources\floor3.jpg1" />
+    <None Include="Resources\floor3_left.jpg1" />
+    <None Include="Resources\floor3_right.jpg1" />
+    <None Include="Resources\floor4 left.jpg1" />
+    <None Include="Resources\floor4%28mid%29_left.jpg1" />
+    <None Include="Resources\floor4%28right%29_left.jpg1" />
+    <None Include="Resources\frog.png1" />
+    <None Include="Resources\Game Over.wav1" />
+    <None Include="Resources\gas.wav1" />
+    <None Include="Resources\general room.jpg1" />
+    <None Include="Resources\getitem.wav1" />
+    <None Include="Resources\ghost.png1" />
+    <None Include="Resources\ghosthouse0.jpg1" />
+    <None Include="Resources\ghosthouse1.jpg1" />
+    <None Include="Resources\ghosthouse2.jpg1" />
+    <None Include="Resources\grail rider.jpg1" />
+    <None Include="Resources\guard.png1" />
+    <None Include="Resources\gunstrike.wav1" />
+    <None Include="Resources\GYM1.jpg1" />
+    <None Include="Resources\GYM2.jpg1" />
+    <None Include="Resources\hclgun.wav1" />
+    <None Include="Resources\heal.wav1" />
+    <None Include="Resources\heal2.wav1" />
+    <None Include="Resources\heavy.wav1" />
+    <None Include="Resources\highlaser.wav1" />
+    <None Include="Resources\HNO3.png1" />
+    <None Include="Resources\housedoor_df.jpg1" />
+    <None Include="Resources\ice.wav1" />
+    <None Include="Resources\imm.wav1" />
+    <None Include="Resources\inside_df.jpg1" />
+    <None Include="Resources\intro1.png1" />
+    <None Include="Resources\intro10.png1" />
+    <None Include="Resources\intro11.png1" />
+    <None Include="Resources\intro12.png1" />
+    <None Include="Resources\intro13.png1" />
+    <None Include="Resources\intro14.png1" />
+    <None Include="Resources\intro15.png1" />
+    <None Include="Resources\intro16.png1" />
+    <None Include="Resources\intro17.png1" />
+    <None Include="Resources\intro2.png1" />
+    <None Include="Resources\intro21.png1" />
+    <None Include="Resources\intro22.png1" />
+    <None Include="Resources\intro23.png1" />
+    <None Include="Resources\intro24.png1" />
+    <None Include="Resources\intro3.png1" />
+    <None Include="Resources\intro4.png1" />
+    <None Include="Resources\intro5.png1" />
+    <None Include="Resources\intro6.png1" />
+    <None Include="Resources\intro7.png1" />
+    <None Include="Resources\intro8.png1" />
+    <None Include="Resources\intro9.png1" />
+    <None Include="Resources\jail wall.jpg1" />
+    <None Include="Resources\laser.wav1" />
+    <None Include="Resources\last castle.jpg1" />
+    <None Include="Resources\laughter.wav1" />
+    <None Include="Resources\lay egg.wav1" />
+    <None Include="Resources\lecture hall.jpg1" />
+    <None Include="Resources\library.jpg1" />
+    <None Include="Resources\light empty room.jpg1" />
+    <None Include="Resources\lightning.wav1" />
+    <None Include="Resources\light_corridor.jpg1" />
+    <None Include="Resources\lock.wav1" />
+    <None Include="Resources\long magic.wav1" />
+    <None Include="Resources\lunch contending robot.png1" />
+    <None Include="Resources\magic castle.jpg1" />
+    <None Include="Resources\magic circle.png1" />
+    <None Include="Resources\magic forest frontier.jpg1" />
+    <None Include="Resources\magic forest.jpg1" />
+    <None Include="Resources\magichole.png1" />
+    <None Include="Resources\make Cl2.jpg1" />
+    <None Include="Resources\makekey1.jpg1" />
+    <None Include="Resources\makekey2.jpg1" />
+    <None Include="Resources\makekey3.jpg1" />
+    <None Include="Resources\medusa temple door.jpg1" />
+    <None Include="Resources\Medusa.png1" />
+    <None Include="Resources\Medusa_close.png1" />
+    <None Include="Resources\Medusa_petrified.png1" />
+    <None Include="Resources\mermaid.png1" />
+    <None Include="Resources\mirror.wav1" />
+    <None Include="Resources\miss.wav1" />
+    <None Include="Resources\mission completed.wav1" />
+    <None Include="Resources\mr.duck park entrance.jpg1" />
+    <None Include="Resources\Mr.duck park.jpg1" />
+    <None Include="Resources\Mr.Duck phantom shot.png1" />
+    <None Include="Resources\Mr.Duck phantom.png1" />
+    <None Include="Resources\Mr.duck pool.jpg1" />
+    <None Include="Resources\Mr.duck road.jpg1" />
+    <None Include="Resources\mr.duck square.jpg1" />
+    <None Include="Resources\Mr.Duck.png1" />
+    <None Include="Resources\murloc.wav1" />
+    <None Include="Resources\murloc1.png1" />
+    <None Include="Resources\murloc2.png1" />
+    <None Include="Resources\murloc3.png1" />
+    <None Include="Resources\music room.jpg1" />
+    <None Include="Resources\mysterious room.jpg1" />
+    <None Include="Resources\Na.png1" />
+    <None Include="Resources\negative cow.png1" />
+    <None Include="Resources\new mission.wav1" />
+    <None Include="Resources\NewIntro1.jpg1" />
+    <None Include="Resources\NewIntro2.jpg1" />
+    <None Include="Resources\NewIntro3.jpg1" />
+    <None Include="Resources\NewIntro4.jpg1" />
+    <None Include="Resources\NewIntro5.jpg1" />
+    <None Include="Resources\NewIntro6.jpg1" />
+    <None Include="Resources\NewIntro7.jpg1" />
+    <None Include="Resources\NewScene1.jpg1" />
+    <None Include="Resources\NewScene13.jpg1" />
+    <None Include="Resources\NewScene14.jpg1" />
+    <None Include="Resources\NewScene18.jpg1" />
+    <None Include="Resources\NewScene19.jpg1" />
+    <None Include="Resources\NewScene20.jpg1" />
+    <None Include="Resources\NewScene21.jpg1" />
+    <None Include="Resources\NewScene22.jpg1" />
+    <None Include="Resources\NewScene23.jpg1" />
+    <None Include="Resources\NewScene24.jpg1" />
+    <None Include="Resources\NewScene25.jpg1" />
+    <None Include="Resources\NewScene26.jpg1" />
+    <None Include="Resources\NewScene27.jpg1" />
+    <None Include="Resources\NewScene28_1.jpg1" />
+    <None Include="Resources\NewScene28_2.jpg1" />
+    <None Include="Resources\NewScene28_3.jpg1" />
+    <None Include="Resources\NewScene28_4.jpg1" />
+    <None Include="Resources\NewScene29.jpg1" />
+    <None Include="Resources\newvoice1.wav1" />
+    <None Include="Resources\newvoice10.wav1" />
+    <None Include="Resources\newvoice11.wav1" />
+    <None Include="Resources\newvoice12.wav1" />
+    <None Include="Resources\newvoice13.wav1" />
+    <None Include="Resources\newvoice14.wav1" />
+    <None Include="Resources\newvoice15.wav1" />
+    <None Include="Resources\newvoice16.wav1" />
+    <None Include="Resources\newvoice17.wav1" />
+    <None Include="Resources\newvoice18.wav1" />
+    <None Include="Resources\newvoice19.wav1" />
+    <None Include="Resources\newvoice2.wav1" />
+    <None Include="Resources\newvoice20.wav1" />
+    <None Include="Resources\newvoice21.wav1" />
+    <None Include="Resources\newvoice22.wav1" />
+    <None Include="Resources\newvoice23.wav1" />
+    <None Include="Resources\newvoice24.wav1" />
+    <None Include="Resources\newvoice25.wav1" />
+    <None Include="Resources\newvoice26.wav1" />
+    <None Include="Resources\newvoice27.wav1" />
+    <None Include="Resources\newvoice28.wav1" />
+    <None Include="Resources\newvoice3.wav1" />
+    <None Include="Resources\newvoice4.wav1" />
+    <None Include="Resources\newvoice5.wav1" />
+    <None Include="Resources\newvoice6.wav1" />
+    <None Include="Resources\newvoice7.wav1" />
+    <None Include="Resources\newvoice8.wav1" />
+    <None Include="Resources\newvoice9.wav1" />
+    <None Include="Resources\odd playground.jpg1" />
+    <None Include="Resources\office.jpg1" />
+    <None Include="Resources\opened factory.jpg1" />
+    <None Include="Resources\outside aurora palace.jpg1" />
+    <None Include="Resources\outside.jpg1" />
+    <None Include="Resources\outside2.jpg1" />
+    <None Include="Resources\outside3.jpg1" />
+    <None Include="Resources\page.wav1" />
+    <None Include="Resources\palace room.jpg1" />
+    <None Include="Resources\palace stair1.jpg1" />
+    <None Include="Resources\pontiff.png1" />
+    <None Include="Resources\positive cow.png1" />
+    <None Include="Resources\power up.wav1" />
+    <None Include="Resources\problem.wav1" />
+    <None Include="Resources\psychology room.jpg1" />
+    <None Include="Resources\purchase.wav1" />
+    <None Include="Resources\rabbit.png1" />
+    <None Include="Resources\rabbit.wav1" />
+    <None Include="Resources\ring.wav1" />
+    <None Include="Resources\robot.wav1" />
+    <None Include="Resources\rooster.png1" />
+    <None Include="Resources\rooster.wav1" />
+    <None Include="Resources\saw.wav1" />
+    <None Include="Resources\scathach.png1" />
+    <None Include="Resources\scene103.jpg1" />
+    <None Include="Resources\scene104.jpg1" />
+    <None Include="Resources\scene105.jpg1" />
+    <None Include="Resources\scene106.jpg1" />
+    <None Include="Resources\scene107.jpg1" />
+    <None Include="Resources\scene108.jpg1" />
+    <None Include="Resources\scene109.jpg1" />
+    <None Include="Resources\scene110.jpg1" />
+    <None Include="Resources\scene111.jpg1" />
+    <None Include="Resources\scene111_1.jpg1" />
+    <None Include="Resources\scene112.jpg1" />
+    <None Include="Resources\scene113.jpg1" />
+    <None Include="Resources\scene114.jpg1" />
+    <None Include="Resources\scene115.jpg1" />
+    <None Include="Resources\scene116.jpg1" />
+    <None Include="Resources\scene117.jpg1" />
+    <None Include="Resources\scene118.jpg1" />
+    <None Include="Resources\scene18.jpg1" />
+    <None Include="Resources\scream.wav1" />
+    <None Include="Resources\seabridge.jpg1" />
+    <None Include="Resources\seapath.jpg1" />
+    <None Include="Resources\shoot.wav1" />
+    <None Include="Resources\short magic.wav1" />
+    <None Include="Resources\small black hen.png1" />
+    <None Include="Resources\small dormitory.jpg1" />
+    <None Include="Resources\soil.wav1" />
+    <None Include="Resources\solar ball recipe.png1" />
+    <None Include="Resources\solar factory.jpg1" />
+    <None Include="Resources\soldier distorted.png1" />
+    <None Include="Resources\sounds_sfx_pck-0000001667.wav1" />
+    <None Include="Resources\sounds_sfx_pck-0000001695.wav1" />
+    <None Include="Resources\splash.wav1" />
+    <None Include="Resources\staircase.jpg1" />
+    <None Include="Resources\strike.wav1" />
+    <None Include="Resources\strike1.wav1" />
+    <None Include="Resources\switch.wav1" />
+    <None Include="Resources\sword.png1" />
+    <None Include="Resources\tarecgosa destroyer.jpg1" />
+    <None Include="Resources\tarecgosa.png1" />
+    <None Include="Resources\tarecgosa_battler.png1" />
+    <None Include="Resources\tentacle.png1" />
+    <None Include="Resources\thorn mountain2.jpg1" />
+    <None Include="Resources\thorn1.jpg1" />
+    <None Include="Resources\through.wav1" />
+    <None Include="Resources\throw.wav1" />
+    <None Include="Resources\thump.wav1" />
+    <None Include="Resources\top_right.jpg1" />
+    <None Include="Resources\turkey association.jpg1" />
+    <None Include="Resources\Turkey&amp;Murloc.wav1" />
+    <None Include="Resources\turkey.png1" />
+    <None Include="Resources\turkey.wav1" />
+    <None Include="Resources\turkey_murloc1.png1" />
+    <None Include="Resources\turkfish_lord.png1" />
+    <None Include="Resources\turtle.png1" />
+    <None Include="Resources\Untitled-1.png1" />
+    <None Include="Resources\Untitled-2.png1" />
+    <None Include="Resources\Untitled-3.png1" />
+    <None Include="Resources\Untitled-4.png1" />
+    <None Include="Resources\untitled-5.png1" />
+    <None Include="Resources\vector room.jpg1" />
+    <None Include="Resources\voice1.wav1" />
+    <None Include="Resources\voice10.wav1" />
+    <None Include="Resources\voice11.wav1" />
+    <None Include="Resources\voice12.wav1" />
+    <None Include="Resources\voice13.wav1" />
+    <None Include="Resources\voice14.wav1" />
+    <None Include="Resources\voice15.wav1" />
+    <None Include="Resources\voice16.wav1" />
+    <None Include="Resources\voice17.wav1" />
+    <None Include="Resources\voice2.wav1" />
+    <None Include="Resources\voice3.wav1" />
+    <None Include="Resources\voice4.wav1" />
+    <None Include="Resources\voice5.wav1" />
+    <None Include="Resources\voice6.wav1" />
+    <None Include="Resources\voice7.wav1" />
+    <None Include="Resources\voice8.wav1" />
+    <None Include="Resources\voice9.wav1" />
+    <None Include="Resources\vortex.wav1" />
+    <None Include="Resources\vortex1.jpg1" />
+    <None Include="Resources\vortex2.jpg1" />
+    <None Include="Resources\warning.png1" />
+    <None Include="Resources\win.wav1" />
+    <None Include="Resources\witch.png1" />
+    <None Include="Resources\witch.wav1" />
+    <None Include="Resources\witch1.wav1" />
+    <None Include="Resources\witch_being confused.png1" />
+    <None Include="Resources\witch_voice1.wav1" />
+    <None Include="Resources\witch_voice2.wav1" />
+    <None Include="Resources\witch_voice3.wav1" />
+    <None Include="Resources\witch_voice4.wav1" />
+    <None Include="Resources\witch_voice5.wav1" />
+    <None Include="Resources\worm-symbol.jpg1" />
+    <None Include="Resources\worm.png1" />
+    <None Include="Resources\write.wav1" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bump.wav1" />
+    <None Include="Resources\Cities of Tomorrow.mp3" />
+    <None Include="Resources\Defeat.wav1" />
+    <None Include="Resources\defend.wav1" />
+    <None Include="Resources\childoflight spiderbgm.ogg" />
+    <None Include="Resources\sounds_sfx_pck-0000001593.ogg" />
+    <EmbeddedResource Include="Resources\sounds_sfx_pck-0000001651.ogg" />
+    <None Include="Resources\Untitled Session 1_mixdown.ogg" />
+    <None Include="Resources\sounds_sfx_pck-0000001566.ogg" />
+    <EmbeddedResource Include="Resources\test.wav" />
+    <None Include="Resources\soundtrack_2.mp3" />
+    <None Include="Resources\Extinction.mp3" />
+    <None Include="Resources\Trine 3 Main Theme.mp3" />
+    <None Include="Resources\childoflight bossbgm.ogg" />
+    <None Include="Resources\Season of Nights.mp3" />
+    <None Include="Resources\WinterSpell.mp3" />
+    <None Include="Resources\For The Win.mp3" />
+    <None Include="Resources\Beyond Heaven.mp3" />
+    <None Include="Resources\TurkeyMusic.mp3" />
+    <None Include="Resources\Disaster!.mp3" />
+    <Content Include="turkey.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="AxWMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
