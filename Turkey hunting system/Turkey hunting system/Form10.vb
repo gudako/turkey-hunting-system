@@ -16,7 +16,7 @@
         End If
     End Sub
 
-    Public Sub start(ByVal code_ As Integer, text_ As String)
+    Public Sub start(code_ As Integer, text_ As String)
         code = code_
         content.Text = text_
         revive.Text = "Revive(" & Form1.revive & ")"
@@ -45,7 +45,8 @@
         Hide()
         Form7.Show()
         Form1.revive -= 1
-        Form7.initialization(Form7.defend_type, Form7.attack_type, Form7.magic_type, Form7.life2b.Tag, Form7.life1b.Tag, Form7.battle)
+        Form7.initialization(Form7.defend_type, Form7.attack_type, Form7.magic_type, Form7.life2b.Tag, Form7.life1b.Tag,
+                             Form7.battle)
         Form1.music.settings.volume = 100
         If Form7.battle < 8 Then
             Form1.music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music7.wm"

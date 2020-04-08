@@ -1,50 +1,86 @@
-﻿Public Class Form20
+﻿Imports System.Drawing.Imaging
+
+Public Class Form20
     ''' <summary>
-    ''' 当你使用实际数字为坐标(Size/Location)赋值时，应该乘以相应的缩放值，因为屏幕将会给出一定比例的缩放。
+    '''     当你使用实际数字为坐标(Size/Location)赋值时，应该乘以相应的缩放值，因为屏幕将会给出一定比例的缩放。
     ''' </summary>
-    Private ZoomX As Single = 0.75, ZoomY As Single = 0.8
+    Private ReadOnly ZoomX As Single = 0.75
+
     ''' <summary>
-    ''' 控件可以强制设置Unable值来组织阻止操作，Unable为True时，用户不能进行操作。
+    '''     当你使用实际数字为坐标(Size/Location)赋值时，应该乘以相应的缩放值，因为屏幕将会给出一定比例的缩放。
+    ''' </summary>
+    Private ReadOnly ZoomY As Single = 0.8
+
+    ''' <summary>
+    '''     控件可以强制设置Unable值来组织阻止操作，Unable为True时，用户不能进行操作。
     ''' </summary>
     Private Unable As Boolean = False
+
     ''' <summary>
-    ''' 这些参数都用于移动物品(得到或失去物品)。
+    '''     这些参数都用于移动物品(得到或失去物品)。
     ''' </summary>
-    Private MovingItem As New PictureBox, MoveSource As Control, MoveTarget As Control, MoveItemTab As Integer = 0, ItemMoveMode As MoveMode, AffectCode_ As Integer
+    Private ReadOnly MovingItem As New PictureBox
+
     ''' <summary>
-    ''' 玩家所持物品。
+    '''     这些参数都用于移动物品(得到或失去物品)。
+    ''' </summary>
+    Private MoveSource As Control,
+            MoveTarget As Control,
+            MoveItemTab As Integer = 0,
+            ItemMoveMode As MoveMode,
+            AffectCode_ As Integer
+
+    ''' <summary>
+    '''     玩家所持物品。
     ''' </summary>
     Public Items As New ListBox
+
     ''' <summary>
-    ''' 物品栏中的格子。
+    '''     物品栏中的格子。
     ''' </summary>
-    Private ItemBricks(5) As PictureBox, ItemTab As Integer = 0
-    Dim MissionSummoner As New Button With {.Text = "←"}, SceneBrick As New PictureBox With {.SizeMode = PictureBoxSizeMode.StretchImage}, SceneChangeMode As SwitchMode, ClimbSpeed_ As Single
-    Dim Actor As New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom}, dialogue As New Label With {.Font = New Font("微软雅黑", 16.2!, FontStyle.Regular, GraphicsUnit.Point, 134), .AutoSize = False, .BackColor = Color.Transparent, .Visible = False}
+    Private ReadOnly ItemBricks(5) As PictureBox
+
     ''' <summary>
-    ''' 决定修改PictureBox的方式。
+    '''     物品栏中的格子。
+    ''' </summary>
+    Private ItemTab As Integer = 0
+
+    Dim ReadOnly MissionSummoner As New Button With {.Text = "←"}
+    Dim ReadOnly SceneBrick As New PictureBox With {.SizeMode = PictureBoxSizeMode.StretchImage}
+    Dim SceneChangeMode As SwitchMode, ClimbSpeed_ As Single
+    Dim ReadOnly Actor As New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom}
+
+    Dim ReadOnly _
+        dialogue As _
+            New Label _
+        With {.Font = New Font("微软雅黑", 16.2!, FontStyle.Regular, GraphicsUnit.Point, 134), .AutoSize = False,
+        .BackColor = Color.Transparent, .Visible = False}
+
+    ''' <summary>
+    '''     决定修改PictureBox的方式。
     ''' </summary>
     Enum MoveMode
         ''' <summary>
-        ''' 移动。在这种情况下，MoveSource成为其初始点，一直移动到MoveTarget所在点。
+        '''     移动。在这种情况下，MoveSource成为其初始点，一直移动到MoveTarget所在点。
         ''' </summary>
         Move
         ''' <summary>
-        ''' PictureBox将一直缩放到0，然后计时器停止。其中心一直围绕MoveSource。
+        '''     PictureBox将一直缩放到0，然后计时器停止。其中心一直围绕MoveSource。
         ''' </summary>
         Narrow
         ''' <summary>
-        ''' PictureBox围绕MoveSource，一直扩大到MoveSource的大小。其中心一直围绕MoveSource。其原始大小应该小于MoveSource。
+        '''     PictureBox围绕MoveSource，一直扩大到MoveSource的大小。其中心一直围绕MoveSource。其原始大小应该小于MoveSource。
         ''' </summary>
         Enlarge
     End Enum
+
     Private Sub Form20_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '控件的位置调整。
         mission.Items.Clear()
-        mission_box.Size = New Size(300 * ZoomX, 400 * ZoomY)
-        mission_report.Size = New Size(300 * ZoomX, 300 * ZoomY)
-        mission_box.Location = New Point(scene.Width, (scene.Height - mission_box.Height) / 2)
-        mission_report.Location = New Point(-mission_report.Width, (scene.Height - mission_report.Height) / 2)
+        mission_box.Size = New Size(300*ZoomX, 400*ZoomY)
+        mission_report.Size = New Size(300*ZoomX, 300*ZoomY)
+        mission_box.Location = New Point(scene.Width, (scene.Height - mission_box.Height)/2)
+        mission_report.Location = New Point(- mission_report.Width, (scene.Height - mission_report.Height)/2)
         Actor.Size = scene.Size
         Actor.Location = New Point(0, scene.Height)
         dialogue.Size = New Size(scene.Width, 70)
@@ -76,9 +112,11 @@
         subActor.Visible = False
         Actor.Visible = False
     End Sub
+
     Private Sub Actor_Click()
         deselect()
     End Sub
+
     Private Sub MissionSummoner_Click()
         If Enable() = False Or Actor.Visible Then Exit Sub
         MissionSummoner.Visible = False
@@ -86,9 +124,10 @@
         mission_box.Visible = True
         If mission.Items.Count < 5 Then mission.TileSize = New Size(194, 48) Else mission.TileSize = New Size(177, 48)
     End Sub
+
     Private Sub MoveItem_Tick(sender As Object, e As EventArgs) Handles MoveItem.Tick
         If scene.Location <> New Point(0, 0) Then Exit Sub
-        If MoveItemTab = -1 Then
+        If MoveItemTab = - 1 Then
             PuzzlingMover.Visible = True
             PuzzlingMover.BringToFront()
             PuzzlingMover.BackColor = Color.Transparent
@@ -98,21 +137,25 @@
             Dim MoveLeft As Integer = ToLeft - PuzzlingMover.Left
             Dim MoveTop As Integer = ToTop - PuzzlingMover.Top
             Dim hypotenuse As Integer = Math.Pow(Math.Pow(MoveLeft, 2) + Math.Pow(MoveTop, 2), 0.5)
-            Dim average As Integer = MoveSpeedPuzzling / (1 + Math.Abs(MoveTop) / Math.Abs(MoveLeft))
-            Dim PerLeft As Integer = 1 * average
+            Dim average As Integer = MoveSpeedPuzzling/(1 + Math.Abs(MoveTop)/Math.Abs(MoveLeft))
+            Dim PerLeft As Integer = 1*average
             Dim PerTop As Integer = MoveSpeedPuzzling - PerLeft
-            PuzzlingMover.Size = New Size((1 - hypotenuse / TotalLong) * (ZoomTarget.Width - ZoomSource.Width) + ZoomSource.Width, (1 - hypotenuse / TotalLong) * (ZoomTarget.Height - ZoomSource.Height) + ZoomSource.Height)
+            PuzzlingMover.Size =
+                New Size((1 - hypotenuse/TotalLong)*(ZoomTarget.Width - ZoomSource.Width) + ZoomSource.Width,
+                         (1 - hypotenuse/TotalLong)*(ZoomTarget.Height - ZoomSource.Height) + ZoomSource.Height)
             If MoveTop >= MoveSpeedPuzzling Then
                 PuzzlingMover.Top += PerTop
-            ElseIf MoveTop <= -MoveSpeedPuzzling Then
+            ElseIf MoveTop <= - MoveSpeedPuzzling Then
                 PuzzlingMover.Top -= PerTop
             End If
             If MoveLeft >= MoveSpeedPuzzling Then
                 PuzzlingMover.Left += PerLeft
-            ElseIf MoveLeft <= -MoveSpeedPuzzling Then
+            ElseIf MoveLeft <= - MoveSpeedPuzzling Then
                 PuzzlingMover.Left -= PerLeft
             End If
-            If (MoveTop > -MoveSpeedPuzzling And MoveTop < MoveSpeedPuzzling) And (MoveLeft > -MoveSpeedPuzzling And MoveLeft < MoveSpeedPuzzling) Then
+            If _
+                (MoveTop > - MoveSpeedPuzzling And MoveTop < MoveSpeedPuzzling) And
+                (MoveLeft > - MoveSpeedPuzzling And MoveLeft < MoveSpeedPuzzling) Then
                 MoveItem.Enabled = False
                 Controls.Remove(PuzzlingMover)
                 PuzzlingMover.Visible = False
@@ -122,25 +165,25 @@
             Dim ToLeft As Integer
             Dim ToTop As Integer
             If MoveItemTab = 0 Then
-                ToLeft = itemlist.Left + MoveTarget.Left + MoveTarget.Width / 2 - MovingItem.Width / 2
-                ToTop = itemlist.Top + MoveTarget.Top + MoveTarget.Height / 2 - MovingItem.Height / 2
+                ToLeft = itemlist.Left + MoveTarget.Left + MoveTarget.Width/2 - MovingItem.Width/2
+                ToTop = itemlist.Top + MoveTarget.Top + MoveTarget.Height/2 - MovingItem.Height/2
             Else
-                ToLeft = MoveTarget.Left + MoveTarget.Width / 2 - MovingItem.Width / 2
-                ToTop = MoveTarget.Top + MoveTarget.Height / 2 - MovingItem.Height / 2
+                ToLeft = MoveTarget.Left + MoveTarget.Width/2 - MovingItem.Width/2
+                ToTop = MoveTarget.Top + MoveTarget.Height/2 - MovingItem.Height/2
             End If
             Dim MoveLeft As Integer = ToLeft - MovingItem.Left
             Dim MoveTop As Integer = ToTop - MovingItem.Top
-            Dim average As Integer = 10 / (1 + Math.Abs(MoveTop) / Math.Abs(MoveLeft))
-            Dim PerLeft As Integer = 1 * average
+            Dim average As Integer = 10/(1 + Math.Abs(MoveTop)/Math.Abs(MoveLeft))
+            Dim PerLeft As Integer = 1*average
             Dim PerTop As Integer = 10 - PerLeft
             If MoveTop >= 10 Then
                 MovingItem.Top += PerTop
-            ElseIf MoveTop <= -10 Then
+            ElseIf MoveTop <= - 10 Then
                 MovingItem.Top -= PerTop
             End If
             If MoveLeft >= 10 Then
                 MovingItem.Left += PerLeft
-            ElseIf MoveLeft <= -10 Then
+            ElseIf MoveLeft <= - 10 Then
                 MovingItem.Left -= PerLeft
             End If
             If MovingItem.Bottom <= scene.Bottom Then
@@ -153,7 +196,7 @@
                 MovingItem.BackColor = Color.White
             End If
             MovingItem.BringToFront()
-            If (MoveTop > -10 And MoveTop < 10) And (MoveLeft > -10 And MoveLeft < 10) Then
+            If (MoveTop > - 10 And MoveTop < 10) And (MoveLeft > - 10 And MoveLeft < 10) Then
                 If MoveItemTab = 0 Then
                     refresh_item()
                     MoveItem.Enabled = False
@@ -165,8 +208,8 @@
         ElseIf ItemMoveMode = MoveMode.Narrow Then
             MovingItem.Width -= 2
             MovingItem.Height -= 2
-            MovingItem.Left = MoveTarget.Left + MoveTarget.Width / 2 - MovingItem.Width / 2
-            MovingItem.Top = MoveTarget.Top + MoveTarget.Height / 2 - MovingItem.Height / 2
+            MovingItem.Left = MoveTarget.Left + MoveTarget.Width/2 - MovingItem.Width/2
+            MovingItem.Top = MoveTarget.Top + MoveTarget.Height/2 - MovingItem.Height/2
             If MovingItem.Width < 2 Or MovingItem.Height < 2 Then
                 MoveItem.Enabled = False
                 Controls.Remove(MovingItem)
@@ -176,19 +219,20 @@
         ElseIf ItemMoveMode = MoveMode.Enlarge Then
             MovingItem.Width += 2
             MovingItem.Height += 2
-            MovingItem.Left = MoveSource.Left + MoveSource.Width / 2 - MovingItem.Width / 2
-            MovingItem.Top = MoveSource.Top + MoveSource.Height / 2 - MovingItem.Height / 2
+            MovingItem.Left = MoveSource.Left + MoveSource.Width/2 - MovingItem.Width/2
+            MovingItem.Top = MoveSource.Top + MoveSource.Height/2 - MovingItem.Height/2
             If MovingItem.Width > item1.Width - 2 Or MovingItem.Height > item1.Height - 2 Then
                 ItemMoveMode = MoveMode.Move
             End If
             MovingItem.BringToFront()
         End If
     End Sub
+
     ''' <summary>
-    ''' 若你从存档跳转到这里，应该经过这些代码进行初始化。
+    '''     若你从存档跳转到这里，应该经过这些代码进行初始化。
     ''' </summary>
     Public Sub ImportFromRecord()
-        For x As Integer = 0 To My.Settings.missions.Split("/").Count - 1
+        For x = 0 To My.Settings.missions.Split("/").Count - 1
             Dim NewMission As String = My.Settings.missions.Split("/")(x)
             If NewMission.Split(";").Count <= 1 Then Continue For
             Dim NewListViewItem As New ListViewItem
@@ -203,19 +247,21 @@
             mission.Items.Add(NewListViewItem)
         Next
         Items.Items.Clear()
-        For x As Integer = 0 To My.Settings.items.Split("/").Count - 1
+        For x = 0 To My.Settings.items.Split("/").Count - 1
             If My.Settings.items.Split("/")(x) <> "" Then Items.Items.Add(My.Settings.items.Split("/")(x))
         Next
         refresh_item()
     End Sub
+
     Private Sub item0_Click(sender As Object, e As EventArgs) Handles item0.Click
         SelectThe(item0)
     End Sub
+
     ''' <summary>
-    ''' 所以，你选择你选择你你你你选择
+    '''     所以，你选择你选择你你你你选择
     ''' </summary>
     ''' <param name="target">必须是物品PictureBox。</param>
-    Private Sub SelectThe(ByVal target As Control)
+    Private Sub SelectThe(target As Control)
         If Enable(False) = False Then Exit Sub
         deselect()
         If target.Tag <> "Null" Then
@@ -224,45 +270,54 @@
             rightmove.Visible = True
         End If
     End Sub
+
     ''' <summary>
-    ''' 解除所有选择。
+    '''     解除所有选择。
     ''' </summary>
     Private Sub deselect()
-        For x As Integer = 0 To 5
+        For x = 0 To 5
             ItemBricks(x).BackColor = Color.White
         Next
         leftmove.Visible = False
         rightmove.Visible = False
     End Sub
+
     Private Sub item1_Click(sender As Object, e As EventArgs) Handles item1.Click
         SelectThe(item1)
     End Sub
+
     Private Sub item2_Click(sender As Object, e As EventArgs) Handles item2.Click
         SelectThe(item2)
     End Sub
+
     Private Sub item3_Click(sender As Object, e As EventArgs) Handles item3.Click
         SelectThe(item3)
     End Sub
+
     Private Sub item4_Click(sender As Object, e As EventArgs) Handles item4.Click
         SelectThe(item4)
     End Sub
+
     Private Sub item5_Click(sender As Object, e As EventArgs) Handles item5.Click
         SelectThe(item5)
     End Sub
+
     Private Sub left__Click(sender As Object, e As EventArgs) Handles left_.Click
         If Enable() = False Then Exit Sub
         ItemTab = ItemTab - 1
         refresh_item()
     End Sub
+
     Private Sub right__Click(sender As Object, e As EventArgs) Handles right_.Click
         If Enable() = False Then Exit Sub
         ItemTab = ItemTab + 1
         refresh_item()
     End Sub
+
     Private Sub leftmove_Click(sender As Object, e As EventArgs) Handles leftmove.Click
         If Enable() = False Then Exit Sub
-        Dim usable As Boolean = False
-        For x As Integer = 0 To Items.Items.Count - 1
+        Dim usable = False
+        For x = 0 To Items.Items.Count - 1
             If SelectedItem().Tag.ToString = Items.Items(x) Then
                 usable = True
                 Items.SelectedItem = Items.Items(x)
@@ -281,10 +336,11 @@
             refresh_item()
         End If
     End Sub
+
     Private Sub rightmove_Click(sender As Object, e As EventArgs) Handles rightmove.Click
         If Enable() = False Then Exit Sub
-        Dim usable As Boolean = False
-        For x As Integer = 0 To Items.Items.Count - 1
+        Dim usable = False
+        For x = 0 To Items.Items.Count - 1
             If SelectedItem().Tag.ToString = Items.Items(x) Then
                 usable = True
                 Items.SelectedItem = Items.Items(x)
@@ -301,6 +357,7 @@
             refresh_item()
         End If
     End Sub
+
     Private Sub Move_mission_report_Tick(sender As Object, e As EventArgs) Handles Move_mission_report.Tick
         If Move_mission_report.Tag = 0 Then
             mission_report.Left += 10
@@ -308,26 +365,28 @@
                 mission_report.Left = 0
                 Move_mission_report.Tag = 1
             End If
-        ElseIf Move_mission_report.Tag = -1 Then
+        ElseIf Move_mission_report.Tag = - 1 Then
             mission_report.Left -= 10
-            If mission_report.Left <= -mission_report.Width Then
-                mission_report.Left = -mission_report.Width
+            If mission_report.Left <= - mission_report.Width Then
+                mission_report.Left = - mission_report.Width
                 Move_mission_report.Tag = 0
                 Move_mission_report.Enabled = False
             End If
         Else
             Move_mission_report.Tag += 1
             If Move_mission_report.Tag = 200 Then
-                Move_mission_report.Tag = -1
+                Move_mission_report.Tag = - 1
             End If
         End If
     End Sub
+
     ''' <summary>
-    ''' 从场景中移出所有部件（保留背景），在切换场景或场景对话时使用。
+    '''     从场景中移出所有部件（保留背景），在切换场景或场景对话时使用。
     ''' </summary>
     Private Sub mission_report_next_Click(sender As Object, e As EventArgs) Handles mission_report_next.Click
-        If Move_mission_report.Enabled Then Move_mission_report.Tag = -1
+        If Move_mission_report.Enabled Then Move_mission_report.Tag = - 1
     End Sub
+
     Private Sub Move_missions_Tick(sender As Object, e As EventArgs) Handles Move_missions.Tick
         If Move_missions.Tag = 0 Then
             mission_box.Left -= 10
@@ -347,16 +406,18 @@
             End If
         End If
     End Sub
+
     Private Sub mission_back_Click(sender As Object, e As EventArgs) Handles mission_back.Click
         Move_missions.Tag = 1
         Move_missions.Enabled = True
     End Sub
+
     ''' <summary>
-    ''' 对一个目标使用物品，并触发相应的事件。
+    '''     对一个目标使用物品，并触发相应的事件。
     ''' </summary>
     ''' <param name="target">要使用到的目标控件。</param>
     ''' <param name="AffectCode">触发事件的序列号。</param>
-    Private Sub UseItem(ByVal target As Control, AffectCode As Integer)
+    Private Sub UseItem(target As Control, AffectCode As Integer)
         With MovingItem
             .Image = SelectedItem.Image
             .BackColor = Color.Yellow
@@ -378,12 +439,13 @@
         refresh_item()
         SelectedItem.BackColor = Color.White
     End Sub
+
     ''' <summary>
-    ''' 从一个指定目标处得到物品。
+    '''     从一个指定目标处得到物品。
     ''' </summary>
     ''' <param name="source">得到物品的来源。</param>
     ''' <param name="ItemName">物品名称。</param>
-    Private Sub GetItem(ByVal source As Control, ByVal ItemName As String)
+    Private Sub GetItem(source As Control, ItemName As String)
         With MovingItem
             .Image = GetItemImage(ItemName)
             .BackColor = Color.Transparent
@@ -397,7 +459,7 @@
         Controls.Add(MovingItem)
         MoveSource = source
         MoveTarget = ItemBricks(5)
-        For x As Integer = 0 To 5
+        For x = 0 To 5
             If ItemBricks(x).Tag = "Null" Then
                 MoveTarget = ItemBricks(x)
                 Exit For
@@ -408,8 +470,9 @@
         Items.Items.Add(ItemName)
         MoveItemTab = 0
     End Sub
+
     ''' <summary>
-    ''' 确定用户是否可用操作。无论使用何种操作，都应先通过该检验。
+    '''     确定用户是否可用操作。无论使用何种操作，都应先通过该检验。
     ''' </summary>
     ''' <returns>若检验失败，则操作直接被取消。</returns>
     Private Function Enable(Optional ByVal TurningOut As Boolean = True) As Boolean
@@ -423,7 +486,9 @@
         If message_box.Visible Then Return False
         Return True
     End Function
+
     Private AlphaForSW As Single, ImageForSW As Image
+
     Private Sub SceneWeaver_Tick(sender As Object, e As EventArgs) Handles SceneWeaver.Tick
         If SceneChangeMode = SwitchMode.drag_up Then
             scene.Top += 20
@@ -447,7 +512,7 @@
             If AlphaForSW >= 1 Then GoTo complete
         End If
         Exit Sub
-complete:
+        complete:
         SceneWeaver.Enabled = False
         If AlphaForSW >= 1 Then SceneBrick.Visible = False
         scene.Image = Image.FromFile(GetFile("NewScene" & SceneWeaver.Tag))
@@ -455,27 +520,41 @@ complete:
         Controls.Remove(SceneBrick)
         SceneAppears(SceneWeaver.Tag)
     End Sub
-    Private ImportantTip As Boolean, subActor As New PictureBox With {.BackColor = Color.Transparent, .Parent = Actor}
-    Private TipBox As Label = New Label With {.Location = New Point(0, 0), .Font = New Font("微软雅黑", 16.2!, FontStyle.Regular, GraphicsUnit.Point, 134), .BackColor = Color.Black, .ForeColor = Color.White}
+
+    Private ImportantTip As Boolean
+    Private ReadOnly subActor As New PictureBox With {.BackColor = Color.Transparent, .Parent = Actor}
+
+    Private ReadOnly _
+        TipBox As Label = New Label _
+        With {.Location = New Point(0, 0), .Font = New Font("微软雅黑", 16.2!, FontStyle.Regular, GraphicsUnit.Point, 134),
+        .BackColor = Color.Black, .ForeColor = Color.White}
+
     Private Sub deletetip_Tick(sender As Object, e As EventArgs) Handles deletetip.Tick
         deletetip.Tag += 1
-        Dim MaxInt As Integer = 120
+        Dim MaxInt = 120
         If ImportantTip Then MaxInt = 470
         If deletetip.Tag > MaxInt Then
-            If (deletetip.Tag - MaxInt) * 10 > 255 Then
+            If (deletetip.Tag - MaxInt)*10 > 255 Then
                 If ImportantTip Then TipBox.BackColor = Color.Black
                 If ImportantTip = False Then TipBox.BackColor = Color.White
             Else
-                If ImportantTip Then TipBox.BackColor = Color.FromArgb(255 - (deletetip.Tag - MaxInt) * 10, 255 - (deletetip.Tag - MaxInt) * 10, 255 - (deletetip.Tag - MaxInt) * 10)
-                If ImportantTip = False Then TipBox.BackColor = Color.FromArgb((deletetip.Tag - MaxInt) * 10, (deletetip.Tag - MaxInt) * 10, (deletetip.Tag - MaxInt) * 10)
+                If ImportantTip Then _
+                    TipBox.BackColor = Color.FromArgb(255 - (deletetip.Tag - MaxInt)*10,
+                                                      255 - (deletetip.Tag - MaxInt)*10,
+                                                      255 - (deletetip.Tag - MaxInt)*10)
+                If ImportantTip = False Then _
+                    TipBox.BackColor = Color.FromArgb((deletetip.Tag - MaxInt)*10, (deletetip.Tag - MaxInt)*10,
+                                                      (deletetip.Tag - MaxInt)*10)
             End If
         Else
-            If deletetip.Tag * 10 > 255 Then
+            If deletetip.Tag*10 > 255 Then
                 If ImportantTip Then TipBox.BackColor = Color.Red
                 If ImportantTip = False Then TipBox.BackColor = Color.Black
             Else
-                If ImportantTip Then TipBox.BackColor = Color.FromArgb(deletetip.Tag * 10, 0, 0)
-                If ImportantTip = False Then TipBox.BackColor = Color.FromArgb(255 - deletetip.Tag * 10, 255 - deletetip.Tag * 10, 255 - deletetip.Tag * 10)
+                If ImportantTip Then TipBox.BackColor = Color.FromArgb(deletetip.Tag*10, 0, 0)
+                If ImportantTip = False Then _
+                    TipBox.BackColor = Color.FromArgb(255 - deletetip.Tag*10, 255 - deletetip.Tag*10,
+                                                      255 - deletetip.Tag*10)
             End If
         End If
         If deletetip.Tag >= MaxInt + 30 Then
@@ -484,12 +563,13 @@ complete:
             Controls.Remove(TipBox)
         End If
     End Sub
+
     ''' <summary>
-    ''' 弹出提示框。
+    '''     弹出提示框。
     ''' </summary>
     ''' <param name="content">提示框的内容。</param>
     ''' <param name="important">是否重要(用红色表示，停留时间长)。</param>
-    Private Sub Tip(ByVal content As String, Optional important As Boolean = False)
+    Private Sub Tip(content As String, Optional important As Boolean = False)
         TipBox.Text = content
         TipBox.Size = New Size(scene.Width, 70)
         TipBox.BorderStyle = BorderStyle.FixedSingle
@@ -506,32 +586,37 @@ complete:
         deletetip.Tag = 0
         deletetip.Enabled = True
     End Sub
+
     ''' <summary>
-    ''' 通过物品名称返回物品图片。
+    '''     通过物品名称返回物品图片。
     ''' </summary>
     ''' <param name="ItemName">物品名称。</param>
     ''' <returns></returns>
-    Private Function GetItemImage(ByVal ItemName As String) As Image
+    Private Function GetItemImage(ItemName As String) As Image
         If ItemName = "witch's book" Then Return item_image.Images(0)
         If ItemName = "duck tape" Then Return item_image.Images(1)
         Throw New Exception("""" & ItemName & """ isn't exist in the list.")
     End Function
+
     Private Sub scene_Click(sender As Object, e As EventArgs) Handles scene.Click
         deselect()
     End Sub
+
     Enum Appearance
         Appear
         ClimbUp
         GradualChange
     End Enum
+
     Private FullImage As Bitmap, CurrentOpacity As Single
+
     ''' <summary>
-    ''' 显示过场动画，其中包含角色对话。
+    '''     显示过场动画，其中包含角色对话。
     ''' </summary>
     ''' <param name="ControlTag">控件的Tag值。</param>
     ''' <param name="AppearMode">是否爬上来。如果不，则直接出现图片，且图片为Nothing。</param>
     ''' <param name="ClimbSpeed">上爬速度。</param>
-    Public Sub ShowCutscene(ByVal ControlTag As Integer, AppearMode As Appearance, Optional ClimbSpeed As Single = 1)
+    Public Sub ShowCutscene(ControlTag As Integer, AppearMode As Appearance, Optional ClimbSpeed As Single = 1)
         Actor.Visible = True
         dialogue.Visible = False
         dialogue.ForeColor = Color.Black
@@ -556,11 +641,12 @@ complete:
         itemlist.BringToFront()
         cutscenes.Enabled = True
     End Sub
+
     ''' <summary>
-    ''' Affect.
+    '''     Affect.
     ''' </summary>
     ''' <param name="code">The affect code.</param>
-    Private Sub Affect(ByVal code As Integer)
+    Private Sub Affect(code As Integer)
         If code = 0 Then
             Form1.music.URL = GetFile("music17")
             scene.Tag = 3
@@ -574,16 +660,18 @@ complete:
             Tip("Who is that guy? Is it our drillmaster? We should go into that room to have a search.", True)
         End If
     End Sub
+
     Private Sub cutscenes_Tick(sender As Object, e As EventArgs) Handles cutscenes.Tick
         If Actor.Top = 0 And Actor.Tag < 2 Then
             cutscenes.Tag += 1
             If cutscenes.Tag = 10 Then
                 dialogue.Visible = True
                 My.Computer.Audio.Play(GetFile("newvoice1"))
-                dialogue.Text = "In order to catch the turkey, we searched in the school, but we didn't find the turkey at all."
+                dialogue.Text =
+                    "In order to catch the turkey, we searched in the school, but we didn't find the turkey at all."
             ElseIf cutscenes.Tag = 200 Then
                 dialogue.Visible = False
-                SceneAppears(-2, SwitchMode.drag_right)
+                SceneAppears(- 2, SwitchMode.drag_right)
             ElseIf cutscenes.Tag = 210 Then
                 dialogue.Visible = True
                 My.Computer.Audio.Play(GetFile("newvoice2"))
@@ -592,33 +680,34 @@ complete:
                 dialogue.Text = "The rooster was once spellbound by a witch, then the witch killed him."
             ElseIf cutscenes.Tag = 520 Then
                 dialogue.Visible = False
-                If Form1.Unlocked.Items.Contains("without fire") Then SceneAppears(-4, SwitchMode.drag_right) Else SceneAppears(-3, SwitchMode.drag_right)
+                If Form1.Unlocked.Items.Contains("without fire") Then SceneAppears(- 4, SwitchMode.drag_right) Else _
+                    SceneAppears(- 3, SwitchMode.drag_right)
             ElseIf Form1.Unlocked.Items.Contains("without fire") = False And cutscenes.Tag = 530 Then
                 dialogue.Visible = True
                 My.Computer.Audio.Play(GetFile("newvoice3"))
                 dialogue.Text = "The witch then burned the school. We escaped from the school to a time machine."
             ElseIf Form1.Unlocked.Items.Contains("without fire") = False And cutscenes.Tag = 690 Then
                 dialogue.Visible = False
-                SceneAppears(-5, SwitchMode.drag_right)
+                SceneAppears(- 5, SwitchMode.drag_right)
             ElseIf Form1.Unlocked.Items.Contains("without fire") And cutscenes.Tag = 530 Then
                 dialogue.Visible = True
                 My.Computer.Audio.Play(GetFile("newvoice4"))
                 dialogue.Text = "We went to time machine to go back the past and save the rooster."
             ElseIf Form1.Unlocked.Items.Contains("without fire") And cutscenes.Tag = 670 Then
                 dialogue.Visible = False
-                SceneAppears(-5, SwitchMode.drag_right)
+                SceneAppears(- 5, SwitchMode.drag_right)
                 cutscenes.Tag = 690
             ElseIf cutscenes.Tag = 700 Then
                 dialogue.Visible = True
                 My.Computer.Audio.Play(GetFile("newvoice5"))
                 dialogue.Text = "In the past, we destroyed the witch and defeated Atropos by using the artifact."
             ElseIf cutscenes.Tag = 890 Then
-                SceneAppears(-6, SwitchMode.drag_right)
+                SceneAppears(- 6, SwitchMode.drag_right)
                 dialogue.Text = "But we don't know if the rooster is still alive now."
             ElseIf cutscenes.Tag = 970 Then
                 dialogue.Visible = False
             ElseIf cutscenes.Tag = 1000 Then
-                SceneAppears(-7, SwitchMode.drag_up)
+                SceneAppears(- 7, SwitchMode.drag_up)
             ElseIf cutscenes.Tag = 1020 Then
                 NewMission("Catch the turkey.", "Our main mission is to catch the turkey. Of course.", 0)
             ElseIf cutscenes.Tag = 1060 Then
@@ -644,11 +733,13 @@ complete:
                 dialogue.Text = "But the turkey is mine. No one can bear it away."
             ElseIf cutscenes.Tag = 1280 Then
                 My.Computer.Audio.Play(GetFile("newvoice8"))
-                dialogue.Text = "You're also strong, because you also defeated Atropos that guy. So I want to have a battle with you."
+                dialogue.Text =
+                    "You're also strong, because you also defeated Atropos that guy. So I want to have a battle with you."
             ElseIf cutscenes.Tag = 1430 Then
                 Hide()
                 Form7.Show()
-                Form7.initialization(Form1.shield_level, Form1.weapon_level, 0, 350 + Form1.shield_level * 150, 4000, 23, 400, 110, 300, 950)
+                Form7.initialization(Form1.shield_level, Form1.weapon_level, 0, 350 + Form1.shield_level*150, 4000, 23,
+                                     400, 110, 300, 950)
                 Form1.music.settings.setMode("loop", True)
                 Form1.music.settings.volume = 100
                 Form1.music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music8.wm"
@@ -693,7 +784,8 @@ complete:
                 dialogue.Visible = True
                 dialogue.ForeColor = Color.Black
                 My.Computer.Audio.Play(GetFile("newvoice13"))
-                dialogue.Text = "I tell you the fact whoever you are. The military training base is in a state of emergency."
+                dialogue.Text =
+                    "I tell you the fact whoever you are. The military training base is in a state of emergency."
             ElseIf cutscenes.Tag = 2230 Then
                 My.Computer.Audio.Play(GetFile("newvoice14"))
                 dialogue.Text = "Just now, a strange masked character rushed into the base, then ran out."
@@ -706,12 +798,14 @@ complete:
                 dialogue.Text = "Ms.Li will drop down from the sky and sit down all these buildings."
             ElseIf cutscenes.Tag = 2615 Then
                 My.Computer.Audio.Play(GetFile("newvoice16"))
-                dialogue.Text = "Report me if you find the ice outside. We do not allow you to enter, because your background music is too odd."
+                dialogue.Text =
+                    "Report me if you find the ice outside. We do not allow you to enter, because your background music is too odd."
             ElseIf cutscenes.Tag = 2765 Then
                 dialogue.Visible = False
                 Actor.Tag = 1
                 Actor.Top += 1
-                NewMission("Find the Ms.Li ice.", "It will be a great horror if Ms.Li drops down from the sky! Hard to imagine!", 2)
+                NewMission("Find the Ms.Li ice.",
+                           "It will be a great horror if Ms.Li drops down from the sky! Hard to imagine!", 2)
             ElseIf cutscenes.Tag = 2766 Then
                 dialogue.Visible = True
                 dialogue.ForeColor = Color.White
@@ -782,24 +876,30 @@ complete:
                 SceneAppears(12, SwitchMode.drag_up)
                 Tip("The 411 dormitory! What happened outside?")
                 cutscenes.Enabled = False
-                NewMission("Expose the secret of turkey cult.", "Turkey cult- A strange organization formed in the dormitories.", 2)
+                NewMission("Expose the secret of turkey cult.",
+                           "Turkey cult- A strange organization formed in the dormitories.", 2)
             ElseIf cutscenes.Tag = 3600 Then
                 Actor.Image = Image.FromFile(GetFile("image48"))
             ElseIf cutscenes.Tag = 3625 Then
                 cutscenes.Enabled = False
-                ShowMessage(0, "Drillmaster:" & vbCrLf & "Hello, stranger. I was stunned by a turkey cult embracer just now.", "What is turkey cult?", True)
+                ShowMessage(0,
+                            "Drillmaster:" & vbCrLf &
+                            "Hello, stranger. I was stunned by a turkey cult embracer just now.", "What is turkey cult?",
+                            True)
             ElseIf cutscenes.Tag = 3635 Then
                 Actor.Image = Image.FromFile(GetFile("image54"))
                 My.Computer.Audio.Play(GetFile("sound5"))
             ElseIf cutscenes.Tag = 3650 Then
                 Hide()
                 Form7.Show()
-                Form7.initialization(Nothing, Nothing, Nothing, 350 + Form1.shield_level * 150, 19, 24, 0, 110, 0, 950)
+                Form7.initialization(Nothing, Nothing, Nothing, 350 + Form1.shield_level*150, 19, 24, 0, 110, 0, 950)
                 Form1.music.settings.setMode("loop", True)
                 Form1.music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music8.wm"
                 cutscenes.Enabled = False
             ElseIf cutscenes.Tag = 3651 Then
-                ShowMessage(4, "Turkey rider(turkey believer):" & vbCrLf & "*ge ge ge ge ge ge ge gegegegege gegege gegegegeggegege*", "Oops!", True)
+                ShowMessage(4,
+                            "Turkey rider(turkey believer):" & vbCrLf &
+                            "*ge ge ge ge ge ge ge gegegegege gegege gegegegeggegege*", "Oops!", True)
                 cutscenes.Enabled = False
             ElseIf cutscenes.Tag = 3660 Then
                 Actor.Image = Image.FromFile(GetFile("image49"))
@@ -817,14 +917,16 @@ complete:
                 dialogue.Text = "What? You say that pontiff of turkey cult appeared in the dormitory?"
             ElseIf cutscenes.Tag = 3790 Then
                 My.Computer.Audio.Play(GetFile("newvoice20"))
-                dialogue.Text = "I will go out and ring the alarm, to convene them to catch the pontiff! Of course, thank you."
+                dialogue.Text =
+                    "I will go out and ring the alarm, to convene them to catch the pontiff! Of course, thank you."
             ElseIf cutscenes.Tag = 3925 Then
                 Actor.Image = Nothing
                 dialogue.Visible = False
             ElseIf cutscenes.Tag = 3950 Then
                 dialogue.Visible = True
                 My.Computer.Audio.Play(GetFile("newvoice21"))
-                dialogue.Text = "Warning! Warning! A large heresy, the turkey cult's pontiff is now in dormitory building."
+                dialogue.Text =
+                    "Warning! Warning! A large heresy, the turkey cult's pontiff is now in dormitory building."
                 Actor.Image = Image.FromFile(GetFile("image56"))
                 Actor.SizeMode = PictureBoxSizeMode.StretchImage
             ElseIf cutscenes.Tag = 4070 Then
@@ -931,7 +1033,7 @@ complete:
                 life2.Visible = True
             ElseIf cutscenes.Tag = 5009 Then
                 battler2.Left += 1
-                If battler2.Left >= 474 * ZoomX Then battler2.Left = 474 * ZoomX Else cutscenes.Tag = 5008
+                If battler2.Left >= 474*ZoomX Then battler2.Left = 474*ZoomX Else cutscenes.Tag = 5008
             ElseIf cutscenes.Tag = 5010 Then
                 battle_land.Visible = False
                 Controls.Add(SubActorLeft)
@@ -962,7 +1064,8 @@ complete:
                 My.Computer.Audio.Play(GetFile("sound51"))
                 scene.Image = Image.FromFile(GetFile("image8"))
             ElseIf cutscenes.Tag > 5200 And cutscenes.Tag < 5260 Then
-                If cutscenes.Tag Mod 10 < 5 Then scene.Image = Image.FromFile(GetFile("image8")) Else scene.Image = Image.FromFile(GetFile("image9"))
+                If cutscenes.Tag Mod 10 < 5 Then scene.Image = Image.FromFile(GetFile("image8")) Else _
+                    scene.Image = Image.FromFile(GetFile("image9"))
             ElseIf cutscenes.Tag = 5260 Then
 
             End If
@@ -973,7 +1076,8 @@ complete:
                 cutscenes.Enabled = False
                 If cutscenes.Tag = 2105 Then
                     Tip("Who is her?? She is so powerful!!")
-                    NewMission("Find the identity of ???.", "A mysterious guest came and robbed all the magics, wanted to catch the turkey?", 2)
+                    NewMission("Find the identity of ???.",
+                               "A mysterious guest came and robbed all the magics, wanted to catch the turkey?", 2)
                 End If
             End If
         ElseIf Actor.Tag = 2 Then
@@ -1006,22 +1110,24 @@ complete:
             If Actor.Top < 0 Then Actor.Top = 0
         End If
     End Sub
+
     ''' <summary>
-    ''' 获取一个控件，显示被选中的PictureBox。未选中则返回False。
+    '''     获取一个控件，显示被选中的PictureBox。未选中则返回False。
     ''' </summary>
     ''' <returns>选中的PictureBox。</returns>
     Private Function SelectedItem() As PictureBox
-        For x As Integer = 0 To 5
+        For x = 0 To 5
             If ItemBricks(x).BackColor = Color.Yellow Then Return ItemBricks(x)
         Next
         Return backward
     End Function
+
     ''' <summary>
-    ''' 刷新物品栏。
+    '''     刷新物品栏。
     ''' </summary>
     Friend Sub refresh_item()
         deselect()
-        For x As Integer = 0 To 5
+        For x = 0 To 5
             If ItemTab + x <= Items.Items.Count - 1 Then
                 ItemBricks(x).Image = GetItemImage(Items.Items(ItemTab + x))
                 ItemBricks(x).Tag = Items.Items(ItemTab + x)
@@ -1035,14 +1141,15 @@ complete:
         If ItemTab > 0 Then left_.Enabled = True Else left_.Enabled = False
         If ItemTab + 6 <= Items.Items.Count Then right_.Enabled = True Else right_.Enabled = False
     End Sub
+
     ''' <summary>
-    ''' 创建新的任务。
+    '''     创建新的任务。
     ''' </summary>
     ''' <param name="Name_">任务名称。</param>
     ''' <param name="content">任务简单概述。</param>
     ''' <param name="level">任务重要程度，从0~2逐渐下降。</param>
-    Private Sub NewMission(ByVal Name_ As String, content As String, level As Integer)
-        For x As Integer = 0 To mission.Items.Count - 1
+    Private Sub NewMission(Name_ As String, content As String, level As Integer)
+        For x = 0 To mission.Items.Count - 1
             If mission.Items(x).Text = Name_ Then Exit Sub
         Next
         mission_top.Text = "New mission"
@@ -1061,14 +1168,15 @@ complete:
         Move_mission_report.Enabled = True
         My.Computer.Audio.Play(GetFile("sound69"))
     End Sub
+
     ''' <summary>
-    ''' 完成一个任务。
+    '''     完成一个任务。
     ''' </summary>
     ''' <param name="Name_">任务名称。</param>
-    Private Sub CompleteMission(ByVal Name_ As String)
-        Dim Usable As Boolean = False
+    Private Sub CompleteMission(Name_ As String)
+        Dim Usable = False
         Dim ChangingItem As ListViewItem
-        For x As Integer = 0 To mission.Items.Count - 1
+        For x = 0 To mission.Items.Count - 1
             If mission.Items(x).Text = Name_ Then
                 Usable = True
                 ChangingItem = mission.Items(x)
@@ -1083,8 +1191,9 @@ complete:
         Move_mission_report.Enabled = True
         My.Computer.Audio.Play(GetFile("sound70"))
     End Sub
+
     ''' <summary>
-    ''' 对游戏进行存档。为了保证游戏平衡，每隔一段时间就必须进行强制的存档。
+    '''     对游戏进行存档。为了保证游戏平衡，每隔一段时间就必须进行强制的存档。
     ''' </summary>
     ''' <param name="chapter">目前的游戏章节。</param>
     ''' <param name="place">目前玩家所在位置。</param>
@@ -1099,24 +1208,26 @@ complete:
         My.Settings.curative = Form1.heal
         My.Settings.appendix = appendix
         My.Settings.magics = ""
-        For x As Integer = 0 To Form1.magics.Items.Count - 1
+        For x = 0 To Form1.magics.Items.Count - 1
             My.Settings.magics = My.Settings.magics & Form1.magics.Items(x) & "/"
         Next
         My.Settings.items = ""
-        For x As Integer = 0 To Items.Items.Count - 1
+        For x = 0 To Items.Items.Count - 1
             My.Settings.items = My.Settings.items & Items.Items(x) & "/"
         Next
         My.Settings.unlocked = ""
-        For x As Integer = 0 To Form1.Unlocked.Items.Count - 1
+        For x = 0 To Form1.Unlocked.Items.Count - 1
             My.Settings.unlocked = My.Settings.unlocked & Form1.Unlocked.Items(x) & "/"
         Next
         My.Settings.missions = ""
-        For x As Integer = 0 To mission.Items.Count - 1
-            My.Settings.missions = My.Settings.missions & mission.Items(x).Text & ";" & mission.Items(x).ToolTipText & ";" & mission.Items(x).ImageIndex & ";" & mission.Items(x).Tag & "/"
+        For x = 0 To mission.Items.Count - 1
+            My.Settings.missions = My.Settings.missions & mission.Items(x).Text & ";" & mission.Items(x).ToolTipText &
+                                   ";" & mission.Items(x).ImageIndex & ";" & mission.Items(x).Tag & "/"
         Next
         My.Settings.Save()
         MsgBox("Your game is saved.", 0, "Save game")
     End Sub
+
     Enum SwitchMode
         direct
         drag_up
@@ -1125,21 +1236,22 @@ complete:
         drag_right
         gradual_change
     End Enum
+
     ''' <summary>
-    ''' 通过文件的名称直接引用文件。
+    '''     通过文件的名称直接引用文件。
     ''' </summary>
     ''' <param name="Name_">文件名称。</param>
     ''' <returns>返回的文件。</returns>
-    Private Function GetFile(ByVal Name_ As String) As String
+    Private Function GetFile(Name_ As String) As String
         Return My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\" & Name_ & ".wm"
     End Function
     '切换场景的区域，场景必须经由统一的Sub进行切换。
     ''' <summary>
-    ''' 场景的切换。场景可以以移动方式切换，但这需要花费一些时间。
+    '''     场景的切换。场景可以以移动方式切换，但这需要花费一些时间。
     ''' </summary>
     ''' <param name="target">目标场景的代号。</param>
     ''' <param name="ChangeMode">移动方式。SwitchMode.direct(默认)表示直接切换。</param>
-    Public Sub SceneAppears(ByVal target As Integer, Optional ChangeMode As SwitchMode = SwitchMode.direct)
+    Public Sub SceneAppears(target As Integer, Optional ChangeMode As SwitchMode = SwitchMode.direct)
         deselect()
         Disappear()
         Dim TargetImage As Image = Image.FromFile(GetFile("NewScene" & target))
@@ -1158,11 +1270,11 @@ complete:
             MissionSummoner.BringToFront()
             SceneBrick.Parent = Me
             If ChangeMode = SwitchMode.drag_up Then
-                SceneBrick.Top = -SceneBrick.Height
+                SceneBrick.Top = - SceneBrick.Height
             ElseIf ChangeMode = SwitchMode.drag_down Then
                 SceneBrick.Top = scene.Height
             ElseIf ChangeMode = SwitchMode.drag_left Then
-                SceneBrick.Left = -SceneBrick.Width
+                SceneBrick.Left = - SceneBrick.Width
             ElseIf ChangeMode = SwitchMode.drag_right Then
                 SceneBrick.Left = scene.Width
             ElseIf ChangeMode = SwitchMode.gradual_change Then
@@ -1176,11 +1288,12 @@ complete:
             SceneWeaver.Enabled = True
         End If
     End Sub
+
     ''' <summary>
-    ''' 一个非常长的Sub。是的，越来越长，直到占满屏幕。
+    '''     一个非常长的Sub。是的，越来越长，直到占满屏幕。
     ''' </summary>
     ''' <param name="scene_code">场景的代码。</param>
-    Private Sub LoadTiles(ByVal scene_code As Integer)
+    Private Sub LoadTiles(scene_code As Integer)
         If scene_code = 1 Then
             AddTile(place1_1, 0)
         ElseIf scene_code = 2 Then
@@ -1279,55 +1392,223 @@ complete:
         End If
     End Sub
     '我们在此定义一切存在于各个场景的组件。文件名以NewScene开头，必须保证组件前缀，场景切换索引和文件名的数字完全一致。在窗体上严禁直接添加组件，否则将导致严重卡顿。
-    Private place1_1 As New PictureBox With {.Name = "place1_1", .Size = New Size(36, 36), .Location = New Point(380 * ZoomX, 320 * ZoomY)}
+    Private ReadOnly _
+        place1_1 As _
+            New PictureBox _
+        With {.Name = "place1_1", .Size = New Size(36, 36), .Location = New Point(380*ZoomX, 320*ZoomY)}
+
     Public Scathach As Bitmap
-    Private backward As New PictureBox With {.Name = "backward", .Size = New Size(36, 36)}
-    Private place2_1 As New PictureBox With {.Name = "place2_1", .Size = New Size(36, 36), .Location = New Point(530 * ZoomX, 440 * ZoomY)}
-    Private disallow2_2 As New PictureBox With {.Name = "disallow2_2", .Size = New Size(24, 24), .Location = New Point(540 * ZoomX, 400 * ZoomY)}
-    Private place2_3 As New PictureBox With {.Name = "place2_3", .Size = New Size(24, 24), .Location = New Point(650 * ZoomX, 390 * ZoomY)}
-    Private lock2_4 As New PictureBox With {.Name = "lock2_4", .Size = New Size(24, 24), .Location = New Point(680 * ZoomX, 380 * ZoomY)}
-    Private place2_5 As New PictureBox With {.Name = "place2_5", .Size = New Size(36, 36)}
-    Private place3_1 As New PictureBox With {.Name = "place3_1", .Size = New Size(36, 36), .Location = New Point(660 * ZoomX, 290 * ZoomY)}
-    Private radio3_2 As New PictureBox With {.Name = "radio3_2", .Size = New Size(128, 128), .Location = New Point(120 * ZoomX, 320 * ZoomY)}
-    Private place4_1 As New PictureBox With {.Name = "place4_1", .Size = New Size(48, 48), .Location = New Point(440 * ZoomX, 380 * ZoomY)}
-    Private place6_1 As New PictureBox With {.Name = "place6_1", .Size = New Size(36, 36)}
-    Private place6_2 As New PictureBox With {.Name = "place6_2", .Size = New Size(36, 36), .Location = New Point(0, 420 * ZoomY)}
-    Private place7_1 As New PictureBox With {.Name = "place7_1", .Size = New Size(36, 36), .Location = New Point(0, 300 * ZoomY)}
-    Private place7_2 As New PictureBox With {.Name = "place7_2", .Size = New Size(36, 36), .Location = New Point(350 * ZoomX, 250 * ZoomY)}
-    Private place8_1 As New PictureBox With {.Name = "place8_1", .Size = New Size(36, 36), .Location = New Point(390 * ZoomX, 350 * ZoomY)}
-    Private place8_2 As New PictureBox With {.Name = "place8_2", .Size = New Size(36, 36), .Location = New Point(720 * ZoomX, 320 * ZoomY)}
-    Private lock8_3 As New PictureBox With {.Name = "lock8_3", .Size = New Size(36, 36), .Location = New Point(770 * ZoomX, 320 * ZoomY)}
-    Private place9_1 As New PictureBox With {.Name = "place9_1", .Size = New Size(48, 48), .Location = New Point(400 * ZoomX, 250 * ZoomY)}
-    Private place10_1 As New PictureBox With {.Name = "place10_1", .Size = New Size(36, 36), .Location = New Point(410 * ZoomX, 210 * ZoomY)}
-    Private place10_2 As New PictureBox With {.Name = "place10_2", .Size = New Size(36, 36), .Location = New Point(640 * ZoomX, 270 * ZoomY)}
-    Private lock10_3 As New PictureBox With {.Name = "lock10_3", .Size = New Size(36, 36), .Location = New Point(680 * ZoomX, 270 * ZoomY)}
-    Private place10_4 As New PictureBox With {.Name = "place10_4", .Size = New Size(36, 36), .Location = New Point(240 * ZoomX, 270 * ZoomY)}
-    Private lock10_5 As New PictureBox With {.Name = "lock10_5", .Size = New Size(36, 36), .Location = New Point(200 * ZoomX, 270 * ZoomY)}
-    Private place11_1 As New PictureBox With {.Name = "place11_1", .Size = New Size(36, 36), .Location = New Point(130 * ZoomX, 260 * ZoomY)}
-    Private place11_2 As New PictureBox With {.Name = "place11_2", .Size = New Size(36, 36), .Location = New Point(390 * ZoomX, 300 * ZoomY)}
-    Private ice12_1 As New PictureBox With {.Name = "ice12_1", .Size = New Size(128, 128), .Location = New Point(200 * ZoomX, 280 * ZoomY)}
-    Private place13_1 As New PictureBox With {.Name = "place13_1", .Size = New Size(36, 36), .Location = New Point(150 * ZoomX, 380 * ZoomY)}
-    Private lock13_2 As New PictureBox With {.Name = "lock13_2", .Size = New Size(36, 36), .Location = New Point(110 * ZoomX, 380 * ZoomY)}
-    Private place15_1 As New PictureBox With {.Name = "place15_1", .Size = New Size(36, 36), .Location = New Point(630 * ZoomX, 200 * ZoomY)}
-    Private rooster16_1 As New PictureBox With {.Name = "rooster16_1", .Size = New Size(256, 128), .Location = New Point(300 * ZoomX, 330 * ZoomY)}
-    Private place16_2 As New PictureBox With {.Name = "place16_2", .Size = New Size(36, 36), .Location = New Point(660 * ZoomX, 340 * ZoomY)}
-    Private place16_3 As New PictureBox With {.Name = "place16_3", .Size = New Size(36, 36)}
-    Private place18_1 As New PictureBox With {.Name = "place18_1", .Size = New Size(36, 36), .Location = New Point(500 * ZoomX, 250 * ZoomY)}
-    Private lock18_2 As New PictureBox With {.Name = "lock18_2", .Size = New Size(36, 36), .Location = New Point(490 * ZoomX, 200 * ZoomY)}
-    Private place18_3 As New PictureBox With {.Name = "place18_3", .Size = New Size(36, 36), .Location = New Point(650 * ZoomX, 200 * ZoomY)}
-    Private place19_1 As New PictureBox With {.Name = "place19_1", .Size = New Size(48, 48), .Location = New Point(0, 460 * ZoomY)} 'left
-    Private place19_2 As New PictureBox With {.Name = "place19_2", .Size = New Size(36, 36), .Location = New Point(480 * ZoomX, 240 * ZoomY)} 'up
-    Private place21_1 As New PictureBox With {.Name = "place21_1", .Size = New Size(36, 36), .Location = New Point(520 * ZoomX, 300 * ZoomY)} 'right1
-    Private place21_2 As New PictureBox With {.Name = "place21_2", .Size = New Size(36, 36), .Location = New Point(600 * ZoomX, 350 * ZoomY)} 'right1
-    Private lock21_3 As New PictureBox With {.Name = "lock21_3", .Size = New Size(36, 36), .Location = New Point(620 * ZoomX, 350 * ZoomY)} 'right2
-    Private place21_4 As New PictureBox With {.Name = "place21_4", .Size = New Size(48, 48), .Location = New Point(720 * ZoomX, 370 * ZoomY)} 'right3
-    Private lock21_5 As New PictureBox With {.Name = "lock21_5", .Size = New Size(36, 36), .Location = New Point(770 * ZoomX, 380 * ZoomY)} 'right3
-    Private place23_1 As New PictureBox With {.Name = "place23_1", .Size = New Size(36, 36), .Location = New Point(230 * ZoomX, 300 * ZoomY)}
-    Private place25_1 As New PictureBox With {.Name = "place25_1", .Size = New Size(36, 36), .Location = New Point(190 * ZoomX, 320 * ZoomY)}
-    Private place25_2 As New PictureBox With {.Name = "place25_2", .Size = New Size(36, 36), .Location = New Point(680 * ZoomX, 380 * ZoomY)}
-    Private place26_1 As New PictureBox With {.Name = "place26_1", .Size = New Size(36, 36)}
-    Private place27_1 As New PictureBox With {.Name = "place27_1", .Size = New Size(36, 36), .Location = New Point(640 * ZoomX, 280 * ZoomY)}
-    Private place28_1 As New PictureBox With {.Name = "place28_1", .Size = New Size(36, 36), .Location = New Point(410 * ZoomX, 330 * ZoomY)}
+    Private ReadOnly backward As New PictureBox With {.Name = "backward", .Size = New Size(36, 36)}
+
+    Private ReadOnly _
+        place2_1 As _
+            New PictureBox _
+        With {.Name = "place2_1", .Size = New Size(36, 36), .Location = New Point(530*ZoomX, 440*ZoomY)}
+
+    Private ReadOnly _
+        disallow2_2 As _
+            New PictureBox _
+        With {.Name = "disallow2_2", .Size = New Size(24, 24), .Location = New Point(540*ZoomX, 400*ZoomY)}
+
+    Private ReadOnly _
+        place2_3 As _
+            New PictureBox _
+        With {.Name = "place2_3", .Size = New Size(24, 24), .Location = New Point(650*ZoomX, 390*ZoomY)}
+
+    Private ReadOnly _
+        lock2_4 As _
+            New PictureBox _
+        With {.Name = "lock2_4", .Size = New Size(24, 24), .Location = New Point(680*ZoomX, 380*ZoomY)}
+
+    Private ReadOnly place2_5 As New PictureBox With {.Name = "place2_5", .Size = New Size(36, 36)}
+
+    Private ReadOnly _
+        place3_1 As _
+            New PictureBox _
+        With {.Name = "place3_1", .Size = New Size(36, 36), .Location = New Point(660*ZoomX, 290*ZoomY)}
+
+    Private ReadOnly _
+        radio3_2 As _
+            New PictureBox _
+        With {.Name = "radio3_2", .Size = New Size(128, 128), .Location = New Point(120*ZoomX, 320*ZoomY)}
+
+    Private ReadOnly _
+        place4_1 As _
+            New PictureBox _
+        With {.Name = "place4_1", .Size = New Size(48, 48), .Location = New Point(440*ZoomX, 380*ZoomY)}
+
+    Private ReadOnly place6_1 As New PictureBox With {.Name = "place6_1", .Size = New Size(36, 36)}
+
+    Private ReadOnly _
+        place6_2 As _
+            New PictureBox With {.Name = "place6_2", .Size = New Size(36, 36), .Location = New Point(0, 420*ZoomY)}
+
+    Private ReadOnly _
+        place7_1 As _
+            New PictureBox With {.Name = "place7_1", .Size = New Size(36, 36), .Location = New Point(0, 300*ZoomY)}
+
+    Private ReadOnly _
+        place7_2 As _
+            New PictureBox _
+        With {.Name = "place7_2", .Size = New Size(36, 36), .Location = New Point(350*ZoomX, 250*ZoomY)}
+
+    Private ReadOnly _
+        place8_1 As _
+            New PictureBox _
+        With {.Name = "place8_1", .Size = New Size(36, 36), .Location = New Point(390*ZoomX, 350*ZoomY)}
+
+    Private ReadOnly _
+        place8_2 As _
+            New PictureBox _
+        With {.Name = "place8_2", .Size = New Size(36, 36), .Location = New Point(720*ZoomX, 320*ZoomY)}
+
+    Private ReadOnly _
+        lock8_3 As _
+            New PictureBox _
+        With {.Name = "lock8_3", .Size = New Size(36, 36), .Location = New Point(770*ZoomX, 320*ZoomY)}
+
+    Private ReadOnly _
+        place9_1 As _
+            New PictureBox _
+        With {.Name = "place9_1", .Size = New Size(48, 48), .Location = New Point(400*ZoomX, 250*ZoomY)}
+
+    Private ReadOnly _
+        place10_1 As _
+            New PictureBox _
+        With {.Name = "place10_1", .Size = New Size(36, 36), .Location = New Point(410*ZoomX, 210*ZoomY)}
+
+    Private ReadOnly _
+        place10_2 As _
+            New PictureBox _
+        With {.Name = "place10_2", .Size = New Size(36, 36), .Location = New Point(640*ZoomX, 270*ZoomY)}
+
+    Private ReadOnly _
+        lock10_3 As _
+            New PictureBox _
+        With {.Name = "lock10_3", .Size = New Size(36, 36), .Location = New Point(680*ZoomX, 270*ZoomY)}
+
+    Private ReadOnly _
+        place10_4 As _
+            New PictureBox _
+        With {.Name = "place10_4", .Size = New Size(36, 36), .Location = New Point(240*ZoomX, 270*ZoomY)}
+
+    Private ReadOnly _
+        lock10_5 As _
+            New PictureBox _
+        With {.Name = "lock10_5", .Size = New Size(36, 36), .Location = New Point(200*ZoomX, 270*ZoomY)}
+
+    Private ReadOnly _
+        place11_1 As _
+            New PictureBox _
+        With {.Name = "place11_1", .Size = New Size(36, 36), .Location = New Point(130*ZoomX, 260*ZoomY)}
+
+    Private ReadOnly _
+        place11_2 As _
+            New PictureBox _
+        With {.Name = "place11_2", .Size = New Size(36, 36), .Location = New Point(390*ZoomX, 300*ZoomY)}
+
+    Private ReadOnly _
+        ice12_1 As _
+            New PictureBox _
+        With {.Name = "ice12_1", .Size = New Size(128, 128), .Location = New Point(200*ZoomX, 280*ZoomY)}
+
+    Private ReadOnly _
+        place13_1 As _
+            New PictureBox _
+        With {.Name = "place13_1", .Size = New Size(36, 36), .Location = New Point(150*ZoomX, 380*ZoomY)}
+
+    Private ReadOnly _
+        lock13_2 As _
+            New PictureBox _
+        With {.Name = "lock13_2", .Size = New Size(36, 36), .Location = New Point(110*ZoomX, 380*ZoomY)}
+
+    Private ReadOnly _
+        place15_1 As _
+            New PictureBox _
+        With {.Name = "place15_1", .Size = New Size(36, 36), .Location = New Point(630*ZoomX, 200*ZoomY)}
+
+    Private ReadOnly _
+        rooster16_1 As _
+            New PictureBox _
+        With {.Name = "rooster16_1", .Size = New Size(256, 128), .Location = New Point(300*ZoomX, 330*ZoomY)}
+
+    Private ReadOnly _
+        place16_2 As _
+            New PictureBox _
+        With {.Name = "place16_2", .Size = New Size(36, 36), .Location = New Point(660*ZoomX, 340*ZoomY)}
+
+    Private ReadOnly place16_3 As New PictureBox With {.Name = "place16_3", .Size = New Size(36, 36)}
+
+    Private ReadOnly _
+        place18_1 As _
+            New PictureBox _
+        With {.Name = "place18_1", .Size = New Size(36, 36), .Location = New Point(500*ZoomX, 250*ZoomY)}
+
+    Private ReadOnly _
+        lock18_2 As _
+            New PictureBox _
+        With {.Name = "lock18_2", .Size = New Size(36, 36), .Location = New Point(490*ZoomX, 200*ZoomY)}
+
+    Private ReadOnly _
+        place18_3 As _
+            New PictureBox _
+        With {.Name = "place18_3", .Size = New Size(36, 36), .Location = New Point(650*ZoomX, 200*ZoomY)}
+
+    Private ReadOnly _
+        place19_1 As _
+            New PictureBox With {.Name = "place19_1", .Size = New Size(48, 48), .Location = New Point(0, 460*ZoomY)} _
+    'left
+    Private ReadOnly _
+        place19_2 As _
+            New PictureBox _
+        With {.Name = "place19_2", .Size = New Size(36, 36), .Location = New Point(480*ZoomX, 240*ZoomY)} 'up
+    Private ReadOnly _
+        place21_1 As _
+            New PictureBox _
+        With {.Name = "place21_1", .Size = New Size(36, 36), .Location = New Point(520*ZoomX, 300*ZoomY)} 'right1
+    Private ReadOnly _
+        place21_2 As _
+            New PictureBox _
+        With {.Name = "place21_2", .Size = New Size(36, 36), .Location = New Point(600*ZoomX, 350*ZoomY)} 'right1
+    Private ReadOnly _
+        lock21_3 As _
+            New PictureBox _
+        With {.Name = "lock21_3", .Size = New Size(36, 36), .Location = New Point(620*ZoomX, 350*ZoomY)} 'right2
+    Private ReadOnly _
+        place21_4 As _
+            New PictureBox _
+        With {.Name = "place21_4", .Size = New Size(48, 48), .Location = New Point(720*ZoomX, 370*ZoomY)} 'right3
+    Private ReadOnly _
+        lock21_5 As _
+            New PictureBox _
+        With {.Name = "lock21_5", .Size = New Size(36, 36), .Location = New Point(770*ZoomX, 380*ZoomY)} 'right3
+    Private ReadOnly _
+        place23_1 As _
+            New PictureBox _
+        With {.Name = "place23_1", .Size = New Size(36, 36), .Location = New Point(230*ZoomX, 300*ZoomY)}
+
+    Private ReadOnly _
+        place25_1 As _
+            New PictureBox _
+        With {.Name = "place25_1", .Size = New Size(36, 36), .Location = New Point(190*ZoomX, 320*ZoomY)}
+
+    Private ReadOnly _
+        place25_2 As _
+            New PictureBox _
+        With {.Name = "place25_2", .Size = New Size(36, 36), .Location = New Point(680*ZoomX, 380*ZoomY)}
+
+    Private ReadOnly place26_1 As New PictureBox With {.Name = "place26_1", .Size = New Size(36, 36)}
+
+    Private ReadOnly _
+        place27_1 As _
+            New PictureBox _
+        With {.Name = "place27_1", .Size = New Size(36, 36), .Location = New Point(640*ZoomX, 280*ZoomY)}
+
+    Private ReadOnly _
+        place28_1 As _
+            New PictureBox _
+        With {.Name = "place28_1", .Size = New Size(36, 36), .Location = New Point(410*ZoomX, 330*ZoomY)}
+
     Private Sub SceneInitialize()
         AddHandler place1_1.Click, AddressOf place1_1_click
         AddHandler backward.Click, AddressOf backward_click
@@ -1367,27 +1648,29 @@ complete:
         AddHandler place26_1.Click, AddressOf place26_1_click
         AddHandler place27_1.Click, AddressOf place27_1_click
         AddHandler place28_1.Click, AddressOf place28_1_click
-        backward.Location = New Point((scene.Width - backward.Width) / 2, scene.Height - backward.Height)
-        place2_5.Location = New Point(scene.Width - place2_5.Width, 500 * ZoomY)
-        place6_1.Location = New Point(scene.Width - place6_1.Width, 450 * ZoomY)
+        backward.Location = New Point((scene.Width - backward.Width)/2, scene.Height - backward.Height)
+        place2_5.Location = New Point(scene.Width - place2_5.Width, 500*ZoomY)
+        place6_1.Location = New Point(scene.Width - place6_1.Width, 450*ZoomY)
         ActorLeft.Parent = Actor
         ActorLeft.Location = New Point(0, dialogue.Height)
-        ActorLeft.Size = New Size(scene.Width / 2, scene.Height - dialogue.Height)
+        ActorLeft.Size = New Size(scene.Width/2, scene.Height - dialogue.Height)
         ActorLeft.BackColor = Color.Transparent
         ActorRight.Parent = Actor
-        ActorRight.Location = New Point(scene.Width / 2, dialogue.Height)
-        ActorRight.Size = New Size(scene.Width / 2, scene.Height - dialogue.Height)
+        ActorRight.Location = New Point(scene.Width/2, dialogue.Height)
+        ActorRight.Size = New Size(scene.Width/2, scene.Height - dialogue.Height)
         ActorRight.BackColor = Color.Transparent
-        place16_3.Location = New Point(scene.Width - place6_1.Width, 440 * ZoomY)
+        place16_3.Location = New Point(scene.Width - place6_1.Width, 440*ZoomY)
         Scathach = ChopImage(Image.FromFile(GetFile("image46")), New Size(334, 501))
-        place26_1.Location = New Point(scene.Width - place26_1.Width, 170 * ZoomY)
+        place26_1.Location = New Point(scene.Width - place26_1.Width, 170*ZoomY)
     End Sub
-    Private Function ChopImage(ByVal MainImage As Image, SizeRemained As Size) As Bitmap
+
+    Private Function ChopImage(MainImage As Image, SizeRemained As Size) As Bitmap
         Dim img As New Bitmap(MainImage)
-        Dim rc As Rectangle = New Rectangle(0, 0, SizeRemained.Width, SizeRemained.Height)
-        Dim newImg As Bitmap = img.Clone(rc, Imaging.PixelFormat.Format32bppArgb)
+        Dim rc = New Rectangle(0, 0, SizeRemained.Width, SizeRemained.Height)
+        Dim newImg As Bitmap = img.Clone(rc, PixelFormat.Format32bppArgb)
         Return newImg
     End Function
+
     Private Sub place1_1_click() '从时间隧道向前
         If Enable() = False Then Exit Sub
         If scene.Tag = 0 Then
@@ -1403,6 +1686,7 @@ complete:
             End If
         End If
     End Sub
+
     Private Sub backward_click() '后退
         If Enable() = False Then Exit Sub
         If backward.Tag = 2 Then
@@ -1454,7 +1738,7 @@ complete:
         ElseIf backward.Tag = 14 Then
             Actor.Visible = False
             SceneAppears(11, SwitchMode.gradual_change)
-            backward.Left = (scene.Width - backward.Width) / 2
+            backward.Left = (scene.Width - backward.Width)/2
         ElseIf backward.Tag = 16 Then
             SceneAppears(6, SwitchMode.drag_right)
         ElseIf backward.Tag = 17 Then
@@ -1479,6 +1763,7 @@ complete:
             SceneAppears(27, SwitchMode.gradual_change)
         End If
     End Sub
+
     Private Sub place2_1_click() '进入军营内部
         If Enable() = False Then Exit Sub
         If disallow2_2.Visible Then
@@ -1488,6 +1773,7 @@ complete:
             SceneAppears(6, SwitchMode.gradual_change)
         End If
     End Sub
+
     Private Sub place2_3_click() '军营外侧锁的门
         If Enable() = False Then Exit Sub
         If lock2_4.Visible Then
@@ -1501,14 +1787,17 @@ complete:
 
         End If
     End Sub
+
     Private Sub place2_5_click() '右侧丛林
         If Enable() = False Then Exit Sub
         SceneAppears(3, SwitchMode.drag_right)
     End Sub
+
     Private Sub place3_1_click()
         If Enable() = False Then Exit Sub
         SceneAppears(4, SwitchMode.gradual_change)
     End Sub
+
     Private Sub radio3_2_click()
         If Enable() = False Then Exit Sub
         If SelectedItem.Tag.ToString = "duck tape" Then
@@ -1517,6 +1806,7 @@ complete:
             Tip("Radio.")
         End If
     End Sub
+
     Private Sub place4_1_click() '进入鸭哥小屋
         If Enable() = False Then Exit Sub
         SceneAppears(5, SwitchMode.gradual_change)
@@ -1526,10 +1816,12 @@ complete:
             Actor.Image = Image.FromFile(GetFile("image43"))
         End If
     End Sub
+
     Private Sub place6_1_click()
         If Enable() = False Then Exit Sub
         SceneAppears(7, SwitchMode.drag_right)
     End Sub
+
     Private Sub place6_2_click()
         If Enable() = False Then Exit Sub
         If scene.Tag >= 13 Then
@@ -1542,18 +1834,22 @@ complete:
             Tip("The drillmasters are going on patrol there.")
         End If
     End Sub
+
     Private Sub place7_1_click()
         If Enable() = False Then Exit Sub
         SceneAppears(6, SwitchMode.drag_left)
     End Sub
+
     Private Sub place7_2_click() '进入军训宿舍楼
         If Enable() = False Then Exit Sub
         SceneAppears(8, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place8_1_click() '离开军训宿舍楼
         If Enable() = False Then Exit Sub
         SceneAppears(7, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place8_2_click()
         If Enable() = False Then Exit Sub
         If lock8_3.Visible Then
@@ -1567,21 +1863,28 @@ complete:
             End If
         End If
     End Sub
+
     Private Sub place9_1_click()
         If Enable() = False Then Exit Sub
         SceneAppears(10, SwitchMode.drag_up)
     End Sub
+
     Private Sub place10_1_click()
         If Enable() = False Then Exit Sub
         SceneAppears(11, SwitchMode.drag_up)
     End Sub
-    Private ChangingMessage As String, ChangingMessageClicker As String, CurrentChar As Integer, CurrentReceiveChar As Integer
+
+    Private ChangingMessage As String,
+            ChangingMessageClicker As String,
+            CurrentChar As Integer,
+            CurrentReceiveChar As Integer
+
     Private Sub MessageWeaver_Tick(sender As Object, e As EventArgs) Handles MessageWeaver.Tick
         MessageWeaver.Tag += 5
         If MessageWeaver.Tag > 255 Then MessageWeaver.Tag = 255
         If MessageWeaver.Tag < 0 Then
-            message_clicker.ForeColor = Color.FromArgb(0, 0, -MessageWeaver.Tag)
-            message_box.BackColor = Color.FromArgb(-MessageWeaver.Tag, -MessageWeaver.Tag, -MessageWeaver.Tag)
+            message_clicker.ForeColor = Color.FromArgb(0, 0, - MessageWeaver.Tag)
+            message_box.BackColor = Color.FromArgb(- MessageWeaver.Tag, - MessageWeaver.Tag, - MessageWeaver.Tag)
         ElseIf MessageWeaver.Tag = 0 Then
             message.Text = ""
             message_clicker.Text = ""
@@ -1607,13 +1910,15 @@ complete:
             End If
         End If
     End Sub
+
     ''' <summary>
-    ''' 在信息提示栏目中显示信息。
+    '''     在信息提示栏目中显示信息。
     ''' </summary>
     ''' <param name="content">信息的内容。</param>
     ''' <param name="link_content">可供用户点击的信息内容。</param>
     ''' <param name="FirstShow">第一次展示时，需要设置Visible值，并使用不同效果登场。</param>
-    Private Sub ShowMessage(ByVal code As Integer, content As String, Optional link_content As String = "Next.", Optional FirstShow As Boolean = False)
+    Private Sub ShowMessage(code As Integer, content As String, Optional link_content As String = "Next.",
+                            Optional FirstShow As Boolean = False)
         If FirstShow Then
             message_box.BackColor = Color.Black
             message_clicker.ForeColor = Color.Black
@@ -1623,17 +1928,22 @@ complete:
         CurrentChar = 0
         CurrentReceiveChar = 0
         message_box.BringToFront()
-        If FirstShow Then MessageWeaver.Tag = -5 Else MessageWeaver.Tag = -255
+        If FirstShow Then MessageWeaver.Tag = - 5 Else MessageWeaver.Tag = - 255
         ChangingMessage = content
         ChangingMessageClicker = link_content
         MessageWeaver.Enabled = True
         message_clicker.Tag = code
         message_clicker.Enabled = False
     End Sub
-    Private Sub message_clicker_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles message_clicker.LinkClicked
+
+    Private Sub message_clicker_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) _
+        Handles message_clicker.LinkClicked
         If MessageWeaver.Enabled Then Exit Sub
         If message_clicker.Tag = 0 Then
-            ShowMessage(1, "Drillmaster:" & vbCrLf & "It's a strange cult organized in the dormitory. No more speaking, fast go down, catch that guy, then report me!", "Yes.")
+            ShowMessage(1,
+                        "Drillmaster:" & vbCrLf &
+                        "It's a strange cult organized in the dormitory. No more speaking, fast go down, catch that guy, then report me!",
+                        "Yes.")
         ElseIf message_clicker.Tag = 1 Then
             subActor.Visible = True
             subActor.Image = Image.FromFile(GetFile("image55"))
@@ -1647,7 +1957,8 @@ complete:
             subActor.Visible = False
             Form1.weapon_level = 4
             ShowMessage(3, " ", "Back.")
-            NewMission("Defeat the turkey cult adorer.", "We can hardly imagine how surreal it is, but things always go strangely.", 2)
+            NewMission("Defeat the turkey cult adorer.",
+                       "We can hardly imagine how surreal it is, but things always go strangely.", 2)
         ElseIf message_clicker.Tag = 3 Then
             Actor.Visible = False
             SceneAppears(11, SwitchMode.drag_left)
@@ -1657,6 +1968,7 @@ complete:
             cutscenes.Enabled = True
         End If
     End Sub
+
     Private Sub place10_2_click() '写有411抓鸡总部的门
         If Enable() = False Then Exit Sub
         If lock10_3.Visible Then
@@ -1670,6 +1982,7 @@ complete:
 
         End If
     End Sub
+
     Private Sub place10_4_click() '进入左边的DistortedSoldier门
         If Enable() = False Then Exit Sub
         If lock10_5.Visible Then
@@ -1683,10 +1996,12 @@ complete:
             End If
         End If
     End Sub
+
     Private Sub deadrooster_off_Click(sender As Object, e As EventArgs) Handles deadrooster_off.Click
         Unable = False
         deadrooster.Visible = False
     End Sub
+
     Private Sub place11_1_click() '进入教官室
         If Enable() = False Then Exit Sub
         If scene.Tag >= 9 Then
@@ -1708,6 +2023,7 @@ complete:
             Tip("The drillmaster is inside.")
         End If
     End Sub
+
     Private Sub place11_2_click() '进入411
         If Enable() = False Then Exit Sub
         SceneAppears(12, SwitchMode.gradual_change)
@@ -1716,6 +2032,7 @@ complete:
             ShowCutscene(3125, Appearance.Appear)
         End If
     End Sub
+
     Private Sub place13_1_click() '隔间教堂向前
         If Enable() = False Then Exit Sub
         If lock13_2.Visible Then
@@ -1729,7 +2046,8 @@ complete:
 
         End If
     End Sub
-    Private Function CanChange_BothChange(ByVal player1 As Boolean, value As Integer)
+
+    Private Function CanChange_BothChange(player1 As Boolean, value As Integer)
         If LifeWeaver.Enabled Then
             Return False
         Else
@@ -1738,6 +2056,7 @@ complete:
             Return True
         End If
     End Function
+
     Private Sub LifeWeaver_Tick(sender As Object, e As EventArgs) Handles LifeWeaver.Tick
         Dim targetplayer As Integer = LifeWeaver.Tag.ToString.Split(":")(0)
         Dim targetlife As Integer = LifeWeaver.Tag.ToString.Split(":")(1)
@@ -1770,30 +2089,33 @@ complete:
         End If
         refresh_battleland()
     End Sub
+
     Private Sub refresh_battleland()
         If frontbar1.Tag < 0 Then frontbar1.Tag = 0
         If frontbar2.Tag < 0 Then frontbar2.Tag = 0
         life1.Text = Form7.AddDot(frontbar1.Tag)
         life2.Text = Form7.AddDot(frontbar2.Tag)
-        frontbar1.Width = frontbar1.Tag / backbar1.Tag * backbar1.Width
-        frontbar2.Width = frontbar2.Tag / backbar2.Tag * backbar2.Width
-        frontbar1.BackColor = Color.FromArgb(255 * (1 - frontbar1.Tag / backbar1.Tag), 255 * frontbar1.Tag / backbar1.Tag, 0)
-        frontbar2.BackColor = Color.FromArgb(255 * (1 - frontbar2.Tag / backbar2.Tag), 255 * frontbar2.Tag / backbar2.Tag, 0)
-
+        frontbar1.Width = frontbar1.Tag/backbar1.Tag*backbar1.Width
+        frontbar2.Width = frontbar2.Tag/backbar2.Tag*backbar2.Width
+        frontbar1.BackColor = Color.FromArgb(255*(1 - frontbar1.Tag/backbar1.Tag), 255*frontbar1.Tag/backbar1.Tag, 0)
+        frontbar2.BackColor = Color.FromArgb(255*(1 - frontbar2.Tag/backbar2.Tag), 255*frontbar2.Tag/backbar2.Tag, 0)
     End Sub
+
     Private Sub place15_1_click() '从小宿舍返回
         If Enable() = False Then Exit Sub
         SceneAppears(10, SwitchMode.gradual_change)
     End Sub
+
     Private Sub rooster16_1_click()
         If Enable() = False Then Exit Sub
         Unable = True
         deadrooster.Visible = True
-        deadrooster.Size = New Size(700 * ZoomX, 480 * ZoomY)
-        deadrooster.Location = New Point(90 * ZoomX, 50 * ZoomY)
+        deadrooster.Size = New Size(700*ZoomX, 480*ZoomY)
+        deadrooster.Location = New Point(90*ZoomX, 50*ZoomY)
         deadrooster.BackgroundImageLayout = ImageLayout.Stretch
         Tip("The rooster is dead! What means ""Illusive Lust""??")
     End Sub
+
     Private Sub place16_2_click() '进入食堂
         If Enable() = False Then Exit Sub
         SceneAppears(17, SwitchMode.gradual_change)
@@ -1802,10 +2124,12 @@ complete:
             ShowCutscene(4810, Appearance.Appear)
         End If
     End Sub
+
     Private Sub place16_3_click() '从食堂外侧回到广场
         If Enable() = False Then Exit Sub
         SceneAppears(6, SwitchMode.drag_right)
     End Sub
+
     Private Sub place18_1_click() '到前门圣地
         If Enable() = False Then Exit Sub
         If lock18_2.Visible Then
@@ -1814,22 +2138,27 @@ complete:
             SceneAppears(26, SwitchMode.gradual_change)
         End If
     End Sub
+
     Private Sub place18_3_click() '侧门的通道
         If Enable() = False Then Exit Sub
         SceneAppears(19, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place19_1_click() '往左边走
         If Enable() = False Then Exit Sub
         SceneAppears(21, SwitchMode.drag_left)
     End Sub
+
     Private Sub place19_2_click() '向前走
         If Enable() = False Then Exit Sub
         SceneAppears(20, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place21_1_click() '走廊第一间
         If Enable() = False Then Exit Sub
         SceneAppears(23, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place21_2_click() '走廊第二间
         If Enable() = False Then Exit Sub
         If lock21_3.Visible Then
@@ -1838,6 +2167,7 @@ complete:
             SceneAppears(22, SwitchMode.gradual_change)
         End If
     End Sub
+
     Private Sub place21_4_click() '走廊第三间
         If Enable() = False Then Exit Sub
         If lock21_5.Visible Then
@@ -1846,37 +2176,43 @@ complete:
             SceneAppears(25, SwitchMode.gradual_change)
         End If
     End Sub
+
     Private Sub place23_1_click() '小隔间向前
         If Enable() = False Then Exit Sub
         SceneAppears(24, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place25_1_click() '外侧返回
         If Enable() = False Then Exit Sub
         SceneAppears(21, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place25_2_click() '外侧向右
         If Enable() = False Then Exit Sub
         SceneAppears(7, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place26_1_click() '内侧向上
         If Enable() = False Then Exit Sub
         SceneAppears(27, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place27_1_click()
         If Enable() = False Then Exit Sub
         SceneAppears(28, SwitchMode.gradual_change)
     End Sub
+
     Private Sub place28_1_click() '圣坛
         If Enable() = False Then Exit Sub
-
     End Sub
+
     ''' <summary>
-    ''' 如果存在，则显示一个物品在屏幕上。
+    '''     如果存在，则显示一个物品在屏幕上。
     ''' </summary>
     ''' <param name="tile">物品。</param>
     ''' <param name="ImageCode">图片编码。</param>
     ''' <param name="opposite">相反的判定。</param>
-    Private Sub AddTile(ByVal tile As PictureBox, ImageCode As Integer, Optional opposite As Boolean = False)
+    Private Sub AddTile(tile As PictureBox, ImageCode As Integer, Optional opposite As Boolean = False)
         Controls.Add(tile)
         tile.Parent = scene
         tile.BackColor = Color.Transparent
@@ -1888,15 +2224,17 @@ complete:
             If opposite Then tile.Visible = False Else tile.Visible = True
         End If
     End Sub
+
     ''' <summary>
-    ''' 将物品从屏幕上移出。
+    '''     将物品从屏幕上移出。
     ''' </summary>
     ''' <param name="tile">物品。</param>
-    Private Sub RemoveOut(ByVal tile As Control)
+    Private Sub RemoveOut(tile As Control)
         tile.Visible = False
         Form1.Unlocked.Items.Add(tile.Name & "*")
     End Sub
-    Public Sub AfterBattle(ByVal code As Integer)
+
+    Public Sub AfterBattle(code As Integer)
         Form1.music.settings.volume = Form1.BackgroundVolume
         If code = 1 Then
             cutscenes.Tag = 1619
@@ -1918,13 +2256,15 @@ complete:
             Form1.music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music17.wm"
             CompleteMission("Defeat the turkey cult adorer.")
         ElseIf code = 4 Then
-            MsgBox("Your patience is admirable, so you have got a chance to battle again.", 0, "We admire your patience.")
+            MsgBox("Your patience is admirable, so you have got a chance to battle again.", 0,
+                   "We admire your patience.")
             Hide()
             Form7.Show()
-            Form7.initialization(Nothing, Nothing, Nothing, 350 + Form1.shield_level * 150, 20, 24, 0, 110, 0, 950)
+            Form7.initialization(Nothing, Nothing, Nothing, 350 + Form1.shield_level*150, 20, 24, 0, 110, 0, 950)
             Form1.music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music8.wm"
         End If
     End Sub
+
     Private Sub Disappear()
         place1_1.Visible = False
         backward.Visible = False
@@ -1959,16 +2299,31 @@ complete:
         rooster16_1.Visible = False
         place16_3.Visible = False
     End Sub
-    Private PuzzlingMover As New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom}, ZoomTarget As Control, ZoomSource As Control, TotalLong As Integer, MoveSpeedPuzzling As Integer
-    Private ActorLeft As New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom, .Visible = False}
-    Private ActorRight As New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom, .Visible = False}
-    Private SubActorLeft As New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom, .Visible = False}
+
+    Private ReadOnly _
+        PuzzlingMover As New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom}
+
+    Private ZoomTarget As Control, ZoomSource As Control, TotalLong As Integer, MoveSpeedPuzzling As Integer
+
+    Private ReadOnly _
+        ActorLeft As _
+            New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom, .Visible = False}
+
+    Private ReadOnly _
+        ActorRight As _
+            New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom, .Visible = False}
+
+    Private ReadOnly _
+        SubActorLeft As _
+            New PictureBox With {.BackColor = Color.Transparent, .SizeMode = PictureBoxSizeMode.Zoom, .Visible = False}
+
     ''' <summary>
-    ''' 使一个控件(新建的控件)从一个地点缩放并转移到另外一个地点。
+    '''     使一个控件(新建的控件)从一个地点缩放并转移到另外一个地点。
     ''' </summary>
     ''' <param name="source">来源。</param>
     ''' <param name="target">移动目标。</param>
-    Private Sub PuzzlingMove(ByVal source As Control, target As Control, image_ As String, Optional speed As Integer = 10, Optional AffectCode As Integer = -1)
+    Private Sub PuzzlingMove(source As Control, target As Control, image_ As String, Optional speed As Integer = 10,
+                             Optional AffectCode As Integer = - 1)
         With PuzzlingMover
             .Parent = scene
             .Size = source.Size
@@ -1982,10 +2337,11 @@ complete:
         TotalLong = Math.Pow(Math.Pow(target.Left - source.Left, 2) + Math.Pow(target.Top - source.Top, 2), 0.5)
         MoveSpeedPuzzling = speed
         AffectCode_ = AffectCode
-        MoveItemTab = -1
+        MoveItemTab = - 1
         MoveItem.Enabled = True
     End Sub
-    Private Sub BattlelandInitialize(ByVal life1_ As Integer, life2_ As Integer)
+
+    Private Sub BattlelandInitialize(life1_ As Integer, life2_ As Integer)
         battle_land.BackColor = Color.Transparent
         battle_land.Parent = scene
         effect1.BackColor = Color.Transparent
@@ -2006,29 +2362,32 @@ complete:
         frontbar2.Tag = life2_
         backbar2.Tag = life2_
         refresh_battleland()
-        battle_land.Size = New Size(800 * ZoomX, 500 * ZoomY)
-        battle_land.Location = New Point(40 * ZoomX, 40 * ZoomY)
-        battler1.Location = New Point(6 * ZoomX, 33 * ZoomY)
-        battler2.Location = New Point(474 * ZoomX, 33 * ZoomY)
+        battle_land.Size = New Size(800*ZoomX, 500*ZoomY)
+        battle_land.Location = New Point(40*ZoomX, 40*ZoomY)
+        battler1.Location = New Point(6*ZoomX, 33*ZoomY)
+        battler2.Location = New Point(474*ZoomX, 33*ZoomY)
         battle_land.BringToFront()
     End Sub
+
     ''' <summary>
-    ''' 修改图片透明度。
+    '''     修改图片透明度。
     ''' </summary>
     ''' <param name="Bitmaps">要修改的图片</param>
     ''' <param name="OPacitys">透明度(0~1)。</param>
     ''' <returns></returns>
-    Private Function ChangeAlpha(ByVal Bitmaps As Bitmap, OPacitys As Single) As Bitmap
+    Private Function ChangeAlpha(Bitmaps As Bitmap, OPacitys As Single) As Bitmap
         Dim CColorMatrix()() As Single = {New Single() {1, 0, 0, 0, 0}, New Single() {0, 1, 0, 0, 0},
-New Single() {0, 0, 1, 0, 0}, New Single() {0, 0, 0, OPacitys, 0}, New Single() {0, 0, 0, 0, 0}}    '初始化颜色比例参数,用OPacitys属性来代替透明度,最大为1,最小为0  
-        Dim CM As Imaging.ColorMatrix = New Imaging.ColorMatrix(CColorMatrix)   '用颜色比例参数去实例化颜色矩阵  
+                                          New Single() {0, 0, 1, 0, 0}, New Single() {0, 0, 0, OPacitys, 0},
+                                          New Single() {0, 0, 0, 0, 0}}    '初始化颜色比例参数,用OPacitys属性来代替透明度,最大为1,最小为0  
+        Dim CM = New ColorMatrix(CColorMatrix)   '用颜色比例参数去实例化颜色矩阵  
         If Bitmaps Is Nothing Then Return Nothing   '如果没有图片资源，则退出过程  
         Dim BBitmap As Bitmap = Bitmaps.Clone   '制作一个当前图像的浅表副本  
-        Dim IA As New Imaging.ImageAttributes       '实例化一个图像辅助类(包含了图像属性)  
-        IA.SetColorMatrix(CM, Imaging.ColorMatrixFlag.Default, Imaging.ColorAdjustType.Bitmap)  '定义图像属性  
-        Dim NewImage As Bitmap = New Bitmap(Bitmaps.Width, Bitmaps.Height)
+        Dim IA As New ImageAttributes       '实例化一个图像辅助类(包含了图像属性)  
+        IA.SetColorMatrix(CM, ColorMatrixFlag.Default, ColorAdjustType.Bitmap)  '定义图像属性  
+        Dim NewImage = New Bitmap(Bitmaps.Width, Bitmaps.Height)
         Dim a As Graphics = Graphics.FromImage(NewImage)
-        a.DrawImage(BBitmap, New Rectangle(0, 0, BBitmap.Width, BBitmap.Height), 0, 0, BBitmap.Width, BBitmap.Height, GraphicsUnit.Pixel, IA)  '利用设定好的图像属性去画出源图像
+        a.DrawImage(BBitmap, New Rectangle(0, 0, BBitmap.Width, BBitmap.Height), 0, 0, BBitmap.Width, BBitmap.Height,
+                    GraphicsUnit.Pixel, IA)  '利用设定好的图像属性去画出源图像
         Return NewImage
     End Function
 End Class

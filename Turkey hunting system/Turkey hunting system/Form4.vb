@@ -2,7 +2,8 @@
     Private choice1_code_ As Integer
     Private choice2_code_ As Integer
 
-    Public Sub start(ByVal text_ As String, choice1 As String, choice1_code As Integer, choice2 As String, choice2_code As Integer)
+    Public Sub start(text_ As String, choice1 As String, choice1_code As Integer, choice2 As String,
+                     choice2_code As Integer)
         Form1.Hide()
         content.Text = text_
         Button1.Text = choice1

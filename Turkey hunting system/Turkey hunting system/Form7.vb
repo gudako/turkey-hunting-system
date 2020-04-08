@@ -1,5 +1,5 @@
-﻿Imports System.ComponentModel
-Imports System.Threading
+﻿Imports System.Threading
+
 Public Class Form7
     Private point1 As String, point2 As String
     Public defend_type As Integer
@@ -7,10 +7,10 @@ Public Class Form7
     Public magic_type As Integer
     Private step_ As Integer = 0
     Public battle As Integer
-    Private status1 As PictureBox() = {status1_1, status1_2, status1_3, status1_4, status1_5, status1_6}
-    Private status2 As PictureBox() = {status2_1, status2_2, status2_3, status2_4, status2_5, status2_6}
+    Private ReadOnly status1 As PictureBox() = {status1_1, status1_2, status1_3, status1_4, status1_5, status1_6}
+    Private ReadOnly status2 As PictureBox() = {status2_1, status2_2, status2_3, status2_4, status2_5, status2_6}
     Private StopCharge1 As Boolean = False, StopCharge2 As Boolean = False
-    Private random_ As Random = New Random(Date.Now.Millisecond)
+    Private ReadOnly random_ As Random = New Random(Date.Now.Millisecond)
     Public Current_Murloc_Number As Integer
     Private MissProbability1 As Integer = 0
     Private CriticalProbability1 As Integer = 0
@@ -20,17 +20,35 @@ Public Class Form7
     Private TargetLife1_battle9, TargetLife2_battle9 As Integer
     Private Avogadro_revive As Boolean = True
     Private point1mana As String, point2mana As String
-    Private BeforeMove1 As Integer, BeforeMove2 As Integer, ForeColor1 As Color, ForeColor2 As Color, Tipcolor As Color, BeforeTip As Integer, MagicPowerStage As Integer = 0
+
+    Private BeforeMove1 As Integer,
+            BeforeMove2 As Integer,
+            ForeColor1 As Color,
+            ForeColor2 As Color,
+            Tipcolor As Color,
+            BeforeTip As Integer,
+            MagicPowerStage As Integer = 0
+
     Public boss As Boolean = False
-    Private LastMagicalDamage1 As Integer = 0, LockedLife1 As String, LockedLife2 As String, LockedMana1 As String, LockedMana2 As String
+
+    Private LastMagicalDamage1 As Integer = 0,
+            LockedLife1 As String,
+            LockedLife2 As String,
+            LockedMana1 As String,
+            LockedMana2 As String
+
     Friend ChangeCow As Integer = 0, mana1enabled As Boolean = False, mana2enabled As Boolean = False
+
     Delegate Sub SetTextCallback([text] As String)
+
     Dim labbb As New Label
     Private demoThread As Thread = Nothing
+
     Public Sub New()
         InitializeComponent()
     End Sub
-    Private Sub ModifyLife(ByVal player1 As Boolean, value As Integer)
+
+    Private Sub ModifyLife(player1 As Boolean, value As Integer)
         If player1 Then
             If value > life1b.Tag Or value < 0 Then Exit Sub
             life1f.Tag = value
@@ -41,7 +59,8 @@ Public Class Form7
             LockedLife2 = LockNumber(value)
         End If
     End Sub
-    Private Sub ModifyMana(ByVal player1 As Boolean, value As Integer)
+
+    Private Sub ModifyMana(player1 As Boolean, value As Integer)
         If player1 Then
             If value > mana1b.Tag Or value < 0 Then Exit Sub
             mana1f.Tag = value
@@ -52,7 +71,11 @@ Public Class Form7
             LockedMana2 = LockNumber(value)
         End If
     End Sub
-    Private Sub ChangePower(ByVal Player1 As Boolean, ByVal number As Integer, Optional Critical As Boolean = False, Optional Absoulte As Boolean = False, Optional NonTip As Boolean = False, Optional attack_damage As Boolean = True, Optional magic_damage As Boolean = False, Optional drink As Boolean = False, Optional mana As Boolean = False)
+
+    Private Sub ChangePower(Player1 As Boolean, number As Integer, Optional Critical As Boolean = False,
+                            Optional Absoulte As Boolean = False, Optional NonTip As Boolean = False,
+                            Optional attack_damage As Boolean = True, Optional magic_damage As Boolean = False,
+                            Optional drink As Boolean = False, Optional mana As Boolean = False)
         Dim Player2 As Boolean
         If Player1 = True Then Player2 = False Else Player2 = True
         If number < 0 And Not Absoulte And Not mana Then
@@ -74,9 +97,10 @@ Public Class Form7
             If HasStatus(Player1, 29) Then number *= 0.8
             If attack_damage And HasStatus(Player1, 19) Then number *= 0.7
         End If
-        If drink Then ChangePower(Player2, -number, False, True, False, False, False)
+        If drink Then ChangePower(Player2, - number, False, True, False, False, False)
         If Player1 Then
-            If HasStatus(True, 17) And attack_damage And Not magic_damage And Not Critical Then ChangePower(False, 0.2 * number, False, False, False, False)
+            If HasStatus(True, 17) And attack_damage And Not magic_damage And Not Critical Then _
+                ChangePower(False, 0.2*number, False, False, False, False)
             If mana Then
                 point1mana = LockNumber(UnlockNumber(point1mana) + number)
                 If UnlockNumber(point1mana) > mana1b.Tag Then point1mana = LockNumber(mana1b.Tag)
@@ -104,7 +128,7 @@ Public Class Form7
                         popout1.Text = number
                         popout1.ForeColor = Color.Yellow
                     ElseIf number < 0 And Not Critical Then
-                        popout1.Text = "-" & TransmitNumber(-number)
+                        popout1.Text = "-" & TransmitNumber(- number)
                         popout1.ForeColor = Color.Firebrick
                     Else
                         popout1.Text = TransmitNumber(number) & "!"
@@ -112,8 +136,8 @@ Public Class Form7
                         If cd1t.ForeColor = Color.Red Then StopCharge1 = True
                     End If
                 End If
-                popout1.Left = (battler.Width - popout1.Width) / 2
-                popout1.Top = (battler.Height - popout1.Top) / 2
+                popout1.Left = (battler.Width - popout1.Width)/2
+                popout1.Top = (battler.Height - popout1.Top)/2
                 popout1.Visible = True
                 popout1.Tag = 20
                 BeforeMove1 = 0
@@ -126,7 +150,8 @@ Public Class Form7
                 setlife1.Enabled = True
             End If
         Else
-            If HasStatus(False, 17) And attack_damage And Not magic_damage And Not Critical Then ChangePower(True, 0.2 * number, False, False, False, False)
+            If HasStatus(False, 17) And attack_damage And Not magic_damage And Not Critical Then _
+                ChangePower(True, 0.2*number, False, False, False, False)
             If mana Then
                 point2mana = LockNumber(UnlockNumber(point2mana) + number)
                 If UnlockNumber(point2mana) > mana2b.Tag Then point2mana = LockNumber(mana2b.Tag)
@@ -142,7 +167,7 @@ Public Class Form7
                         popout2.Text = "+" & TransmitNumber(number)
                         popout2.ForeColor = Color.Blue
                     Else
-                        popout2.Text = "-" & TransmitNumber(-number)
+                        popout2.Text = "-" & TransmitNumber(- number)
                         popout2.ForeColor = Color.Blue
                     End If
                 Else
@@ -153,7 +178,7 @@ Public Class Form7
                         popout2.Text = number
                         popout2.ForeColor = Color.Yellow
                     ElseIf number < 0 And Not Critical Then
-                        popout2.Text = "-" & TransmitNumber(-number)
+                        popout2.Text = "-" & TransmitNumber(- number)
                         popout2.ForeColor = Color.Firebrick
                     Else
                         popout2.Text = TransmitNumber(number) & "!"
@@ -177,21 +202,23 @@ Public Class Form7
             End If
         End If
     End Sub
-    Private Function TransmitNumber(ByVal number As Integer)
+
+    Private Function TransmitNumber(number As Integer)
         If number < 1000 Then
             Return number
         ElseIf number >= 1000 And number < 100000 Then
-            Return number / 1000 & "K"
+            Return number/1000 & "K"
         ElseIf number >= 100000 And number < 1000000 Then
-            Return "0." & number / 100000 & "M"
+            Return "0." & number/100000 & "M"
         ElseIf number >= 1000000 And number < 100000000 Then
-            Return number / 1000000 & "M"
+            Return number/1000000 & "M"
         ElseIf number >= 1000000000 Then
-            Return number / 1000000000 & "E"
+            Return number/1000000000 & "E"
         Else
             Return "Err"
         End If
     End Function
+
     Private Sub setlife1_Tick(sender As Object, e As EventArgs) Handles setlife1.Tick
         If life1f.Tag > UnlockNumber(point1) Then
             ModifyLife(True, life1f.Tag - 1)
@@ -203,33 +230,34 @@ Public Class Form7
             setlife1.Enabled = False
         End If
     End Sub
+
     Private Sub RefreshTexts()
         life1t.Text = AddDot(life1f.Tag) & "/" & AddDot(life1b.Tag)
-        If life1f.Tag * 10 <= life1b.Tag Then
+        If life1f.Tag*10 <= life1b.Tag Then
             life1t.ForeColor = Color.Red
         Else
             life1t.ForeColor = Color.Black
         End If
         life2t.Text = AddDot(life2f.Tag) & "/" & AddDot(life2b.Tag)
-        If life2f.Tag * 10 <= life2b.Tag Then
+        If life2f.Tag*10 <= life2b.Tag Then
             life2t.ForeColor = Color.Red
         Else
             life2t.ForeColor = Color.Black
         End If
-        life1f.Width = life1f.Tag / life1b.Tag * life1b.Width
-        life2f.Width = life2f.Tag / life2b.Tag * life2b.Width
-        life1f.BackColor = Color.FromArgb(255 * (1 - life1f.Tag / life1b.Tag), 255 * life1f.Tag / life1b.Tag, 0)
-        life2f.BackColor = Color.FromArgb(255 * (1 - life2f.Tag / life2b.Tag), 255 * life2f.Tag / life2b.Tag, 0)
-        if not mana1b.Tag=  nothing  then
-        If mana1b.Visible Then
-            mana1f.Width = mana1f.Tag / mana1b.Tag * mana1b.Width
-            mana1t.Text = "Mana:" & AddDot(mana1f.Tag) & "/" & AddDot(mana1b.Tag)
-        End If
-        If mana2b.Visible Then
-            mana2f.Width = mana2f.Tag / mana2b.Tag * mana2b.Width
-            mana2t.Text = "Mana:" & AddDot(mana2f.Tag) & "/" & AddDot(mana2b.Tag)
-        End If
-            end if
+        life1f.Width = life1f.Tag/life1b.Tag*life1b.Width
+        life2f.Width = life2f.Tag/life2b.Tag*life2b.Width
+        life1f.BackColor = Color.FromArgb(255*(1 - life1f.Tag/life1b.Tag), 255*life1f.Tag/life1b.Tag, 0)
+        life2f.BackColor = Color.FromArgb(255*(1 - life2f.Tag/life2b.Tag), 255*life2f.Tag/life2b.Tag, 0)
+        if not mana1b.Tag = nothing then
+            If mana1b.Visible Then
+                mana1f.Width = mana1f.Tag/mana1b.Tag*mana1b.Width
+                mana1t.Text = "Mana:" & AddDot(mana1f.Tag) & "/" & AddDot(mana1b.Tag)
+            End If
+            If mana2b.Visible Then
+                mana2f.Width = mana2f.Tag/mana2b.Tag*mana2b.Width
+                mana2t.Text = "Mana:" & AddDot(mana2f.Tag) & "/" & AddDot(mana2b.Tag)
+            End If
+        end if
         If life1f.Tag = 0 Or life2f.Tag = 0 Then
             setlife1.Enabled = False
             setlife2.Enabled = False
@@ -271,8 +299,8 @@ Public Class Form7
             ShowTitle("Defeat!", Color.Red)
         End If
         If battle = 9 And (life1f.Tag < TargetLife1_battle9 Or life2f.Tag < TargetLife2_battle9) Then
-            TargetLife1_battle9 = -1
-            TargetLife2_battle9 = -1
+            TargetLife1_battle9 = - 1
+            TargetLife2_battle9 = - 1
             setlife1.Enabled = False
             setlife2.Enabled = False
             cool1.Enabled = False
@@ -291,13 +319,15 @@ Public Class Form7
             StatusCheck.Enabled = False
             life1t.Text = "Escaped."
             ShowTitle("The turkey eater worm escapes to underground.", Color.Blue)
-            MsgBox("The turkey eater worm suddenly escaped to underground! We can't find it anymore. The only thing remained is ropy mucus on ground adjoining the quiz machine.", 48, "Accident!")
+            MsgBox(
+                "The turkey eater worm suddenly escaped to underground! We can't find it anymore. The only thing remained is ropy mucus on ground adjoining the quiz machine.",
+                48, "Accident!")
             Hide()
             Form1.Show()
             Form1.AfterBattle(18)
             Form1.music.settings.volume = Form1.BackgroundVolume
             Form1.music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music1.wm"
-        ElseIf battle = 19 And life1f.Tag < life1f.Tag / 3 * 2 And Not HasStatus(True, 29) Then
+        ElseIf battle = 19 And life1f.Tag < life1f.Tag/3*2 And Not HasStatus(True, 29) Then
             setlife1.Enabled = False
             setlife2.Enabled = False
             cool1.Enabled = False
@@ -322,14 +352,15 @@ Public Class Form7
             Form1.GameOver("The witch exploded.")
         End If
     End Sub
-    Public Function AddDot(ByVal number As Integer)
-        Dim number_ As String = ""
+
+    Public Function AddDot(number As Integer)
+        Dim number_ = ""
         If number.ToString.Length >= 3 Then
-            For i As Integer = 0 To number.ToString.Length / 3 - 1
+            For i = 0 To number.ToString.Length/3 - 1
                 If i = 0 Then
-                    number_ = number.ToString.Substring(number.ToString.Length - 3 * (i + 1), 3)
+                    number_ = number.ToString.Substring(number.ToString.Length - 3*(i + 1), 3)
                 Else
-                    number_ = number.ToString.Substring(number.ToString.Length - 3 * (i + 1), 3) & "," & number_
+                    number_ = number.ToString.Substring(number.ToString.Length - 3*(i + 1), 3) & "," & number_
                 End If
             Next
         End If
@@ -343,11 +374,12 @@ Public Class Form7
             End If
         End If
     End Function
+
     Private Sub settop1_Tick(sender As Object, e As EventArgs) Handles settop1.Tick
         If boss And BeforeMove1 < 25 Then
             BeforeMove1 += 1
             If ForeColor1 = Color.Red Then
-                popout1.BackColor = Color.FromArgb(255 - BeforeMove1 * 10, 255, 0, 0)
+                popout1.BackColor = Color.FromArgb(255 - BeforeMove1*10, 255, 0, 0)
             Else
                 GoTo nextstep
             End If
@@ -355,7 +387,7 @@ Public Class Form7
         Else
             popout1.BackColor = Color.Transparent
         End If
-nextstep:
+        nextstep:
         If popout1.Top > 0 Then
             Me.popout1.Top -= 4
         End If
@@ -364,17 +396,18 @@ nextstep:
                 If BeforeMove1 < 25 Then BeforeMove1 = 25
                 BeforeMove1 += 1
                 If ForeColor1 = Color.Red Then
-                    popout1.ForeColor = Color.FromArgb(255 - 10 * (BeforeMove1 - 25), 0, 0)
+                    popout1.ForeColor = Color.FromArgb(255 - 10*(BeforeMove1 - 25), 0, 0)
                 ElseIf ForeColor1 = Color.Firebrick Then
-                    popout1.ForeColor = Color.FromArgb(178 + 3 * (BeforeMove1 - 25), 34 + 8 * (BeforeMove1 - 25), 34 + 8 * (BeforeMove1 - 25))
+                    popout1.ForeColor = Color.FromArgb(178 + 3*(BeforeMove1 - 25), 34 + 8*(BeforeMove1 - 25),
+                                                       34 + 8*(BeforeMove1 - 25))
                 ElseIf ForeColor1 = Color.Green Then
-                    popout1.ForeColor = Color.FromArgb(10 * (BeforeMove1 - 25), 255, 10 * (BeforeMove1 - 25))
+                    popout1.ForeColor = Color.FromArgb(10*(BeforeMove1 - 25), 255, 10*(BeforeMove1 - 25))
                 Else
                     GoTo nextstep2
                 End If
                 Exit Sub
             End If
-nextstep2:
+            nextstep2:
             settop1.Enabled = False
             popout1.Visible = False
             If step_ = 3 Then
@@ -394,6 +427,7 @@ nextstep2:
             popout1.Tag -= 1
         End If
     End Sub
+
     Private Sub attack_Click(sender As Object, e As EventArgs) Handles attack.Click
         If IsStunned(False) Then Exit Sub
         CheckForMissCritical(False)
@@ -402,86 +436,102 @@ nextstep2:
         If attack_type = 0 Then
             If hitpower >= 95 - MissProbability2 Then
                 ShowTitle("Beat the " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 5 + CriticalProbability2 Then
-                ChangePower(True, -15, True)
+                ChangePower(True, - 15, True)
                 ShowTitle("Beat the " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
             Else
-                ChangePower(True, -5)
+                ChangePower(True, - 5)
                 ShowTitle("Beat the " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
             End If
             CoolDown(False, 1)
         ElseIf attack_type = 1 Then
             If hitpower >= 92 - MissProbability2 Then
                 ShowTitle("Thump the " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 8 + CriticalProbability2 Then
-                ChangePower(True, -48, True)
+                ChangePower(True, - 48, True)
                 ShowTitle("Thump the " & Form8.EnemyName.Text & " and stun it (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
                 AddStatus(True, 4, 6)
             Else
-                ChangePower(True, -16)
+                ChangePower(True, - 16)
                 ShowTitle("Thump the " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
             End If
             CoolDown(False, 2.33)
         ElseIf attack_type = 2 Then
             If hitpower >= 92 - MissProbability2 Then
                 ShowTitle("Chop the " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 5 + CriticalProbability2 Then
-                ChangePower(True, -60, True)
+                ChangePower(True, - 60, True)
                 ShowTitle("Chop the " & Form8.EnemyName.Text & " and bleed it (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
                 If hitpower <= 3 Then AddStatus(True, 13, 4)
             Else
-                ChangePower(True, -20)
+                ChangePower(True, - 20)
                 ShowTitle("Chop the " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
                 If hitpower <= 8 Then AddStatus(True, 13, 2)
             End If
             CoolDown(False, 1.89)
         ElseIf attack_type = 3 Then
             If hitpower >= 95 - MissProbability2 Then
                 ShowTitle("Paw the " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 10 + CriticalProbability2 Then
-                ChangePower(True, -45, True)
+                ChangePower(True, - 45, True)
                 ShowTitle("Paw the " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 If hitpower <= 3 Then AddStatus(True, 13, 4)
             Else
-                ChangePower(True, -15)
+                ChangePower(True, - 15)
                 ShowTitle("Paw the " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 If hitpower <= 8 Then AddStatus(True, 13, 2)
             End If
             CoolDown(False, 0.9)
         ElseIf attack_type = 4 Then
             If hitpower >= 93 - MissProbability2 Then
                 ShowTitle("Chop the " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 5 + CriticalProbability2 Then
-                ChangePower(True, -90, True)
+                ChangePower(True, - 90, True)
                 ShowTitle("Chop the " & Form8.EnemyName.Text & " and stun it (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
                 AddStatus(True, 4, 7.1)
             Else
-                ChangePower(True, -30)
+                ChangePower(True, - 30)
                 ShowTitle("Chop the " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
             End If
             CoolDown(False, 1.2)
         End If
     End Sub
+
     Private Sub settop2_Tick(sender As Object, e As EventArgs) Handles settop2.Tick
         If boss And BeforeMove2 < 25 Then
             BeforeMove2 += 1
             If ForeColor2 = Color.Red Then
-                popout2.BackColor = Color.FromArgb(255 - BeforeMove2 * 10, 255, 0, 0)
+                popout2.BackColor = Color.FromArgb(255 - BeforeMove2*10, 255, 0, 0)
             Else
                 GoTo nextstep
             End If
@@ -489,30 +539,32 @@ nextstep2:
         Else
             popout2.BackColor = Color.Transparent
         End If
-nextstep:
+        nextstep:
         If popout2.Top > magic.Bottom Then popout2.Top -= 4
         If popout2.Tag <= 0 Then
             If boss And BeforeMove2 < 50 Then
                 If BeforeMove2 < 25 Then BeforeMove2 = 25
                 BeforeMove2 += 1
                 If ForeColor2 = Color.Red Then
-                    popout2.ForeColor = Color.FromArgb(255 - 10 * (BeforeMove2 - 25), 0, 0)
+                    popout2.ForeColor = Color.FromArgb(255 - 10*(BeforeMove2 - 25), 0, 0)
                 ElseIf ForeColor2 = Color.Firebrick Then
-                    popout2.ForeColor = Color.FromArgb(178 + 3 * (BeforeMove2 - 25), 34 + 8 * (BeforeMove2 - 25), 34 + 8 * (BeforeMove2 - 25))
+                    popout2.ForeColor = Color.FromArgb(178 + 3*(BeforeMove2 - 25), 34 + 8*(BeforeMove2 - 25),
+                                                       34 + 8*(BeforeMove2 - 25))
                 ElseIf ForeColor2 = Color.Green Then
-                    popout2.ForeColor = Color.FromArgb(10 * (BeforeMove2 - 25), 255, 10 * (BeforeMove2 - 25))
+                    popout2.ForeColor = Color.FromArgb(10*(BeforeMove2 - 25), 255, 10*(BeforeMove2 - 25))
                 Else
                     GoTo nextstep2
                 End If
                 Exit Sub
             End If
-nextstep2:
+            nextstep2:
             settop2.Enabled = False
             popout2.Visible = False
         ElseIf popout2.Top <= magict.Bottom Then
             popout2.Tag -= 1
         End If
     End Sub
+
     Private Sub setlife2_Tick(sender As Object, e As EventArgs) Handles setlife2.Tick
         If life2f.Tag > UnlockNumber(point2) Then
             ModifyLife(False, life2f.Tag - 1)
@@ -524,6 +576,7 @@ nextstep2:
             setlife2.Enabled = False
         End If
     End Sub
+
     Private Sub Form7_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         status1(0) = status1_1
         status1(1) = status1_2
@@ -556,8 +609,9 @@ nextstep2:
         'Form1.music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music8.wm"
         'debug1.Show()
     End Sub
+
     Private Sub cool1_Tick(sender As Object, e As EventArgs) Handles cool1.Tick
-        Dim totalsec As Integer = 10
+        Dim totalsec = 10
         If HasStatus(True, 2) Then totalsec *= 5
         If HasStatus(True, 9) Then totalsec *= 2
         If HasStatus(True, 29) Then totalsec *= 3.33
@@ -567,16 +621,17 @@ nextstep2:
         If IsStunned(True) And cd1t.Text = "Charge:" Then StopCharge1 = True
         If StopCharge1 Then
             StopCharge1 = False
-            CoolDown(True, Math.Max(0, cd1t.Tag.split(",")(1) / 3))
+            CoolDown(True, Math.Max(0, cd1t.Tag.split(",")(1)/3))
         End If
-        if(cd1f.Tag >cd1b.Tag)then
+        if (cd1f.Tag > cd1b.Tag) then
             cd1f.Tag = cd1b.Tag
         End If
-        cd1f.Width = cd1f.Tag / cd1b.Tag * cd1b.Width
+        cd1f.Width = cd1f.Tag/cd1b.Tag*cd1b.Width
         If cd1t.Text = "Charge:" Then
-            cd1f.BackColor = Color.FromArgb(255,math.max(math.Min(255 * (1 - (-Math.Pow(1.005, -cd1f.Tag) + 1)),255),0), 0)
+            cd1f.BackColor = Color.FromArgb(255,
+                                            math.max(math.Min(255*(1 - (- Math.Pow(1.005, - cd1f.Tag) + 1)), 255), 0), 0)
         Else
-            cd1f.BackColor = Color.FromArgb(math.min(math.max(255 * (1 - cd1f.Tag / cd1b.Tag),0),255), 255, 0)
+            cd1f.BackColor = Color.FromArgb(math.min(math.max(255*(1 - cd1f.Tag/cd1b.Tag), 0), 255), 255, 0)
         End If
         If cd1f.Tag = cd1b.Tag Then
             If cd1t.Text = "Charge:" Then
@@ -595,6 +650,7 @@ nextstep2:
             End If
         End If
     End Sub
+
     Private Sub magic_Click(sender As Object, e As EventArgs) Handles magic.Click
         If IsStunned(False) Then Exit Sub
         If magic_type = 1 Then
@@ -621,7 +677,11 @@ nextstep2:
             Spell(False, 96, 15)
         End If
     End Sub
-    Public Sub initialization(ByVal defend_ As Integer, attack_ As Integer, magic_ As Boolean, your_life As Integer, enemy_life As Integer, battle_code As Integer, Optional mana1_ As Integer = 0, Optional mana2_ As Integer = 0, Optional mana1_restore As Integer = 0, Optional mana2_restore As Integer = 0)
+
+    Public Sub initialization(defend_ As Integer, attack_ As Integer, magic_ As Boolean, your_life As Integer,
+                              enemy_life As Integer, battle_code As Integer, Optional mana1_ As Integer = 0,
+                              Optional mana2_ As Integer = 0, Optional mana1_restore As Integer = 0,
+                              Optional mana2_restore As Integer = 0)
         SetParent()
         ModifyLife(True, 0)
         life1b.Tag = enemy_life
@@ -663,7 +723,7 @@ nextstep2:
         Else
             heal.Enabled = True
         End If
-        For i As Integer = 0 To 5
+        For i = 0 To 5
             status1(i).Visible = False
             status2(i).Visible = False
         Next
@@ -702,7 +762,7 @@ nextstep2:
             mana1t.Visible = True
             mana1t.ForeColor = Color.Blue
             mana1b.Tag = mana1_
-            ModifyMana(True, mana1b.Tag / 2)
+            ModifyMana(True, mana1b.Tag/2)
             RefreshTexts()
             Mana1restore.Interval = mana1_restore
             point1mana = LockNumber(mana1f.Tag)
@@ -719,7 +779,7 @@ nextstep2:
             mana2t.Visible = True
             mana2t.ForeColor = Color.Blue
             mana2b.Tag = mana2_
-            ModifyMana(False, mana2b.Tag / 2)
+            ModifyMana(False, mana2b.Tag/2)
             RefreshTexts()
             Mana2restore.Interval = mana2_restore
             point2mana = LockNumber(mana2f.Tag)
@@ -756,7 +816,8 @@ nextstep2:
             Form8.skill3t.Visible = False
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler1.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler1.wm")
         ElseIf battle = 2 Then
             Hide()
             Form8.Show()
@@ -775,9 +836,11 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler4.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler4.wm")
         ElseIf battle = 3 Then
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler3.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler3.wm")
             special1.Visible = True
             defend.Enabled = False
             attack.Enabled = False
@@ -798,7 +861,8 @@ nextstep2:
             Form8.skill3t.Visible = False
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler5_1.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler5_1.wm")
         ElseIf battle = 5 Or battle = 6 Then
             Hide()
             Form8.Show()
@@ -816,7 +880,10 @@ nextstep2:
             defend.Enabled = True
             attack.Enabled = True
             Current_Murloc_Number = random_.Next(2, 5)
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler5_" & Current_Murloc_Number & ".wm")
+            battler.Image =
+                Image.FromFile(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler5_" &
+                    Current_Murloc_Number & ".wm")
         ElseIf battle = 7 Then
             Hide()
             Form8.Show()
@@ -835,7 +902,8 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler6.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler6.wm")
         ElseIf battle = 8 Then
             Hide()
             Form8.Show()
@@ -854,7 +922,8 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler8.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler8.wm")
         ElseIf battle = 9 Then
             Hide()
             Form8.Show()
@@ -873,10 +942,11 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            AddStatus(True, 17, -1)
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler9.wm")
-            TargetLife1_battle9 = life1f.Tag * random_.Next(20, 80) / 100
-            TargetLife2_battle9 = life2f.Tag * random_.Next(20, 80) / 100
+            AddStatus(True, 17, - 1)
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler9.wm")
+            TargetLife1_battle9 = life1f.Tag*random_.Next(20, 80)/100
+            TargetLife2_battle9 = life2f.Tag*random_.Next(20, 80)/100
         ElseIf battle = 10 Then
             Hide()
             Form8.Show()
@@ -895,8 +965,9 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            AddStatus(True, 19, -1)
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler10.wm")
+            AddStatus(True, 19, - 1)
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler10.wm")
         ElseIf battle = 11 Then
             Hide()
             Form8.Show()
@@ -915,16 +986,19 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler11.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler11.wm")
         ElseIf battle = 12 Then
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler12.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler12.wm")
             special1.Visible = True
             defend.Enabled = False
             attack.Enabled = False
             heal.Enabled = False
             content1.Tag = 6
             special1.Text = "Mana Magic"
-            content1.Text = "You've unlocked a new type of powerful magic: the mana-required magic. It costs mana to spell."
+            content1.Text =
+                "You've unlocked a new type of powerful magic: the mana-required magic. It costs mana to spell."
         ElseIf battle = 13 Then
             Hide()
             Form8.Show()
@@ -943,8 +1017,9 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler13.wm")
-            AddStatus(True, 21, -1)
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler13.wm")
+            AddStatus(True, 21, - 1)
         ElseIf battle = 14 Then
             Hide()
             Form8.Show()
@@ -959,7 +1034,8 @@ nextstep2:
             Form8.skill3t.Visible = False
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image2.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image2.wm")
         ElseIf battle = 15 Then
             Hide()
             Form8.Show()
@@ -978,8 +1054,9 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler14.wm")
-            AddStatus(True, 23, -1)
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler14.wm")
+            AddStatus(True, 23, - 1)
         ElseIf battle = 16 Then
             Hide()
             Form8.Show()
@@ -998,16 +1075,19 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler15.wm")
-            AddStatus(True, 26, -1)
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler15.wm")
+            AddStatus(True, 26, - 1)
         ElseIf battle = 17 Then
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image15.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image15.wm")
             special1.Visible = True
             defend.Enabled = False
             attack.Enabled = False
             heal.Enabled = False
             content1.Tag = 9
-            content1.Text = "The witch can change to turtle or turkey, the turtle is immune to physical damage but suffers more from magical damage."
+            content1.Text =
+                "The witch can change to turtle or turkey, the turtle is immune to physical damage but suffers more from magical damage."
         ElseIf battle = 18 Then
             Hide()
             Form8.Show()
@@ -1026,7 +1106,8 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image23.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image23.wm")
         ElseIf battle = 19 Then
             Hide()
             Form8.Show()
@@ -1045,8 +1126,9 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image10.wm")
-            If Not Form1.Unlocked.Items.Contains("straight defeat witch") Then AddStatus(True, 29, -1)
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image10.wm")
+            If Not Form1.Unlocked.Items.Contains("straight defeat witch") Then AddStatus(True, 29, - 1)
         ElseIf battle = 20 Then
             Hide()
             Form8.Show()
@@ -1063,7 +1145,8 @@ nextstep2:
             Form8.skill3t.Visible = False
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler16.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler16.wm")
         ElseIf battle = 21 Then
             Hide()
             Form8.Show()
@@ -1082,11 +1165,15 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            AddStatus(True, 32, -1)
+            AddStatus(True, 32, - 1)
             If Form1.DeathFlagNum = 8 Then
-                battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler20.wm")
+                battler.Image =
+                    Image.FromFile(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler20.wm")
             Else
-                battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler18.wm")
+                battler.Image =
+                    Image.FromFile(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler18.wm")
             End If
         ElseIf battle = 22 Then
             Hide()
@@ -1106,10 +1193,12 @@ nextstep2:
             Form8.skill3t.Visible = True
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image44.wm")
-            BackgroundImage = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\background1.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image44.wm")
+            BackgroundImage =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\background1.wm")
             BackgroundImageLayout = ImageLayout.Stretch
-            AddStatus(True, 32, -1)
+            AddStatus(True, 32, - 1)
         ElseIf battle = 23 Then
             Hide()
             Form8.Show()
@@ -1129,9 +1218,10 @@ nextstep2:
             defend.Enabled = True
             attack.Enabled = True
             battler.Image = Form20.Scathach
-            BackgroundImage = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\NewScene1.wm")
+            BackgroundImage =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\NewScene1.wm")
             BackgroundImageLayout = ImageLayout.Center
-            AddStatus(True, 35, -1)
+            AddStatus(True, 35, - 1)
         ElseIf battle = 24 Then
             Hide()
             Form8.Show()
@@ -1148,7 +1238,8 @@ nextstep2:
             Form8.skill3t.Visible = False
             defend.Enabled = True
             attack.Enabled = True
-            battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image54.wm")
+            battler.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image54.wm")
         End If
         Form8.StupidDelay()
 
@@ -1168,12 +1259,13 @@ nextstep2:
             Form8.skill3.BackColor = Color.White
         End If
     End Sub
-    Private Sub CoolDown(ByVal player1 As Boolean, time_ As Double)
+
+    Private Sub CoolDown(player1 As Boolean, time_ As Double)
         If player1 Then
             cd1t.Text = "Cool down:"
             cd1t.ForeColor = Color.Black
             cd1f.Tag = 0
-            cd1b.Tag = 100 * time_
+            cd1b.Tag = 100*time_
             cd1f.Visible = True
             cd1b.Visible = True
             cd1t.Visible = True
@@ -1188,7 +1280,7 @@ nextstep2:
             magic.Enabled = False
             heal.Enabled = False
             cd2f.Tag = 0
-            cd2b.Tag = 100 * time_
+            cd2b.Tag = 100*time_
             cd2f.Visible = True
             cd2b.Visible = True
             cd2t.Visible = True
@@ -1196,8 +1288,9 @@ nextstep2:
             hidecool2.Enabled = False
         End If
     End Sub
+
     Private Sub cool2_Tick(sender As Object, e As EventArgs) Handles cool2.Tick
-        Dim totalsec As Integer = 10
+        Dim totalsec = 10
         If HasStatus(False, 2) Then totalsec *= 5
         If HasStatus(False, 9) Then totalsec *= 2
         If HasStatus(False, 22) Then totalsec *= 2
@@ -1206,16 +1299,17 @@ nextstep2:
         If IsStunned(False) And cd2t.Text = "Charge:" Then StopCharge2 = True
         If StopCharge2 Then
             StopCharge2 = False
-            CoolDown(False, Math.Max(0, cd2t.Tag.split(",")(1) / 3))
+            CoolDown(False, Math.Max(0, cd2t.Tag.split(",")(1)/3))
         End If
-        if(cd2f.Tag >cd2b.Tag)then
+        if (cd2f.Tag > cd2b.Tag) then
             cd2f.Tag = cd2b.Tag
         End If
-        cd2f.Width = cd2f.Tag / cd2b.Tag * cd2b.Width
+        cd2f.Width = cd2f.Tag/cd2b.Tag*cd2b.Width
         If cd2t.Text = "Charge:" Then
-            cd2f.BackColor = Color.FromArgb(255, math.Min(math.Max(255 * (1 - (-Math.Pow(1.005, -cd2f.Tag) + 1)),0),255), 0)
+            cd2f.BackColor = Color.FromArgb(255,
+                                            math.Min(math.Max(255*(1 - (- Math.Pow(1.005, - cd2f.Tag) + 1)), 0), 255), 0)
         Else
-            cd2f.BackColor = Color.FromArgb(math.max(math.min(255 * (1 - cd2f.Tag / cd2b.Tag),255),0), 255, 0)
+            cd2f.BackColor = Color.FromArgb(math.max(math.min(255*(1 - cd2f.Tag/cd2b.Tag), 255), 0), 255, 0)
         End If
         If cd2f.Tag = cd2b.Tag Then
             If cd2t.Text = "Charge:" Then
@@ -1246,6 +1340,7 @@ nextstep2:
             End If
         End If
     End Sub
+
     Private Sub defend_Click(sender As Object, e As EventArgs) Handles defend.Click
         If IsStunned(False) Then Exit Sub
         If step_ = 5 Then tutorial.Visible = False
@@ -1271,21 +1366,23 @@ nextstep2:
             My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound4.wm")
         End If
     End Sub
+
     Public Sub StartTutorial()
         tutorial.Visible = True
         defend.Enabled = False
         attack.Enabled = False
     End Sub
+
     Private Sub titleshow_Tick(sender As Object, e As EventArgs) Handles titleshow.Tick
         If boss And BeforeTip < 25 Then
             BeforeTip += 1
             title.Tag += 1
             If Tipcolor = Color.Black Then
-                title.ForeColor = Color.FromArgb(255 - 10 * BeforeTip, 255 - 10 * BeforeTip, 255 - 10 * BeforeTip)
+                title.ForeColor = Color.FromArgb(255 - 10*BeforeTip, 255 - 10*BeforeTip, 255 - 10*BeforeTip)
             ElseIf Tipcolor = Color.Red Then
-                title.ForeColor = Color.FromArgb(255, 255 - 10 * BeforeTip, 255 - 10 * BeforeTip)
+                title.ForeColor = Color.FromArgb(255, 255 - 10*BeforeTip, 255 - 10*BeforeTip)
             ElseIf Tipcolor = Color.Green Then
-                title.ForeColor = Color.FromArgb(255 - 10 * BeforeTip, 128 - 5 * BeforeTip, 255 - 10 * BeforeTip)
+                title.ForeColor = Color.FromArgb(255 - 10*BeforeTip, 128 - 5*BeforeTip, 255 - 10*BeforeTip)
             End If
             Exit Sub
         Else
@@ -1296,11 +1393,11 @@ nextstep2:
             If boss And BeforeTip < 50 Then
                 BeforeTip += 1
                 If Tipcolor = Color.Black Then
-                    title.ForeColor = Color.FromArgb(10 * (BeforeTip - 25), 10 * (BeforeTip - 25), 10 * (BeforeTip - 25))
+                    title.ForeColor = Color.FromArgb(10*(BeforeTip - 25), 10*(BeforeTip - 25), 10*(BeforeTip - 25))
                 ElseIf Tipcolor = Color.Red Then
-                    title.ForeColor = Color.FromArgb(255, 10 * (BeforeTip - 25), 10 * (BeforeTip - 25))
+                    title.ForeColor = Color.FromArgb(255, 10*(BeforeTip - 25), 10*(BeforeTip - 25))
                 ElseIf Tipcolor = Color.Green Then
-                    title.ForeColor = Color.FromArgb(10 * (BeforeTip - 25), 128 + 5 * (BeforeTip - 25), 10 * (BeforeTip - 25))
+                    title.ForeColor = Color.FromArgb(10*(BeforeTip - 25), 128 + 5*(BeforeTip - 25), 10*(BeforeTip - 25))
                 End If
                 Exit Sub
             End If
@@ -1309,7 +1406,8 @@ nextstep2:
             title.ForeColor = Color.Black
         End If
     End Sub
-    Private Sub ShowTitle(ByVal text_ As String, color_ As Color)
+
+    Private Sub ShowTitle(text_ As String, color_ As Color)
         title.Text = text_
         title.Tag = 200
         Tipcolor = color_
@@ -1318,34 +1416,42 @@ nextstep2:
         title.ForeColor = color_
         title.Visible = True
     End Sub
+
     Private Sub next__Click(sender As Object, e As EventArgs) Handles next_.Click
         If step_ = 0 Then
             step_ = 1
             skip.Visible = False
-            content.Text = "You'll fight the turkey egg and defeat it. The life bar in top shows the turkey's life, the bar in bottom shows yours."
+            content.Text =
+                "You'll fight the turkey egg and defeat it. The life bar in top shows the turkey's life, the bar in bottom shows yours."
         ElseIf step_ = 1 Then
             step_ = 2
-            content.Text = "If one's life turns to 0, it'll get defeated. First, let's learn how to attack the turkey egg. Press ""Next""."
+            content.Text =
+                "If one's life turns to 0, it'll get defeated. First, let's learn how to attack the turkey egg. Press ""Next""."
         ElseIf step_ = 2 Then
             step_ = 3
             next_.Enabled = False
             attack.Enabled = True
-            content.Text = "There's the attack button ""Beat"", click on it, then you can cause damage to the turkey egg. After clicking it, press ""Next""."
+            content.Text =
+                "There's the attack button ""Beat"", click on it, then you can cause damage to the turkey egg. After clicking it, press ""Next""."
         ElseIf step_ = 3 Then
             If Not cd2f.Tag = cd2b.Tag Then Exit Sub
             step_ = 4
-            content.Text = "That's good. However, after each attack, there'll be cool down time, before it cools down, you cannot do anything."
+            content.Text =
+                "That's good. However, after each attack, there'll be cool down time, before it cools down, you cannot do anything."
         ElseIf step_ = 4 Then
             step_ = 5
             next_.Enabled = False
             defend.Enabled = True
-            content.Text = "Your enemy also can attack. To defend its attack, you should click on the ""Defend"". Click it now, then press ""Next""."
+            content.Text =
+                "Your enemy also can attack. To defend its attack, you should click on the ""Defend"". Click it now, then press ""Next""."
         ElseIf step_ = 5 Then
             step_ = 6
-            content.Text = "While you're defending, the damage you get will be reduced. It also takes cool down time. You also need not to defend all the time."
+            content.Text =
+                "While you're defending, the damage you get will be reduced. It also takes cool down time. You also need not to defend all the time."
         ElseIf step_ = 6 Then
             step_ = 7
-            content.Text = "There's also magic power, but you don't have it at present, you'll collect magic items in future which will take great effect in battle."
+            content.Text =
+                "There's also magic power, but you don't have it at present, you'll collect magic items in future which will take great effect in battle."
         ElseIf step_ = 7 Then
             step_ = 8
             content.Text = "That's all, let the battle begin."
@@ -1354,6 +1460,7 @@ nextstep2:
             tutorialend()
         End If
     End Sub
+
     Private Sub skip_Click(sender As Object, e As EventArgs) Handles skip.Click
         If MsgBox("Do you want to skip the tutorial?", vbQuestion + vbYesNo, "Skip tutorial") = vbYes Then
             tutorial.Visible = False
@@ -1362,18 +1469,21 @@ nextstep2:
             tutorialend()
         End If
     End Sub
+
     Private Sub hidecool1_Tick(sender As Object, e As EventArgs) Handles hidecool1.Tick
         hidecool1.Enabled = False
         cd1f.Visible = False
         cd1b.Visible = False
         cd1t.Visible = False
     End Sub
+
     Private Sub hidecool2_Tick(sender As Object, e As EventArgs) Handles hidecool2.Tick
         hidecool2.Enabled = False
         cd2f.Visible = False
         cd2b.Visible = False
         cd2t.Visible = False
     End Sub
+
     Private Sub EnemyAction_Tick(sender As Object, e As EventArgs) Handles EnemyAction.Tick
         CheckForCheating()
         If IsStunned(True) Or HasStatus(True, 20) Then Exit Sub
@@ -1385,15 +1495,18 @@ nextstep2:
             Dim hitpower As Integer = random_.Next(1, 101)
             If hitpower >= 95 - MissProbability1 Then
                 ShowTitle("The turkey egg bumps (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 5 + CriticalProbability1 Then
-                ChangePower(False, -36, True)
+                ChangePower(False, - 36, True)
                 ShowTitle("The turkey egg bumps (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
             Else
-                ChangePower(False, -12)
+                ChangePower(False, - 12)
                 ShowTitle("The turkey egg bumps.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
             End If
             CoolDown(True, 2)
         ElseIf battle = 1 Then
@@ -1402,15 +1515,18 @@ nextstep2:
                 Dim hitpower As Integer = random_.Next(1, 101)
                 If hitpower >= 95 - MissProbability1 Then
                     ShowTitle("The solar corona rabbit hits (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 5 + CriticalProbability1 Then
-                    ChangePower(False, -12, True)
+                    ChangePower(False, - 12, True)
                     ShowTitle("The solar corona rabbit hits (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 Else
-                    ChangePower(False, -4)
+                    ChangePower(False, - 4)
                     ShowTitle("The solar corona rabbit hits.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 End If
                 CoolDown(True, 0.9)
             Else
@@ -1422,21 +1538,25 @@ nextstep2:
                 Dim hitpower As Integer = random_.Next(1, 101)
                 If hitpower >= 95 - MissProbability1 Then
                     ShowTitle("The small black hen bites (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 4 + CriticalProbability1 Then
-                    ChangePower(False, -16, True)
+                    ChangePower(False, - 16, True)
                     ShowTitle("The small black hen bites (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 Else
-                    ChangePower(False, -4)
+                    ChangePower(False, - 4)
                     ShowTitle("The small black hen bites.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 End If
                 CoolDown(True, 1.4)
             ElseIf choice = 5 Then
                 AddStatus(True, 3, 17.4)
                 ShowTitle("The small black hen powers up.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
                 CoolDown(True, 4.33)
             Else
                 Charge(True, 2, 5.55, 3.44)
@@ -1447,15 +1567,18 @@ nextstep2:
                 Dim hitpower As Integer = random_.Next(1, 101)
                 If hitpower >= 93 - MissProbability1 Then
                     ShowTitle("The solar corona ball strikes (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 20 + CriticalProbability1 Then
-                    ChangePower(False, -39, True, False, False, True, True)
+                    ChangePower(False, - 39, True, False, False, True, True)
                     ShowTitle("The solar corona ball strikes (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 Else
-                    ChangePower(False, -13, False, False, False, True, True)
+                    ChangePower(False, - 13, False, False, False, True, True)
                     ShowTitle("The solar corona ball strikes.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 End If
                 CoolDown(True, 1.5)
             ElseIf choice = 10 Then
@@ -1468,52 +1591,62 @@ nextstep2:
             If cd2t.Text = "Charge:" Then
                 ChangePower(False, 0)
                 ShowTitle("The crazy murloc roars.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound26.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound26.wm")
                 StopCharge2 = True
                 CoolDown(True, 1)
             Else
                 Dim hitpower As Integer = random_.Next(1, 101)
                 If hitpower >= 94 - MissProbability1 Then
                     ShowTitle("The crazy murloc bites (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 6 + CriticalProbability1 Then
-                    ChangePower(False, -21, True)
+                    ChangePower(False, - 21, True)
                     ShowTitle("The crazy murloc bites (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 Else
-                    ChangePower(False, -7)
+                    ChangePower(False, - 7)
                     ShowTitle("The crazy murloc bites.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 End If
                 CoolDown(True, 1.84)
             End If
             If Form11.try_to_avoid Then
                 Form11.try_to_avoid = False
-                ChangePower(False, -60, False, True, False, False, False)
+                ChangePower(False, - 60, False, True, False, False, False)
             End If
         ElseIf battle = 5 Or battle = 6 Then
             If life1f.Tag = 0 Then Exit Sub
             Dim choice As Integer = random_.Next(1, 10)
-            Dim defendpoint As Integer = 9
+            Dim defendpoint = 9
             If cd2t.Text = "Charge:" Then defendpoint = 5
             If choice >= defendpoint Then
                 AddStatus(True, 10, 4)
                 ShowTitle("The insane murloc" & number.Maximum - number.Value + 1 & " defends.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound4.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound4.wm")
                 CoolDown(True, 1)
             Else
                 Dim hitpower As Integer = random_.Next(1, 101)
                 If hitpower >= 95 - MissProbability1 Then
-                    ShowTitle("The insane murloc" & number.Maximum - number.Value + 1 & " hits (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    ShowTitle("The insane murloc" & number.Maximum - number.Value + 1 & " hits (Miss the target.)",
+                              Color.Gold)
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 5 + CriticalProbability1 Then
-                    ChangePower(False, -51, True)
-                    ShowTitle("The insane murloc" & number.Maximum - number.Value + 1 & " hits (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    ChangePower(False, - 51, True)
+                    ShowTitle("The insane murloc" & number.Maximum - number.Value + 1 & " hits (Critical Hit!)",
+                              Color.Red)
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 Else
-                    ChangePower(False, -17)
+                    ChangePower(False, - 17)
                     ShowTitle("The insane murloc" & number.Maximum - number.Value + 1 & " hits.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 End If
                 CoolDown(True, 0.6)
             End If
@@ -1523,33 +1656,39 @@ nextstep2:
             If choice = 1 Then
                 If hitpower >= 93 - MissProbability1 Then
                     ShowTitle("The turk&fish bites (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 3 + CriticalProbability1 Then
-                    ChangePower(False, -30, True)
+                    ChangePower(False, - 30, True)
                     AddStatus(False, 12, 45)
                     ShowTitle("The turk&fish bites (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 Else
-                    ChangePower(False, -10, False)
+                    ChangePower(False, - 10, False)
                     AddStatus(False, 12, 15)
                     ShowTitle("The turk&fish bites.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 End If
                 CoolDown(True, 4.41)
             ElseIf choice >= 2 And choice <= 4 Then
                 If hitpower >= 96 - MissProbability1 Then
                     ShowTitle("The turk&fish rips (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 5 + CriticalProbability1 Then
-                    ChangePower(False, -60, True)
+                    ChangePower(False, - 60, True)
                     AddStatus(False, 13, 15)
                     ShowTitle("The turk&fish rips (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 Else
-                    ChangePower(False, -20, False)
+                    ChangePower(False, - 20, False)
                     AddStatus(False, 13, 5)
                     ShowTitle("The turk&fish rips.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 End If
                 CoolDown(True, 3.77)
             Else
@@ -1559,40 +1698,47 @@ nextstep2:
             Dim choice As Integer = random_.Next(1, 10)
             Dim hitpower As Integer = random_.Next(1, 101)
             If cd2t.Text = "Charge:" And random_.Next(1, 11) <= 3 Then GoTo skill8_2
-            If HasStatus(False, 0) Or HasStatus(False, 5) Or HasStatus(False, 10) And random_.Next(1, 6) <= 2 Then GoTo skill8_3
+            If HasStatus(False, 0) Or HasStatus(False, 5) Or HasStatus(False, 10) And random_.Next(1, 6) <= 2 Then _
+                GoTo skill8_3
             If choice <= 6 Then
                 If hitpower >= 95 - MissProbability1 Then
                     ShowTitle("The turk&fish lord chops (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 5 + CriticalProbability1 Then
-                    ChangePower(False, -30, True)
+                    ChangePower(False, - 30, True)
                     ShowTitle("The turk&fish lord chops (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
                 Else
-                    ChangePower(False, -10, False)
+                    ChangePower(False, - 10, False)
                     ShowTitle("The turk&fish lord chops.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
                 End If
                 CoolDown(True, 2.5)
             ElseIf choice = 7 Or choice = 8 Then
-skill8_2:
+                skill8_2:
                 If hitpower >= 99 - MissProbability1 Then
                     ShowTitle("The turk&fish lord roars (Failed to spell.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 7 + CriticalProbability1 Then
-                    ChangePower(False, -45, True, False, False, True, True)
+                    ChangePower(False, - 45, True, False, False, True, True)
                     ShowTitle("The turk&fish lord roars (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound27.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound27.wm")
                     If New Random(Date.Now.Second).Next(1, 3) = 1 Then AddStatus(False, 14, 10)
                 Else
-                    ChangePower(False, -15, False, False, False, True, True)
+                    ChangePower(False, - 15, False, False, False, True, True)
                     ShowTitle("The turk&fish lord roars.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound27.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound27.wm")
                     If New Random(Date.Now.Second).Next(1, 5) = 1 Then AddStatus(False, 14, 5)
                 End If
                 CoolDown(True, 3.5)
             ElseIf choice = 9 Then
-skill8_3:
+                skill8_3:
                 Charge(True, 9, 0.55, 3.7)
             End If
         ElseIf battle = 9 Then
@@ -1600,52 +1746,60 @@ skill8_3:
             Dim hitpower As Integer = random_.Next(1, 101)
             If cd2t.Text = "Charge:" And New Random(Now.Date.Second).Next(1, 4) = 1 Then GoTo skill9_3
             If choice <= 5 Then
-skill9_1:
+                skill9_1:
                 If hitpower >= 95 - MissProbability1 Then
                     ShowTitle("The turkey eater worm worries (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 4 + CriticalProbability1 Then
-                    ChangePower(False, -42, True)
+                    ChangePower(False, - 42, True)
                     ShowTitle("The turkey eater worm worries (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 Else
-                    ChangePower(False, -14, False)
+                    ChangePower(False, - 14, False)
                     ShowTitle("The turkey eater worm worries.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 End If
                 CoolDown(True, 1.96)
             ElseIf choice >= 6 And choice <= 8 And HasDefence(False) = False Then
                 Charge(True, 12, 2.4, 1.2)
             Else
-skill9_3:
+                skill9_3:
                 If HasStatus(False, 18) Then GoTo skill9_1
                 Charge(True, 13, 1, 4)
             End If
         ElseIf battle = 10 Then
             Dim choice As Integer = random_.Next(1, 9)
             Dim hitpower As Integer = random_.Next(1, 101)
-            If HasDefence(True) = False And cd2t.Text = "Charge:" And New Random(Now.Date.Second).Next(1, 4) = 1 Then GoTo skill10_3
+            If HasDefence(True) = False And cd2t.Text = "Charge:" And New Random(Now.Date.Second).Next(1, 4) = 1 Then _
+                GoTo skill10_3
             If choice <= 6 Then
                 If hitpower >= 92 - MissProbability1 Then
                     ShowTitle("The big milk cow impacts (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 7 + CriticalProbability1 Then
-                    ChangePower(False, -60, True)
+                    ChangePower(False, - 60, True)
                     ShowTitle("The big milk cow impacts (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
                 Else
-                    ChangePower(False, -20, False)
+                    ChangePower(False, - 20, False)
                     ShowTitle("The big milk cow impacts.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
                 End If
                 CoolDown(True, 2.01)
             ElseIf choice <= 8 Then
                 Charge(True, 14, 2.3, 1.7)
             Else
-skill10_3:
+                skill10_3:
                 AddStatus(True, 5, 3)
                 ShowTitle("The big milk cow defends.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 CoolDown(True, 1.9)
             End If
         ElseIf battle = 11 Then
@@ -1654,114 +1808,132 @@ skill10_3:
             If choice = 1 Then
                 If hitpower >= 95 - MissProbability1 Then
                     ShowTitle("The Avogadro turkey throws NaAlO2 (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 10 + CriticalProbability1 Then
-                    ChangePower(False, -9, True)
+                    ChangePower(False, - 9, True)
                     ShowTitle("The Avogadro turkey throws NaAlO2 (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 Else
-                    ChangePower(False, -3)
+                    ChangePower(False, - 3)
                     ShowTitle("The Avogadro turkey throws NaAlO2.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 End If
                 CoolDown(True, 0.4)
             ElseIf choice = 2 Then
                 If hitpower >= 90 - MissProbability1 Then
                     ShowTitle("The Avogadro turkey throws Al(OH)3 (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 5 + CriticalProbability1 Then
-                    ChangePower(False, -27, True)
+                    ChangePower(False, - 27, True)
                     ShowTitle("The Avogadro turkey throws Al(OH)3 (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
                 Else
-                    ChangePower(False, -9)
+                    ChangePower(False, - 9)
                     ShowTitle("The Avogadro turkey throws Al(OH)3.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
                 End If
                 CoolDown(True, 1.1)
             ElseIf choice = 3 Then
                 If hitpower >= 90 - MissProbability1 Then
                     ShowTitle("The Avogadro turkey throws Al2(SO4)3 (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 10 + CriticalProbability1 Then
                     If New Random(Now.Date.Second).Next(0, 2) = 0 Then
-                        ChangePower(False, -9, True)
+                        ChangePower(False, - 9, True)
                     Else
-                        ChangePower(False, -27, True)
+                        ChangePower(False, - 27, True)
                     End If
                     ShowTitle("The Avogadro turkey throws Al2(SO4)3 (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 Else
                     If New Random(Now.Date.Second).Next(0, 2) = 0 Then
-                        ChangePower(False, -3)
+                        ChangePower(False, - 3)
                     Else
-                        ChangePower(False, -9)
+                        ChangePower(False, - 9)
                     End If
                     ShowTitle("The Avogadro turkey throws Al2(SO4)3.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 End If
                 CoolDown(True, 0.75)
             End If
         ElseIf battle = 12 Then
-back:
+            back:
             Dim choice As Integer = random_.Next(1, 8)
             Dim hitpower As Integer = random_.Next(1, 101)
             If choice <= 4 Then
                 If hitpower >= 93 - MissProbability1 Then
                     ShowTitle("The lunch contending robot scratches (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 4 + CriticalProbability1 Then
-                    ChangePower(False, -90, True)
+                    ChangePower(False, - 90, True)
                     ShowTitle("The lunch contending robot scratches (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
                 Else
-                    ChangePower(False, -30)
+                    ChangePower(False, - 30)
                     ShowTitle("The lunch contending robot scratches.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
                 End If
                 CoolDown(True, 3)
             ElseIf choice = 5 Or choice = 6 Then
-                If life1f.Tag > life1b.Tag / 2 Then GoTo back
+                If life1f.Tag > life1b.Tag/2 Then GoTo back
                 Charge(True, 16, 2.5, 1)
             ElseIf choice = 7 Then
                 Charge(True, 17, 3.5, 1.5)
             End If
         ElseIf battle = 13 Then
-back2:
+            back2:
             Dim choice As Integer = random_.Next(1, 8)
             Dim hitpower As Integer = random_.Next(1, 101)
             If choice <= 4 Then
                 If hitpower >= 95 - MissProbability1 Then
                     ShowTitle("The palace guard chops (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 3 + CriticalProbability1 Then
-                    ChangePower(False, -66, True)
+                    ChangePower(False, - 66, True)
                     ShowTitle("The palace guard chops (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
                 Else
-                    ChangePower(False, -22)
+                    ChangePower(False, - 22)
                     ShowTitle("The palace guard chops.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound29.wm")
                 End If
                 CoolDown(True, 1.7)
             ElseIf choice = 5 Or choice = 6 Then
                 Charge(True, 19, 1.8, 1.15)
             ElseIf choice = 7 Then
-                If life1f.Tag < life1b.Tag / 3 Then GoTo back2
+                If life1f.Tag < life1b.Tag/3 Then GoTo back2
                 If hitpower >= 97 - MissProbability1 Then
-                    ChangePower(True, -15)
+                    ChangePower(True, - 15)
                     ShowTitle("The palace guard chops (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 7 + CriticalProbability1 Then
-                    ChangePower(True, -15)
-                    ChangePower(False, -80, True)
+                    ChangePower(True, - 15)
+                    ChangePower(False, - 80, True)
                     ShowTitle("The palace guard chops (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
                 Else
-                    ChangePower(True, -15)
-                    ChangePower(False, -40)
+                    ChangePower(True, - 15)
+                    ChangePower(False, - 40)
                     ShowTitle("The palace guard chops.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
                 End If
                 CoolDown(True, 1.4)
             End If
@@ -1770,21 +1942,24 @@ back2:
             If example.Tag <= 10 Then Exit Sub
             Spell(True, 150, 2)
         ElseIf battle = 15 Then
-battle15_return:
+            battle15_return:
             Dim choice As Integer = random_.Next(1, 5)
             Dim hitpower As Integer = random_.Next(1, 101)
             If choice <= 2 Then
                 If hitpower >= 95 - MissProbability1 Then
                     ShowTitle("Tarecgosa paws (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 3 + CriticalProbability1 Then
-                    ChangePower(False, -60, True)
+                    ChangePower(False, - 60, True)
                     ShowTitle("Tarecgosa paws with her hands (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 Else
-                    ChangePower(False, -20)
+                    ChangePower(False, - 20)
                     ShowTitle("Tarecgosa paws.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 End If
                 CoolDown(True, 2.4)
             ElseIf choice = 3 Then
@@ -1794,34 +1969,38 @@ battle15_return:
                 If Spell(True, 30, 6) = False Then GoTo battle15_return
             End If
         ElseIf battle = 16 Then
-battle16_return:
+            battle16_return:
             If mana1f.Tag = mana1b.Tag And mana1f.Tag >= 40 Then GoTo battle16_full
             Dim choice As Integer = random_.Next(1, 5)
             Dim hitpower As Integer = random_.Next(1, 101)
             If choice <= 3 Then
                 If hitpower >= 95 - MissProbability1 Then
                     ShowTitle("Floating ghost scares.", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 3 + CriticalProbability1 Then
-                    ChangePower(False, -60, True)
+                    ChangePower(False, - 60, True)
                     ShowTitle("Floating ghost scares terribly (Critical Scare!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\dialogue13.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\dialogue13.wm")
                     AddStatus(False, 25, 16.6)
                 Else
-                    ChangePower(False, -20)
+                    ChangePower(False, - 20)
                     ShowTitle("Floating ghost scares.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\dialogue13.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\dialogue13.wm")
                     If hitpower <= 17 Then AddStatus(False, 25, 9.6)
                 End If
                 CoolDown(True, 2.4)
             ElseIf choice = 4 Then
                 If Spell(True, 25, 7) = False Then GoTo battle16_return
             ElseIf choice = 5 Then
-battle16_full:
+                battle16_full:
                 If Spell(True, 40, 8) = False Then GoTo battle16_return
             End If
         ElseIf battle = 17 Then
-            If mana1f.Tag >= 22 And cd2t.Text = "Charge:" And magic_type <> 4 And magic_type <> 7 And magic_type <> 8 Then
+            If mana1f.Tag >= 22 And cd2t.Text = "Charge:" And magic_type <> 4 And magic_type <> 7 And magic_type <> 8 _
+                Then
                 If New Random(Now.Millisecond).Next(1, 2) = 1 Then
                     If cd2t.Text = "Charge:" Then
                         If magic_type = 2 Then
@@ -1834,23 +2013,23 @@ battle16_full:
                     Exit Sub
                 End If
             Else
-battle17_next:
+                battle17_next:
                 If New Random(Now.Second).Next(1, 3) = 1 Then
                     GoTo battle17_1
                 End If
             End If
-battle17_back:
+            battle17_back:
             Dim choice As Integer = random_.Next(1, 3)
             Dim hitpower As Integer = random_.Next(1, 101)
             If choice < 3 Then
                 MagicPowerStage += 1
                 Spell(True, 1, 12)
             ElseIf choice = 4 Then
-battle17_1:
+                battle17_1:
                 If HasStatus(True, 27) Then GoTo battle17_back
                 Spell(True, 22, 10)
             Else
-battle17_2:
+                battle17_2:
                 If HasStatus(True, 28) Then GoTo battle17_back
                 Spell(True, 22, 11)
             End If
@@ -1860,15 +2039,18 @@ battle17_2:
             If choice <= 3 Then
                 If hitpower >= 96 - MissProbability1 Then
                     ShowTitle("The god of duck pool pecks (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 2 + CriticalProbability1 Then
-                    ChangePower(False, -48, True)
+                    ChangePower(False, - 48, True)
                     ShowTitle("The god of duck pool pecks (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 Else
-                    ChangePower(False, -16)
+                    ChangePower(False, - 16)
                     ShowTitle("The god of duck pool pecks.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 End If
                 CoolDown(True, 0.75)
             ElseIf choice <= 5 Then
@@ -1877,27 +2059,30 @@ battle17_2:
                 Charge(True, 29, 3.6, 0.72)
             End If
         ElseIf battle = 19 Then
-            If -LastMagicalDamage1 >= random_.Next(60, 90) And mana1f.Tag >= 25 Then GoTo battle19_2
-battle19_back:
+            If - LastMagicalDamage1 >= random_.Next(60, 90) And mana1f.Tag >= 25 Then GoTo battle19_2
+            battle19_back:
             Dim choice As Integer = random_.Next(1, 5)
             Dim hitpower As Integer = random_.Next(1, 101)
             If choice <= 2 Then
                 If hitpower >= 95 - MissProbability1 Then
                     ShowTitle("The witch launches energy ball (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 5 + CriticalProbability1 Then
-                    ChangePower(False, -120, True, False, False, True, True)
+                    ChangePower(False, - 120, True, False, False, True, True)
                     ShowTitle("The witch launches energy ball (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
                 Else
-                    ChangePower(False, -60, False, False, False, True, True)
+                    ChangePower(False, - 60, False, False, False, True, True)
                     ShowTitle("The witch launches energy ball.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
                 End If
                 CoolDown(True, 1.9)
             ElseIf choice = 3 Then
-                If -LastMagicalDamage1 <= random_.Next(50, 100) Then GoTo battle19_back
-battle19_2:
+                If - LastMagicalDamage1 <= random_.Next(50, 100) Then GoTo battle19_back
+                battle19_2:
                 Spell(True, 25, 13)
             Else
                 If HasStatus(False, 30) Then GoTo battle19_back
@@ -1909,15 +2094,18 @@ battle19_2:
             If choice <= 3 Then
                 If hitpower >= 97 - MissProbability1 Then
                     ShowTitle("The chicken pecks (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 8 + CriticalProbability1 Then
-                    ChangePower(False, -30, True)
+                    ChangePower(False, - 30, True)
                     ShowTitle("The chicken pecks (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 Else
-                    ChangePower(False, -10)
+                    ChangePower(False, - 10)
                     ShowTitle("The chicken pecks.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
                 End If
                 CoolDown(True, 1.5)
             Else
@@ -1925,26 +2113,31 @@ battle19_2:
             End If
         ElseIf battle = 21 Then
             If Form1.DeathFlagNum = 8 Then
-                ChangeCow = -1
-                Form1.DeathFlagNum = -1
-            ElseIf Not Form1.DeathFlagNum = -1 Then
-                AddStatus(True, 33, -1)
-                Form1.DeathFlagNum = -1
+                ChangeCow = - 1
+                Form1.DeathFlagNum = - 1
+            ElseIf Not Form1.DeathFlagNum = - 1 Then
+                AddStatus(True, 33, - 1)
+                Form1.DeathFlagNum = - 1
             End If
-            If Not ChangeCow = -1 Then
+            If Not ChangeCow = - 1 Then
                 ChangeCow += 1
                 If ChangeCow >= 6 Then
                     ChangeCow = 0
                     If HasStatus(True, 33) Then
                         RemoveStatus(True, 33)
-                        AddStatus(True, 34, -1)
-                        battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler19.wm")
+                        AddStatus(True, 34, - 1)
+                        battler.Image =
+                            Image.FromFile(
+                                My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler19.wm")
                     ElseIf HasStatus(True, 34) Then
                         RemoveStatus(True, 34)
-                        AddStatus(True, 33, -1)
-                        battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler18.wm")
+                        AddStatus(True, 33, - 1)
+                        battler.Image =
+                            Image.FromFile(
+                                My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler18.wm")
                     End If
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound35.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound35.wm")
                 End If
             End If
             Dim choice As Integer = random_.Next(2, 6)
@@ -1952,15 +2145,18 @@ battle19_2:
             If choice <= 3 Then
                 If hitpower >= 88 - MissProbability1 Then
                     ShowTitle("The negative positive cow kicks (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 5 + CriticalProbability1 Then
-                    ChangePower(False, -51, True)
+                    ChangePower(False, - 51, True)
                     ShowTitle("The negative positive cow kicks (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 Else
-                    ChangePower(False, -17)
+                    ChangePower(False, - 17)
                     ShowTitle("The negative positive cow kicks.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 End If
                 CoolDown(True, 1.7)
             ElseIf choice = 4 Then
@@ -1969,32 +2165,35 @@ battle19_2:
                 Spell(True, 39, 17)
             End If
         ElseIf battle = 22 Then
-            If Math.Abs(Math.Tan(Math.PI / 180 * life2f.Tag)) * 40 > random_.Next(100, 200) And mana1f.Tag >= 40 Then
+            If Math.Abs(Math.Tan(Math.PI/180*life2f.Tag))*40 > random_.Next(100, 200) And mana1f.Tag >= 40 Then
                 Spell(True, 40, 19)
                 Exit Sub
-            ElseIf Math.Pow(mana2f.Tag, 2) / 50 > random_.Next(75, 150) And mana1f.Tag >= 20 Then
+            ElseIf Math.Pow(mana2f.Tag, 2)/50 > random_.Next(75, 150) And mana1f.Tag >= 20 Then
                 Spell(True, 20, 18)
                 Exit Sub
             End If
             Dim hitpower As Integer = random_.Next(1, 101)
             If hitpower >= 96 - MissProbability1 Then
                 ShowTitle("Mr.Duck phantom pecks (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 2 + CriticalProbability1 Then
-                ChangePower(False, -60, True)
+                ChangePower(False, - 60, True)
                 ShowTitle("Mr.Duck phantom pecks (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
             Else
-                ChangePower(False, -20)
+                ChangePower(False, - 20)
                 ShowTitle("Mr.Duck phantom pecks.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
             End If
             CoolDown(True, 1.3)
         ElseIf battle = 23 Then
             Dim choice As Integer = random_.Next(0, 5)
             If choice <= 3 Then
                 Charge(True, 39, 1, 1)
-            ElseIf choice = 4 And life1f.Tag <= life1b.Tag / 3 Then
+            ElseIf choice = 4 And life1f.Tag <= life1b.Tag/3 Then
                 Spell(True, 20, 20)
             Else
                 Spell(True, 100, 21)
@@ -2004,15 +2203,18 @@ battle19_2:
                 Dim hitpower As Integer = random_.Next(1, 101)
                 If hitpower >= 97 - MissProbability1 Then
                     ShowTitle("Turkey rider(without turkey) kicks (Miss the target.)", Color.Gold)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                 ElseIf hitpower <= 7 + CriticalProbability1 Then
-                    ChangePower(False, -100, True)
+                    ChangePower(False, - 100, True)
                     ShowTitle("Turkey rider(without turkey) kicks with the turkey power (Critical Hit!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 Else
-                    ChangePower(False, -1)
+                    ChangePower(False, - 1)
                     ShowTitle("Turkey rider(without turkey) kicks.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 End If
                 CoolDown(True, 1.1)
             Else
@@ -2020,6 +2222,7 @@ battle19_2:
             End If
         End If
     End Sub
+
     Private Sub tutorialend()
         Hide()
         Form8.Show()
@@ -2035,6 +2238,7 @@ battle19_2:
         defend.Enabled = True
         attack.Enabled = True
     End Sub
+
     Private Sub shining_Tick(sender As Object, e As EventArgs) Handles shining.Tick
         CheckForCheating()
         If shining.Tag <= 4000 Then
@@ -2042,7 +2246,10 @@ battle19_2:
                 battler.Visible = False
             Else
                 battler.Visible = True
-                If battle = 17 Then battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image15.wm")
+                If battle = 17 Then _
+                    battler.Image =
+                        Image.FromFile(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image15.wm")
             End If
         Else
             battler.Visible = False
@@ -2059,12 +2266,15 @@ battle19_2:
                 numberT.Text = number.Value
                 If number.Value <= 1 Then enemies_number.Text = "Enemy"
                 If number.Value > 0 Then
-back:
+                    back:
                     Dim RandomMurloc As Integer = random_.Next(2, 5)
                     If RandomMurloc = Current_Murloc_Number Then GoTo back
                     Current_Murloc_Number = RandomMurloc
                     Form8.EnemyName.Text = "insane murloc" & number.Maximum - number.Value + 1
-                    battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler5_" & Current_Murloc_Number & ".wm")
+                    battler.Image =
+                        Image.FromFile(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\battler5_" &
+                            Current_Murloc_Number & ".wm")
                     battler.Visible = True
                     ModifyLife(True, life1b.Tag)
                     EnemyAction.Enabled = True
@@ -2110,79 +2320,103 @@ back:
             Form1.music.Ctlcontrols.stop()
             If battle = 0 Then
                 Form9.start(0, "You defeated the turkey egg and won the battle!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 1 Then
                 Form9.start(2, "You defeated the corona rabbit and got his things!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 2 Then
                 Form9.start(4, "You defeated the small black hen!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 3 Then
                 Form9.start(6, "The solar corona ball is broken up!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 4 Then
                 Form9.start(8, "You successfully get rid of the crazy murloc.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 5 Then
                 Form9.start(10, "You defeated the murloc.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 6 Then
                 Form9.start(12, "You defeated all the murlocs!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 7 Then
                 Form9.start(14, "The mixed turk&fish is defeated.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 8 Then
                 Form9.start(16, "The lord is defeated! You win!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\victory1.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\victory1.wm")
             ElseIf battle = 10 Then
                 Form9.start(19, "The big smelly milk cow is calmed down.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 11 Then
                 Form9.start(21, "The Avogadro turkey is defeated!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 12 Then
                 Form9.start(23, "The robot is pushed down.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 13 Then
                 Form9.start(25, "The guard is defeated, you can enter the palace now.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 14 Then
                 MsgBox("An accident happened in the game.", 16, "Error")
                 End
             ElseIf battle = 15 Then
                 Form9.start(28, "Tarecgosa is defeated!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\victory1.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\victory1.wm")
             ElseIf battle = 16 Then
                 Form9.start(30, "The ghost thing is destroyed!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 17 Then
                 Form9.start(32, "The witch's mirroring disappeared.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 18 Then
                 Form9.start(34, "The duck pool god is beaten down.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 19 Then
                 Form9.start(36, "The witch is defeated!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\victory1.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\victory1.wm")
             ElseIf battle = 20 Then
                 Form9.start(38, "The chicken is caught.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 21 Then
                 Form9.start(40, "The cow suddenly becomes smelly gas and floats away.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 22 Then
                 Form9.start(42, "The phantom disappears.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 22 Then
                 Form9.start(1, "You win! You win!")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             ElseIf battle = 24 Then
                 Form9.start(3, "So easy.")
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound8.wm")
             End If
         End If
     End Sub
+
     Private Sub defeat_Tick(sender As Object, e As EventArgs) Handles defeat.Tick
         CheckForCheating()
         defeat.Enabled = False
@@ -2263,9 +2497,10 @@ back:
             My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound1.wm")
         End If
     End Sub
-    Private Function HasStatus(ByVal player1 As Boolean, status_code As Integer)
-        Dim result As Boolean = False
-        For i As Integer = 0 To 5
+
+    Private Function HasStatus(player1 As Boolean, status_code As Integer)
+        Dim result = False
+        For i = 0 To 5
             If player1 Then
                 If status1(i).Visible AndAlso status1(i).Tag.ToString.Split(":")(0) = status_code Then result = True
             Else
@@ -2274,20 +2509,28 @@ back:
         Next
         Return result
     End Function
+
     Private Sub StatusMove_Tick(sender As Object, e As EventArgs) Handles StatusMove.Tick
-        For i As Integer = 0 To 5
+        For i = 0 To 5
             If status1(i).Visible AndAlso Not status1(i).Tag.split(":")(1) = "-1" Then
                 status1(i).Tag = status1(i).Tag.split(":")(0) & ":" & status1(i).Tag.split(":")(1) - 0.1
-                ToolTip1.SetToolTip(status1(i), CheckForString(status1(i).Tag.ToString.Split(":")(0), status1(i).Tag.ToString.Split(":")(1)))
+                ToolTip1.SetToolTip(status1(i),
+                                    CheckForString(status1(i).Tag.ToString.Split(":")(0),
+                                                   status1(i).Tag.ToString.Split(":")(1)))
                 If status1(i).Tag.split(":")(1) <= 0 Then
                     status1(i).Visible = False
                     If status1(i).Tag.split(":")(0) = 8 Then AddStatus(True, 9, 6)
-                    If status1(i).Tag.split(":")(0) = 27 Or status1(i).Tag.split(":")(0) = 28 Then battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image15.wm")
+                    If status1(i).Tag.split(":")(0) = 27 Or status1(i).Tag.split(":")(0) = 28 Then _
+                        battler.Image =
+                            Image.FromFile(
+                                My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image15.wm")
                 End If
             End If
             If status2(i).Visible AndAlso Not status2(i).Tag.split(":")(1) = "-1" Then
                 status2(i).Tag = status2(i).Tag.split(":")(0) & ":" & status2(i).Tag.split(":")(1) - 0.1
-                ToolTip1.SetToolTip(status2(i), CheckForString(status2(i).Tag.ToString.Split(":")(0), status2(i).Tag.ToString.Split(":")(1)))
+                ToolTip1.SetToolTip(status2(i),
+                                    CheckForString(status2(i).Tag.ToString.Split(":")(0),
+                                                   status2(i).Tag.ToString.Split(":")(1)))
                 If status2(i).Tag.split(":")(1) <= 0 Then
                     status2(i).Visible = False
                     If status2(i).Tag.split(":")(0) = 8 Then AddStatus(False, 9, 6)
@@ -2303,7 +2546,8 @@ back:
             End If
         End If
     End Sub
-    Private Function CheckForString(ByVal status_code As String, ByVal time As Double)
+
+    Private Function CheckForString(status_code As String, time As Double)
         If status_code = 0 Then
             Return "Defence" & vbCrLf & "Prevent 30% damage." & CheckForTimeString(time)
         ElseIf status_code = 1 Then
@@ -2321,15 +2565,23 @@ back:
         ElseIf status_code = 7 Then
             Return "Expansion" & vbCrLf & "Your words become longer." & CheckForTimeString(time)
         ElseIf status_code = 8 Then
-            Return "Paralysis" & vbCrLf & "Cannot do anything. After the status is removed, get ""Slow down""." & CheckForTimeString(time)
+            Return _
+                "Paralysis" & vbCrLf & "Cannot do anything. After the status is removed, get ""Slow down""." &
+                CheckForTimeString(time)
         ElseIf status_code = 9 Then
-            Return "Slow down" & vbCrLf & "Your ""charge"" speed and ""cool down"" speed get 50% reduction." & CheckForTimeString(time)
+            Return _
+                "Slow down" & vbCrLf & "Your ""charge"" speed and ""cool down"" speed get 50% reduction." &
+                CheckForTimeString(time)
         ElseIf status_code = 10 Then
             Return "Defence" & vbCrLf & "Prevent 67% damage." & CheckForTimeString(time)
         ElseIf status_code = 11 Then
-            Return "Puzzle" & vbCrLf & "Cannot deal critical damage, get probability of launching missed-attack increased." & CheckForTimeString(time)
+            Return _
+                "Puzzle" & vbCrLf & "Cannot deal critical damage, get probability of launching missed-attack increased." &
+                CheckForTimeString(time)
         ElseIf status_code = 12 Then
-            Return "Poison" & vbCrLf & "Get 12 damage per second, attack power gets 25% reduction." & CheckForTimeString(time)
+            Return _
+                "Poison" & vbCrLf & "Get 12 damage per second, attack power gets 25% reduction." &
+                CheckForTimeString(time)
         ElseIf status_code = 13 Then
             Return "Blood" & vbCrLf & "Get 8 damage per second." & CheckForTimeString(time)
         ElseIf status_code = 14 Then
@@ -2343,7 +2595,9 @@ back:
         ElseIf status_code = 18 Then
             Return "Burrow" & vbCrLf & "Attacks cannot hit on you." & CheckForTimeString(time)
         ElseIf status_code = 19 Then
-            Return "Charm" & vbCrLf & "Be possessed by the witch. Lose 30% attack. Lose 3 point of life per second." & CheckForTimeString(time)
+            Return _
+                "Charm" & vbCrLf & "Be possessed by the witch. Lose 30% attack. Lose 3 point of life per second." &
+                CheckForTimeString(time)
         ElseIf status_code = 20 Then
             Return "Freeze" & vbCrLf & "Cannot do any action or charge." & CheckForTimeString(time)
         ElseIf status_code = 21 Then
@@ -2355,19 +2609,27 @@ back:
         ElseIf status_code = 24 Then
             Return "Defence" & vbCrLf & "Prevent 75% damage." & CheckForTimeString(time)
         ElseIf status_code = 25 Then
-            Return "Scare" & vbCrLf & "Lose 50% attack power, gotten damage gets 50% increment." & CheckForTimeString(time)
+            Return _
+                "Scare" & vbCrLf & "Lose 50% attack power, gotten damage gets 50% increment." & CheckForTimeString(time)
         ElseIf status_code = 26 Then
             Return "Spiritualty" & vbCrLf & "Your enemy can not hit the target easily." & CheckForTimeString(time)
         ElseIf status_code = 27 Then
             Return "Physical immunity" & vbCrLf & "Be immune to physical damage." & CheckForTimeString(time)
         ElseIf status_code = 28 Then
-            Return "Magical immunity" & vbCrLf & "Be immune to magical damage, cannot be added new status." & CheckForTimeString(time)
+            Return _
+                "Magical immunity" & vbCrLf & "Be immune to magical damage, cannot be added new status." &
+                CheckForTimeString(time)
         ElseIf status_code = 29 Then
-            Return "Extreme confusion" & vbCrLf & "Both ""cool down"" time and ""charge"" time get 70% reduction, attack power gets 20% reduction." & CheckForTimeString(time)
+            Return _
+                "Extreme confusion" & vbCrLf &
+                "Both ""cool down"" time and ""charge"" time get 70% reduction, attack power gets 20% reduction." &
+                CheckForTimeString(time)
         ElseIf status_code = 30 Then
             Return "Charm" & vbCrLf & "Your attack does cause no damage." & CheckForTimeString(time)
         ElseIf status_code = 31 Then
-            Return "Hydrogen sulfide poison" & vbCrLf & "Get 25 damage per second, be unable to restore mana." & CheckForTimeString(time)
+            Return _
+                "Hydrogen sulfide poison" & vbCrLf & "Get 25 damage per second, be unable to restore mana." &
+                CheckForTimeString(time)
         ElseIf status_code = 32 Then
             Return "Phantom" & vbCrLf & "Your gotten magical damage gets tripled." & CheckForTimeString(time)
         ElseIf status_code = 33 Then
@@ -2380,8 +2642,9 @@ back:
             Return "Tool tip missing"
         End If
     End Function
-    Private Function CheckForTimeString(ByVal time As Double)
-        If time = -1 Then
+
+    Private Function CheckForTimeString(time As Double)
+        If time = - 1 Then
             Return ""
         Else
             If Not time = 0 AndAlso time.ToString.Split(".").Count = 1 Then
@@ -2395,8 +2658,9 @@ back:
             End If
         End If
     End Function
-    Private Sub AddStatus(ByVal player1 As Boolean, status_code As Integer, time As Double)
-        For i As Integer = 0 To 5
+
+    Private Sub AddStatus(player1 As Boolean, status_code As Integer, time As Double)
+        For i = 0 To 5
             If player1 Then
                 If HasStatus(True, 28) Or HasStatus(True, 35) Then
                     ShowTitle("The " & Form8.EnemyName.Text & " is immune to status.", Color.Gold)
@@ -2441,31 +2705,37 @@ back:
         Next
         refreshstatus()
     End Sub
+
     Sub refreshstatus()
-        For i_ As Integer = 1 To 5
-            For i As Integer = 1 To 5
+        For i_ = 1 To 5
+            For i = 1 To 5
                 If status1(i).Visible And status1(i - 1).Visible = False Then
                     status1(i).Visible = False
                     status1(i - 1).Visible = True
                     status1(i - 1).Tag = status1(i).Tag
                     status1(i - 1).Image = status1(i).Image
-                    ToolTip1.SetToolTip(status1(i - 1), CheckForString(status1(i).Tag.ToString.Split(":")(0), status1(i).Tag.ToString.Split(":")(1)))
+                    ToolTip1.SetToolTip(status1(i - 1),
+                                        CheckForString(status1(i).Tag.ToString.Split(":")(0),
+                                                       status1(i).Tag.ToString.Split(":")(1)))
                 End If
                 If status2(i).Visible And status2(i - 1).Visible = False Then
                     status2(i).Visible = False
                     status2(i - 1).Visible = True
                     status2(i - 1).Tag = status2(i).Tag
                     status2(i - 1).Image = status2(i).Image
-                    ToolTip1.SetToolTip(status2(i - 1), CheckForString(status2(i).Tag.ToString.Split(":")(0), status2(i).Tag.ToString.Split(":")(1)))
+                    ToolTip1.SetToolTip(status2(i - 1),
+                                        CheckForString(status2(i).Tag.ToString.Split(":")(0),
+                                                       status2(i).Tag.ToString.Split(":")(1)))
                 End If
             Next
         Next
     End Sub
-    Private Sub Charge(ByVal player1 As Boolean, code As Integer, time As Double, cool_down As Double)
+
+    Private Sub Charge(player1 As Boolean, code As Integer, time As Double, cool_down As Double)
         If player1 Then
             cd1f.Tag = 0
             cd1t.Text = "Charge:"
-            cd1b.Tag = time * 100
+            cd1b.Tag = time*100
             cd1t.Tag = code & "," & cool_down
             cd1t.ForeColor = Color.Red
             cd1f.Visible = True
@@ -2476,7 +2746,7 @@ back:
         Else
             cd2f.Tag = 0
             cd2t.Text = "Charge:"
-            cd2b.Tag = time * 100
+            cd2b.Tag = time*100
             cd2t.Tag = code & "," & cool_down
             cd2t.ForeColor = Color.Red
             cd2f.Visible = True
@@ -2491,92 +2761,110 @@ back:
             heal.Enabled = False
         End If
     End Sub
-    Private Sub ChargeDone(ByVal code As Integer)
+
+    Private Sub ChargeDone(code As Integer)
         CheckForMissCritical(True)
         CheckForMissCritical(False)
         Dim hitpower As Integer = random_.Next(1, 101)
         If code = 0 Then
             If hitpower >= 97 - MissProbability1 Then
                 ShowTitle("The solar corona rabbit launches a corona ball (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 6 + CriticalProbability1 Then
-                ChangePower(False, -60, True, False, False, True, True)
+                ChangePower(False, - 60, True, False, False, True, True)
                 ShowTitle("The solar corona rabbit launches a big corona ball (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound10.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound10.wm")
                 AddStatus(False, 1, 6)
             Else
-                ChangePower(False, -20, False, False, False, True, True)
+                ChangePower(False, - 20, False, False, False, True, True)
                 ShowTitle("The solar corona rabbit launches a corona ball!", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound10.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound10.wm")
                 AddStatus(False, 1, 3)
             End If
         ElseIf code = 1 Then
             If hitpower >= 98 - MissProbability2 Then
                 ChangePower(True, 0)
                 ShowTitle("Splash water to " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             Else
                 ChangePower(True, 0)
                 ShowTitle("Splash water to " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound13.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound13.wm")
                 AddStatus(True, 2, 9)
             End If
         ElseIf code = 2 Then
             If hitpower >= 95 - MissProbability1 Then
                 ShowTitle("The small black hen lays an egg and throws it (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 3 + CriticalProbability1 Then
-                ChangePower(False, -62, True)
+                ChangePower(False, - 62, True)
                 ShowTitle("The small black hen lays an egg and throws it (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
                 If hitpower <= 10 Then AddStatus(False, 4, 3.3)
             Else
-                ChangePower(False, -31)
+                ChangePower(False, - 31)
                 ShowTitle("The small black hen lays an egg and throws it.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
                 If hitpower <= 10 Then AddStatus(False, 4, 1.1)
             End If
         ElseIf code = 3 Then
             If hitpower <= 96 - MissProbability1 Then
                 ShowTitle("The solar corona ball spreads retarding energy.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound22.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound22.wm")
                 AddStatus(False, 7, 12)
             Else
                 ShowTitle("The solar corona ball spreads retarding energy (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             End If
         ElseIf code = 4 Then
             If hitpower <= 95 - MissProbability1 Then
                 ShowTitle("The solar corona ball spreads paralytic static.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound18.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound18.wm")
                 AddStatus(False, 4, 8)
             Else
                 ShowTitle("The solar corona ball spreads paralytic static (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             End If
         ElseIf code = 5 Then
             If hitpower > 94 - MissProbability2 Then
                 ShowTitle("Launch cockscomb shoot to " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 1 + CriticalProbability2 Then
-                ChangePower(True, -180, True)
+                ChangePower(True, - 180, True)
                 ShowTitle("Launch cockscomb shoot to " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
             Else
-                ChangePower(True, -60)
+                ChangePower(True, - 60)
                 ShowTitle("Launch cockscomb shoot to " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
             End If
         ElseIf code = 6 Then
             If hitpower < 94 - MissProbability2 Then
                 ChangePower(True, 0)
                 AddStatus(True, 8, 3)
                 ShowTitle("Numb " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound18.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound18.wm")
             Else
                 ChangePower(True, 0)
                 ShowTitle("Numb " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             End If
         ElseIf code = 7 Then
             If hitpower < 95 - MissProbability2 Then
@@ -2585,67 +2873,83 @@ back:
                 RemoveAllStatuses(False)
                 AddStatus(True, 11, 10.3)
                 ShowTitle("Launch math wave to " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound25.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound25.wm")
             Else
                 ChangePower(True, 0)
                 ShowTitle("Launch math wave to " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             End If
         ElseIf code = 8 Then
             If hitpower >= 99 - MissProbability1 Then
                 ShowTitle("The turk&fish absorbs (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 1 + CriticalProbability1 Then
-                ChangePower(False, -60, True, False, False, True, True, True)
+                ChangePower(False, - 60, True, False, False, True, True, True)
                 ShowTitle("The turk&fish absorbs (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
             Else
-                ChangePower(False, -30, False, False, False, True, True, True)
+                ChangePower(False, - 30, False, False, False, True, True, True)
                 ShowTitle("The turk&fish absorbs.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
             End If
         ElseIf code = 9 Then
             If hitpower >= 94 - MissProbability1 Then
                 ShowTitle("The turk&fish lord launches a strike wave (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 10 + CriticalProbability1 Then
-                ChangePower(False, -75, True, False, False, True, True)
+                ChangePower(False, - 75, True, False, False, True, True)
                 BreakDefence(False)
                 ShowTitle("The turk&fish lord launches a strike wave (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
             Else
-                ChangePower(False, -25, False, False, False, True, True)
+                ChangePower(False, - 25, False, False, False, True, True)
                 BreakDefence(False)
                 ShowTitle("The turk&fish lord launches a strike wave.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
             End If
         ElseIf code = 10 Then
-            Dim damage As Double = -Math.Abs(Math.Sin(Math.PI / 180 * life1f.Tag)) * 70
+            Dim damage As Double = - Math.Abs(Math.Sin(Math.PI/180*life1f.Tag))*70
             If hitpower >= 101 - MissProbability2 Then
-                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
-            ElseIf Math.Abs(Math.Sin(Math.PI / 180 * life1f.Tag)) = 1.0 Or hitpower <= 4 + CriticalProbability2 Then
-                ChangePower(True, damage * 3, True, True, False, True, True)
-                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Miss the target.)",
+                          Color.Gold)
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+            ElseIf Math.Abs(Math.Sin(Math.PI/180*life1f.Tag)) = 1.0 Or hitpower <= 4 + CriticalProbability2 Then
+                ChangePower(True, damage*3, True, True, False, True, True)
+                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Critical Hit!)",
+                          Color.Red)
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
             Else
                 ChangePower(True, damage, False, True, False, True, True)
                 ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
             End If
         ElseIf code = 11 Then
             If hitpower >= 96 - MissProbability1 Then
                 ShowTitle("Launch fireball to " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 2 + CriticalProbability1 Then
-                ChangePower(True, -300, True, False, False, True, True)
+                ChangePower(True, - 300, True, False, False, True, True)
                 ShowTitle("Launch fireball to " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound10.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound10.wm")
                 AddStatus(True, 15, 11.8)
             Else
-                ChangePower(True, -100, False, False, False, True, True)
+                ChangePower(True, - 100, False, False, False, True, True)
                 ShowTitle("Launch fireball to " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound10.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound10.wm")
                 AddStatus(True, 15, 3.7)
             End If
         ElseIf code = 12 Then
@@ -2655,26 +2959,32 @@ back:
         ElseIf code = 13 Then
             If hitpower >= 96 - MissProbability1 Then
                 ChangePower(False, 0)
-                ShowTitle("The turkey eater worm shoots ropy mucus (Miss the target.)" & Form8.EnemyName.Text & ".", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound13.wm")
+                ShowTitle("The turkey eater worm shoots ropy mucus (Miss the target.)" & Form8.EnemyName.Text & ".",
+                          Color.Gold)
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound13.wm")
             Else
                 ChangePower(False, 0)
                 AddStatus(False, 16, 7)
                 ShowTitle("The turkey eater worm shoots ropy mucus." & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound13.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound13.wm")
             End If
         ElseIf code = 14 Then
             If hitpower >= 94 - MissProbability1 Then
                 ShowTitle("The big milk cow gives poisonous milk (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 5 + CriticalProbability1 Then
-                ChangePower(False, -93, True)
+                ChangePower(False, - 93, True)
                 ShowTitle("The big milk cow gives poisonous milk (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound38.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound38.wm")
             Else
-                ChangePower(False, -31)
+                ChangePower(False, - 31)
                 ShowTitle("The big milk cow gives poisonous milk.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound38.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound38.wm")
             End If
             If hitpower <= 2 Then
                 AddStatus(False, 12, 12)
@@ -2690,17 +3000,20 @@ back:
         ElseIf code = 15 Then
             If hitpower >= 97 - MissProbability1 Then
                 ShowTitle("Freeze the " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 4 + CriticalProbability1 Then
-                ChangePower(True, -100, True, False, False, True, True)
+                ChangePower(True, - 100, True, False, False, True, True)
                 AddStatus(True, 20, 12)
                 ShowTitle("Freeze the " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound44.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound44.wm")
             Else
                 AddStatus(True, 20, 4)
-                ChangePower(True, -40, False, False, False, True, True)
+                ChangePower(True, - 40, False, False, False, True, True)
                 ShowTitle("Freeze the " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound44.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound44.wm")
             End If
         ElseIf code = 16 Then
             ChangePower(True, 50)
@@ -2709,46 +3022,57 @@ back:
         ElseIf code = 17 Then
             If hitpower >= 89 - MissProbability1 Then
                 ShowTitle("The lunch contending robot throws big chicken (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 47 + CriticalProbability1 Then
-                ChangePower(False, -120, True)
+                ChangePower(False, - 120, True)
                 ShowTitle("The lunch contending robot throws big chicken (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
             Else
-                ChangePower(False, -40)
+                ChangePower(False, - 40)
                 ShowTitle("The lunch contending robot throws big chicken.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
             End If
         ElseIf code = 18 Then
-            Dim damage As Double = -Math.Abs(Math.Cos(Math.PI / 180 * life1f.Tag)) * 120
+            Dim damage As Double = - Math.Abs(Math.Cos(Math.PI/180*life1f.Tag))*120
             If hitpower >= 101 - MissProbability2 Then
-                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
-            ElseIf Math.Abs(Math.Sin(Math.PI / 180 * life1f.Tag)) = 1.0 Or hitpower <= 4 + CriticalProbability2 Then
-                ChangePower(True, damage * 3, True, True, False, True, True)
-                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Miss the target.)",
+                          Color.Gold)
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+            ElseIf Math.Abs(Math.Sin(Math.PI/180*life1f.Tag)) = 1.0 Or hitpower <= 4 + CriticalProbability2 Then
+                ChangePower(True, damage*3, True, True, False, True, True)
+                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Critical Hit!)",
+                          Color.Red)
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
             Else
                 ChangePower(True, damage, False, True, False, True, True)
                 ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
             End If
         ElseIf code = 19 Then
             If hitpower >= 93 - MissProbability1 Then
                 ShowTitle("The palace guards launches iron wave (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 4 + CriticalProbability1 Then
-                ChangePower(False, -90, True, True)
+                ChangePower(False, - 90, True, True)
                 ShowTitle("The palace guards launches iron wave (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
             Else
-                ChangePower(False, -30, False, True)
+                ChangePower(False, - 30, False, True)
                 ShowTitle("The palace guards launches iron wave.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound12.wm")
             End If
         ElseIf code = 20 Then
-            AddStatus(False, 4, -1)
-            ChangePower(False, -100000, False, True, False, False, False)
+            AddStatus(False, 4, - 1)
+            ChangePower(False, - 100000, False, True, False, False, False)
             ShowTitle("Atropos destines.", Color.Red)
             My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound34.wm")
         ElseIf code = 21 Then
@@ -2758,259 +3082,309 @@ back:
         ElseIf code = 22 Then
             If hitpower >= 95 - MissProbability1 Then
                 ShowTitle("Launch hydrochloric acid to " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 5 + CriticalProbability1 Then
-                ChangePower(True, -135, True)
+                ChangePower(True, - 135, True)
                 AddStatus(True, 16, 19.8)
                 ShowTitle("Launch hydrochloric acid to " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound49.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound49.wm")
             Else
-                ChangePower(True, -45)
+                ChangePower(True, - 45)
                 AddStatus(True, 16, 6.6)
                 ShowTitle("Launch hydrochloric acid to " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound49.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound49.wm")
             End If
         ElseIf code = 23 Then
-            Dim damage As Integer = 40
+            Dim damage = 40
             If HasDefence(False) = False Then damage *= 2
             If hitpower >= 92 - MissProbability1 Then
                 ShowTitle("Tarecgosa launches laser (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 6 + CriticalProbability1 Then
-                ChangePower(False, -damage * 3, True)
+                ChangePower(False, - damage*3, True)
                 ShowTitle("Tarecgosa launches a big laser (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound34.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound34.wm")
             Else
-                ChangePower(False, -damage)
+                ChangePower(False, - damage)
                 ShowTitle("Tarecgosa launches laser.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound34.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound34.wm")
             End If
         ElseIf code = 24 Then
             If hitpower >= 92 - MissProbability1 Then
                 ShowTitle("Tarecgosa launches homework line (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 6 + CriticalProbability1 Then
                 AddStatus(False, 22, 21)
-                ChangePower(False, -90, True)
+                ChangePower(False, - 90, True)
                 ShowTitle("Tarecgosa launches class suspension homework line (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
             Else
                 AddStatus(False, 22, 7)
-                ChangePower(False, -30)
+                ChangePower(False, - 30)
                 ShowTitle("Tarecgosa launches homework line.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
             End If
         ElseIf code = 25 Then
             If hitpower >= 98 - MissProbability1 Then
                 ShowTitle("Floating ghost curses (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 5 + CriticalProbability1 Then
-                ChangePower(False, -life2f.Tag * 0.1, True, False, False, True, True, True)
+                ChangePower(False, - life2f.Tag*0.1, True, False, False, True, True, True)
                 ShowTitle("Floating ghost curses (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
             Else
-                ChangePower(False, -life2f.Tag * 0.05, False, False, False, True, True, True)
+                ChangePower(False, - life2f.Tag*0.05, False, False, False, True, True, True)
                 ShowTitle("Floating ghost curses.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
             End If
         ElseIf code = 26 Then
             If hitpower >= 98 - MissProbability1 Then
                 ShowTitle("Floating ghost distorts (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 5 + CriticalProbability1 Then
-                ChangePower(False, -60, True, False, False, True, True, False, True)
-                ChangePower(False, -150, True, False, False, True, True)
+                ChangePower(False, - 60, True, False, False, True, True, False, True)
+                ChangePower(False, - 150, True, False, False, True, True)
                 ShowTitle("Floating ghost distorts (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound52.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound52.wm")
             Else
-                ChangePower(False, -20, False, False, False, True, True, False, True)
-                ChangePower(False, -50, False, False, False, True, True)
+                ChangePower(False, - 20, False, False, False, True, True, False, True)
+                ChangePower(False, - 50, False, False, False, True, True)
                 ShowTitle("Floating ghost distorts.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound52.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound52.wm")
             End If
         ElseIf code = 27 Then
             If hitpower <= 70 Then AddStatus(True, 22, 12)
             If New Random(Now.Date.Second).Next(0, 101) <= 45 Then AddStatus(True, 14, 9)
-            If New Random(Now.Date.Second * Now.Date.Millisecond).Next(0, 101) <= 20 Then AddStatus(True, 8, 6)
+            If New Random(Now.Date.Second*Now.Date.Millisecond).Next(0, 101) <= 20 Then AddStatus(True, 8, 6)
             ShowTitle("Launch massive countless homework to " & Form8.EnemyName.Text & ".", Color.Black)
             My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound53.wm")
         ElseIf code = 28 Then
             If hitpower >= 97 - MissProbability1 Then
                 ShowTitle("The god of duck pool shoots vector spike (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 3 + CriticalProbability1 Then
                 AddStatus(False, 22, 10)
                 AddStatus(False, 13, 15)
-                ChangePower(False, -57, True)
+                ChangePower(False, - 57, True)
                 ShowTitle("The god of duck pool shoots vector spike (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound52.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound52.wm")
             Else
                 AddStatus(False, 22, 10)
-                ChangePower(False, -29)
+                ChangePower(False, - 29)
                 ShowTitle("The god of duck pool shoots vector spike.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound52.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound52.wm")
             End If
         ElseIf code = 29 Then
             If hitpower >= 99 - MissProbability1 Then
                 ShowTitle("The god of duck pool launches aluminum triangle (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 2 + CriticalProbability1 Then
-                ChangePower(False, -198, True)
+                ChangePower(False, - 198, True)
                 If cd2t.Text = "Charge:" Then StopCharge2 = True
                 ShowTitle("The god of duck pool launches aluminum triangle (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
             Else
-                ChangePower(False, -66)
+                ChangePower(False, - 66)
                 If cd2t.Text = "Charge:" Then StopCharge2 = True
                 ShowTitle("The god of duck pool launches aluminum triangle.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
             End If
         ElseIf code = 30 Then
             If hitpower >= 99 - MissProbability1 Then
                 ShowTitle("The god of duck pool launches aluminum triangle (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 2 + CriticalProbability1 Then
-                ChangePower(False, -198, True)
+                ChangePower(False, - 198, True)
                 If cd2t.Text = "Charge:" Then StopCharge2 = True
                 ShowTitle("The god of duck pool launches aluminum triangle (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound57.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound57.wm")
             Else
-                ChangePower(False, -66)
+                ChangePower(False, - 66)
                 If cd2t.Text = "Charge:" Then StopCharge2 = True
                 ShowTitle("The god of duck pool launches aluminum triangle.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound57.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound57.wm")
             End If
         ElseIf code = 31 Then
             If hitpower >= 99 - MissProbability1 Then
                 ShowTitle("The witch mirrors unsuccessfully.", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             Else
                 ChangePower(False, LastMagicalDamage1, False, False, False, True, True)
                 LastMagicalDamage1 = 0
                 ShowTitle("The witch mirrors.", Color.Blue)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound57.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound57.wm")
             End If
         ElseIf code = 32 Then
             If hitpower >= 96 - MissProbability1 Then
                 ShowTitle("The witch charms (Failed to spell.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             Else
                 AddStatus(False, 30, 14.1)
                 ShowTitle("The witch charms.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound58.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound58.wm")
             End If
         ElseIf code = 33 Then
             If hitpower >= 97 - MissProbability1 Then
                 ShowTitle("The ejector got seized up while ejecting (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 2 + CriticalProbability1 Then
                 AddStatus(True, 31, 37.5)
                 AddStatus(False, 31, 37.5)
-                ChangePower(True, -1500, True)
+                ChangePower(True, - 1500, True)
                 If cd2t.Text = "Charge:" Then StopCharge2 = True
                 ShowTitle("Eject hydrogen sulfide (Critical Hit!!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound25.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound25.wm")
             Else
                 AddStatus(True, 31, 25)
                 AddStatus(False, 31, 25)
-                ChangePower(True, -500)
+                ChangePower(True, - 500)
                 If cd2t.Text = "Charge:" Then StopCharge2 = True
                 ShowTitle("Eject low concentration of hydrogen sulfide.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound56.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound56.wm")
             End If
         ElseIf code = 34 Then
             If hitpower >= 95 - MissProbability1 Then
                 ShowTitle("The chicken lays an egg and throws it (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 7 + CriticalProbability1 Then
-                ChangePower(False, -150, True)
+                ChangePower(False, - 150, True)
                 ShowTitle("The chicken lays an egg and throws it (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
                 AddStatus(False, 4, 9)
             Else
-                ChangePower(False, -50)
+                ChangePower(False, - 50)
                 ShowTitle("The chicken lays an egg and throws it.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound16.wm")
                 If hitpower <= 27 Then AddStatus(False, 4, 3)
             End If
         ElseIf code = 35 Then
             If hitpower >= 95 - MissProbability1 Then
                 ShowTitle("The negative positive cow spreads negative gas (Suppressed in body.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 7 + CriticalProbability1 Then
-                ChangePower(False, -147, True, False, False, True, True)
+                ChangePower(False, - 147, True, False, False, True, True)
                 ShowTitle("The negative positive cow spreads smelly negative gas (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound56.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound56.wm")
                 AddStatus(False, 12, 15)
             Else
-                ChangePower(False, -49, False, False, False, True, True)
+                ChangePower(False, - 49, False, False, False, True, True)
                 ShowTitle("The negative positive cow spreads negative gas.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound56.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound56.wm")
                 If hitpower <= 44 Then AddStatus(False, 12, 5)
             End If
         ElseIf code = 36 Then
             If hitpower >= 95 - MissProbability1 Then
                 ShowTitle("The negative positive cow releases power of Nether (Suppressed in body.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 7 + CriticalProbability1 Then
-                ChangePower(False, -110, True, False, False, True, True, True)
+                ChangePower(False, - 110, True, False, False, True, True, True)
                 ShowTitle("The negative positive cow releases extreme power of Nether (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
             Else
-                ChangePower(False, -55, False, False, False, True, True, True)
+                ChangePower(False, - 55, False, False, False, True, True, True)
                 ShowTitle("The negative positive cow releases power of Nether.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound30.wm")
             End If
         ElseIf code = 37 Then
-            Dim damage As Integer = Math.Pow(mana2f.Tag, 2) / 50
+            Dim damage As Integer = Math.Pow(mana2f.Tag, 2)/50
             If hitpower >= 95 - MissProbability1 Then
                 ShowTitle("Mr.Duck phantom burns your mana (No effect.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 1 + CriticalProbability1 Then
-                ChangePower(False, -damage * 2, True, True, False, True, True)
+                ChangePower(False, - damage*2, True, True, False, True, True)
                 ShowTitle("Mr.Duck phantom burns your mana (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound64.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound64.wm")
             Else
-                ChangePower(False, -damage, False, True, False, True, True)
+                ChangePower(False, - damage, False, True, False, True, True)
                 ShowTitle("Mr.Duck phantom burns your mana.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound64.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound64.wm")
             End If
         ElseIf code = 38 Then
             Dim damage As Integer
-            If (life2f.Tag - 90) Mod 180 = 0 Then damage = life2f.Tag Else damage = Math.Abs(40 * Math.Tan(Math.PI / 180 * life2f.Tag))
+            If (life2f.Tag - 90) Mod 180 = 0 Then damage = life2f.Tag Else _
+                damage = Math.Abs(40*Math.Tan(Math.PI/180*life2f.Tag))
             If hitpower >= 95 - MissProbability1 Then
                 ShowTitle("Mr.Duck phantom launches tangent wave (No effect.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 1 + CriticalProbability1 Then
-                ChangePower(False, -damage * 2, True, True, False, True, True)
+                ChangePower(False, - damage*2, True, True, False, True, True)
                 ShowTitle("Mr.Duck phantom launches tangent wave (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound65.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound65.wm")
             Else
-                ChangePower(False, -damage, False, True, False, True, True)
+                ChangePower(False, - damage, False, True, False, True, True)
                 ShowTitle("Mr.Duck phantom launches tangent wave.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound65.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound65.wm")
             End If
         ElseIf code = 39 Then
             If hitpower >= 98 - MissProbability1 Then
                 ShowTitle("??? beamed a red laser (No effect.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 4 + CriticalProbability1 Then
-                ChangePower(False, -300, True, False, False, True, True)
+                ChangePower(False, - 300, True, False, False, True, True)
                 ShowTitle("??? beamed a big long thick red laser (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound66.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound66.wm")
             Else
-                ChangePower(False, -100, False, False, False, True, True)
+                ChangePower(False, - 100, False, False, False, True, True)
                 ShowTitle("??? beamed a red laser.", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound66.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound66.wm")
             End If
         ElseIf code = 40 Then
-            ChangePower(True, life1b.Tag * 0.1)
+            ChangePower(True, life1b.Tag*0.1)
             ShowTitle("??? prays.", Color.Red)
             My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound20.wm")
         ElseIf code = 41 Then
             AddStatus(True, 9, 3)
-            ChangePower(False, -life2b.Tag * 0.25, False, True, False, True, True)
-            ChangePower(False, -mana2f.Tag, False, True, True, True, True, False, True)
+            ChangePower(False, - life2b.Tag*0.25, False, True, False, True, True)
+            ChangePower(False, - mana2f.Tag, False, True, True, True, True, False, True)
             ShowTitle("??? immolates you with the power of shadow.", Color.Red)
             My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound67.wm")
         ElseIf code = 42 Then
@@ -3018,32 +3392,36 @@ back:
             My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound5.wm")
         End If
     End Sub
+
     Private Sub StatusCheck_Tick(sender As Object, e As EventArgs) Handles StatusCheck.Tick
-        If HasStatus(True, 12) Then ChangePower(True, -12, False, True, True, False, False)
-        If HasStatus(True, 13) Then ChangePower(True, -8, False, True, True, False, False)
-        If HasStatus(True, 15) Then ChangePower(True, -10, False, False, True, False, False)
-        If HasStatus(True, 16) Then ChangePower(True, -life1b.Tag / 100, False, True, True, False, False)
-        If HasStatus(True, 19) Then ChangePower(True, -3, False, True, True, False, False)
-        If HasStatus(True, 23) Then ChangePower(True, -6, False, True, True, False, False)
-        If HasStatus(True, 31) Then ChangePower(True, -25, False, True, True, False, False)
+        If HasStatus(True, 12) Then ChangePower(True, - 12, False, True, True, False, False)
+        If HasStatus(True, 13) Then ChangePower(True, - 8, False, True, True, False, False)
+        If HasStatus(True, 15) Then ChangePower(True, - 10, False, False, True, False, False)
+        If HasStatus(True, 16) Then ChangePower(True, - life1b.Tag/100, False, True, True, False, False)
+        If HasStatus(True, 19) Then ChangePower(True, - 3, False, True, True, False, False)
+        If HasStatus(True, 23) Then ChangePower(True, - 6, False, True, True, False, False)
+        If HasStatus(True, 31) Then ChangePower(True, - 25, False, True, True, False, False)
         '____opposite____
-        If HasStatus(False, 12) Then ChangePower(False, -12, False, True, True, False, False)
-        If HasStatus(False, 13) Then ChangePower(False, -8, False, True, True, False, False)
-        If HasStatus(False, 15) Then ChangePower(False, -10, False, False, True, False, False)
-        If HasStatus(False, 1) Then ChangePower(False, -4, False, False, True, False, False)
-        If HasStatus(False, 16) Then ChangePower(False, -life2b.Tag / 100, False, True, True, False, False)
-        If HasStatus(False, 31) Then ChangePower(False, -25, False, True, True, False, False)
+        If HasStatus(False, 12) Then ChangePower(False, - 12, False, True, True, False, False)
+        If HasStatus(False, 13) Then ChangePower(False, - 8, False, True, True, False, False)
+        If HasStatus(False, 15) Then ChangePower(False, - 10, False, False, True, False, False)
+        If HasStatus(False, 1) Then ChangePower(False, - 4, False, False, True, False, False)
+        If HasStatus(False, 16) Then ChangePower(False, - life2b.Tag/100, False, True, True, False, False)
+        If HasStatus(False, 31) Then ChangePower(False, - 25, False, True, True, False, False)
     End Sub
-    Private Function IsStunned(ByVal player1 As Boolean)
-        Dim result As Boolean = False
+
+    Private Function IsStunned(player1 As Boolean)
+        Dim result = False
         If HasStatus(player1, 4) Then result = True
         If HasStatus(player1, 8) Then result = True
         Return result
     End Function
+
     Private Sub next1_Click(sender As Object, e As EventArgs) Handles next1.Click
         If content1.Tag = 0 Then
             content1.Tag = 1
-            content1.Text = "You cannot use common attack, defence or magic. You can have an attack after spelling one word."
+            content1.Text =
+                "You cannot use common attack, defence or magic. You can have an attack after spelling one word."
         ElseIf content1.Tag = 1 Then
             content1.Tag = 2
             next1.Enabled = False
@@ -3052,7 +3430,8 @@ back:
             content1.Text = "Now let's spell this word. Enter your word on the textbox."
         ElseIf content1.Tag = 3 Then
             content1.Tag = 4
-            content1.Text = "The red word does critical damage, the green word heals you instead of damaging the enemy, the blue word shrinks the word length."
+            content1.Text =
+                "The red word does critical damage, the green word heals you instead of damaging the enemy, the blue word shrinks the word length."
         ElseIf content1.Tag = 4 Then
             content1.Tag = 5
             content1.Text = "Good luck, good speed."
@@ -3091,7 +3470,8 @@ back:
             content1.Text = "Look at your mana bar, at present your max mana is 100. It can get increased in future."
         ElseIf content1.Tag = 7 Then
             content1.Tag = 8
-            content1.Text = "You got a new item ""Snowflake"" just now, it is the mana-required spell. Try to use it in this battle."
+            content1.Text =
+                "You got a new item ""Snowflake"" just now, it is the mana-required spell. Try to use it in this battle."
         ElseIf content1.Tag = 8 Then
             content1.Tag = 9
             special1.Visible = False
@@ -3114,7 +3494,8 @@ back:
             attack.Enabled = True
         ElseIf content1.Tag = 9 Then
             content1.Tag = 10
-            content1.Text = "The turkey mode of the witch is immune to magical damage, cannot be added new status, but suffers more from physical damage. The witch can instantaneously change its mode."
+            content1.Text =
+                "The turkey mode of the witch is immune to magical damage, cannot be added new status, but suffers more from physical damage. The witch can instantaneously change its mode."
         ElseIf content1.Tag = 10 Then
             special1.Visible = False
             content1.Tag = 11
@@ -3137,13 +3518,15 @@ back:
             attack.Enabled = True
         End If
     End Sub
+
     Public Sub ChangeWord(Optional word As String = "")
         If word = "" Then
-Back:
+            Back:
             If content1.Tag <= 3 Then Exit Sub
             Dim RandomNumber As Integer = random_.Next(0, vocabulary.Items.Count)
             If secret.Tag < secret.Text.Length Then
-                If Not vocabulary.Items(RandomNumber).ToString.Substring(0, 1) = secret.Text.Substring(secret.Tag, 1) Then GoTo Back
+                If Not vocabulary.Items(RandomNumber).ToString.Substring(0, 1) = secret.Text.Substring(secret.Tag, 1) _
+                    Then GoTo Back
             End If
             If HasStatus(False, 6) And HasStatus(False, 7) = False Then
                 If vocabulary.Items(RandomNumber).ToString.Length > 5 Then GoTo Back
@@ -3172,52 +3555,63 @@ Back:
             example.ForeColor = Color.Black
         End If
     End Sub
+
     Private Sub SpellBox_TextChanged(sender As Object, e As EventArgs) Handles SpellBox.TextChanged
         If SpellBox.TextLength = 0 Then Exit Sub
-        SpellBox.Text = SpellBox.Text.Substring(0, 1).ToUpper & SpellBox.Text.Substring(1, SpellBox.Text.Length - 1).ToLower
+        SpellBox.Text = SpellBox.Text.Substring(0, 1).ToUpper &
+                        SpellBox.Text.Substring(1, SpellBox.Text.Length - 1).ToLower
         If SpellBox.TextLength = SpellBox.MaxLength Then
             If example.Text = SpellBox.Text Then
                 If content1.Tag = 2 Then special1.Visible = False
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 If example.ForeColor = Color.Red Then
-                    ChangePower(True, 3 * (-attack_type * 2 - 4), True)
+                    ChangePower(True, 3*(- attack_type*2 - 4), True)
                     ShowTitle("Spell (Critical!)", Color.Red)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 ElseIf example.ForeColor = Color.Green Then
-                    ChangePower(False, 6 * (defend_type * 2 + 4))
+                    ChangePower(False, 6*(defend_type*2 + 4))
                     ShowTitle("Cure.", Color.Green)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound20.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound20.wm")
                 ElseIf example.ForeColor = Color.Blue Then
                     ChangePower(False, 0)
                     ShowTitle("Shrink.", Color.Green)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound21.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound21.wm")
                     AddStatus(False, 6, 18)
                 Else
-                    ChangePower(True, -attack_type * 2 - 4)
+                    ChangePower(True, - attack_type*2 - 4)
                     ShowTitle("Spell.", Color.Black)
-                    My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                 End If
             Else
                 If content1.Tag = 2 Then
                     SpellBox.Clear()
                 Else
                     If example.ForeColor = Color.Red Then
-                        ChangePower(False, 3 * (-attack_type * 2 - 4), True)
+                        ChangePower(False, 3*(- attack_type*2 - 4), True)
                         ShowTitle("Spell (Wrong! Critical!)", Color.Red)
                         title.ForeColor = Color.Red
-                        My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                        My.Computer.Audio.Play(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                     ElseIf example.ForeColor = Color.Green Then
                         ChangePower(False, 0)
                         ShowTitle("Cure (Useless.)", Color.Gold)
-                        My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                        My.Computer.Audio.Play(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                     ElseIf example.ForeColor = Color.Blue Then
                         ChangePower(False, 0)
                         ShowTitle("Shrink (Useless.)", Color.Gold)
-                        My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                        My.Computer.Audio.Play(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                     Else
-                        ChangePower(False, -attack_type * 2 - 4)
+                        ChangePower(False, - attack_type*2 - 4)
                         ShowTitle("Spell (Wrong!)", Color.OrangeRed)
-                        My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
+                        My.Computer.Audio.Play(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound3.wm")
                     End If
                 End If
             End If
@@ -3229,21 +3623,23 @@ Back:
         SpellBox.SelectionStart = SpellBox.Text.Length
         SpellBox.ScrollToCaret()
     End Sub
+
     Private Sub heal_Click(sender As Object, e As EventArgs) Handles heal.Click
         If battle = 14 Or battle = 23 Or life2f.Tag = life2b.Tag Or life2f.Tag = 0 Then
             heal.Enabled = False
             Exit Sub
         End If
         Form1.heal -= 1
-        ChangePower(False, life2b.Tag * 0.33, False, True, False, False, False)
+        ChangePower(False, life2b.Tag*0.33, False, True, False, False, False)
         ShowTitle("Heal.", Color.Green)
         My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound19.wm")
         CoolDown(False, 0.6)
         heal.Text = "Heal(" & Form1.heal & ")"
         If Form1.heal = 0 Then heal.Enabled = False
     End Sub
-    Private Sub RemoveAllStatuses(ByVal player1 As Boolean)
-        For i As Integer = 0 To 5
+
+    Private Sub RemoveAllStatuses(player1 As Boolean)
+        For i = 0 To 5
             If player1 Then
                 status1(i).Visible = False
             Else
@@ -3251,38 +3647,44 @@ Back:
             End If
         Next
     End Sub
+
     Private Sub assist1_Click(sender As Object, e As EventArgs) Handles assist1.Click
         CheckForMissCritical(False)
-        Dim AddUp As Integer = 1
-        Dim BossUp As Integer = 0
+        Dim AddUp = 1
+        Dim BossUp = 0
         If battle = 6 Then AddUp = 8
-        If battle = 8 Then BossUp = -1
+        If battle = 8 Then BossUp = - 1
         Dim hitpower As Integer = random_.Next(1, 101)
         If assist.Tag = 0 Then
             If hitpower < 95 - MissProbability2 Then
-                ChangePower(True, -14 * AddUp + BossUp)
+                ChangePower(True, - 14*AddUp + BossUp)
                 ShowTitle("Peck the " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
             ElseIf hitpower <= 6 + CriticalProbability2 Then
-                ChangePower(True, -42 * AddUp + 3 * BossUp, True)
+                ChangePower(True, - 42*AddUp + 3*BossUp, True)
                 ShowTitle("Peck the " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound14.wm")
             Else
                 ShowTitle("Peck the " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             End If
             CoolDown(False, 1.6)
         End If
     End Sub
+
     Private Sub assist2_Click(sender As Object, e As EventArgs) Handles assist2.Click
         Charge(False, 7, 0.7, 2.4)
     End Sub
-    Private Sub CheckForMissCritical(ByVal player1 As Boolean)
+
+    Private Sub CheckForMissCritical(player1 As Boolean)
         If player1 Then
             MissProbability1 = 0
             CriticalProbability1 = 0
             If HasStatus(player1, 11) Then MissProbability1 = 24
-            If HasStatus(player1, 11) Then CriticalProbability1 = -101
+            If HasStatus(player1, 11) Then CriticalProbability1 = - 101
             If HasStatus(player1, 14) Then MissProbability1 = 70
             If HasStatus(False, 18) Then MissProbability1 = 101
             If HasStatus(True, 33) Then CriticalProbability1 = 101
@@ -3290,39 +3692,46 @@ Back:
             MissProbability2 = 0
             CriticalProbability2 = 0
             If HasStatus(player1, 11) Then MissProbability2 = 24
-            If HasStatus(player1, 11) Then CriticalProbability2 = -101
+            If HasStatus(player1, 11) Then CriticalProbability2 = - 101
             If HasStatus(player1, 14) Then MissProbability2 = 70
             If HasStatus(True, 18) Then MissProbability2 = 101
             If HasStatus(True, 26) Then MissProbability2 = 30
             If HasStatus(True, 34) Then MissProbability2 = 101
         End If
     End Sub
+
     Private Sub assist3_Click(sender As Object, e As EventArgs) Handles assist3.Click
         If assist.Tag = 0 Then
             Dim hitpower As Integer = random_.Next(1, 101)
-            Dim BattleCut As Integer = 0
+            Dim BattleCut = 0
             If battle = 7 Then BattleCut = 20
             Dim damage As Double
             If battle = 8 Then
-                damage = -Math.Abs(Math.Cos(Math.PI / 180 * life1f.Tag)) * 100
+                damage = - Math.Abs(Math.Cos(Math.PI/180*life1f.Tag))*100
             Else
-                damage = -Math.Abs(Math.Sin(Math.PI / 180 * life1f.Tag)) * (100 + BattleCut)
+                damage = - Math.Abs(Math.Sin(Math.PI/180*life1f.Tag))*(100 + BattleCut)
             End If
             If hitpower >= 95 - MissProbability2 Then
-                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Miss the target.)", Color.Gold)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Miss the target.)",
+                          Color.Gold)
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
             ElseIf hitpower <= 5 + CriticalProbability2 Then
-                ChangePower(True, damage * 3, True, True, False, True, True)
-                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Critical Hit!)", Color.Red)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                ChangePower(True, damage*3, True, True, False, True, True)
+                ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & " (Critical Hit!)",
+                          Color.Red)
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
             Else
                 ChangePower(True, damage, False, True, False, True, True)
                 ShowTitle("Launch trigonometric function wave to " & Form8.EnemyName.Text & ".", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
             End If
             CoolDown(False, 5.1)
         End If
     End Sub
+
     Private Sub debug_Tick(sender As Object, e As EventArgs) Handles debug.Tick
         debug1.CheckBox1.Checked = EnemyAction.Enabled
         debug1.CheckBox2.Checked = setlife1.Enabled
@@ -3336,8 +3745,9 @@ Back:
         debug1.Label3.Text = "mana1=" & UnlockNumber(point1mana)
         debug1.Label4.Text = "mana2=" & UnlockNumber(point2mana)
     End Sub
+
     Public Sub SetParent()
-        For i As Integer = 0 To 5
+        For i = 0 To 5
             status1(i).BackColor = Color.Transparent
             status2(i).BackColor = Color.Transparent
         Next
@@ -3356,30 +3766,37 @@ Back:
         mana1t.BackColor = Color.Transparent
         mana2t.BackColor = Color.Transparent
     End Sub
+
     Private Sub cd1_Click(sender As Object, e As EventArgs)
         'ModifyLife(True, 0)
     End Sub
-    Private Sub RemoveStatus(ByVal player1 As Boolean, Code As Integer)
-        For i As Integer = 0 To 5
+
+    Private Sub RemoveStatus(player1 As Boolean, Code As Integer)
+        For i = 0 To 5
             If player1 Then
-                If status1(i).Visible AndAlso status1(i).Tag.ToString.Split(":")(0) = Code Then status1(i).Visible = False
+                If status1(i).Visible AndAlso status1(i).Tag.ToString.Split(":")(0) = Code Then _
+                    status1(i).Visible = False
             Else
-                If status2(i).Visible AndAlso status2(i).Tag.ToString.Split(":")(0) = Code Then status2(i).Visible = False
+                If status2(i).Visible AndAlso status2(i).Tag.ToString.Split(":")(0) = Code Then _
+                    status2(i).Visible = False
             End If
         Next
     End Sub
-    Private Sub BreakDefence(ByVal player1 As Boolean)
+
+    Private Sub BreakDefence(player1 As Boolean)
         RemoveStatus(player1, 0)
         RemoveStatus(player1, 5)
         RemoveStatus(player1, 10)
     End Sub
-    Private Function HasDefence(ByVal player1 As Boolean)
-        Dim result As Boolean = False
+
+    Private Function HasDefence(player1 As Boolean)
+        Dim result = False
         If HasStatus(player1, 0) Then result = True
         If HasStatus(player1, 5) Then result = True
         If HasStatus(player1, 10) Then result = True
         Return result
     End Function
+
     Private Sub pause_Click(sender As Object, e As EventArgs) Handles pause.Click
         If pause.Text = "Pause" Then
             pause.Text = "Resume"
@@ -3408,14 +3825,17 @@ Back:
             If mana2b.Visible Then Mana2restore.Enabled = True
         End If
     End Sub
+
     Private Sub Mana1restore_Tick(sender As Object, e As EventArgs) Handles Mana1restore.Tick
         If HasStatus(True, 31) Then Exit Sub
         ChangePower(True, 1, False, False, True, False, False, False, True)
     End Sub
+
     Private Sub Mana2restore_Tick(sender As Object, e As EventArgs) Handles Mana2restore.Tick
         If HasStatus(False, 31) Then Exit Sub
         ChangePower(False, 1, False, False, True, False, False, False, True)
     End Sub
+
     Private Sub setmana1_Tick(sender As Object, e As EventArgs) Handles setmana1.Tick
         If mana1f.Tag > UnlockNumber(point1mana) Then
             ModifyMana(True, mana1f.Tag - 1)
@@ -3427,6 +3847,7 @@ Back:
             setmana1.Enabled = False
         End If
     End Sub
+
     Private Sub setmana2_Tick(sender As Object, e As EventArgs) Handles setmana2.Tick
         If mana2f.Tag > UnlockNumber(point2mana) Then
             ModifyMana(False, mana2f.Tag - 1)
@@ -3438,7 +3859,8 @@ Back:
             setmana2.Enabled = False
         End If
     End Sub
-    Private Function Spell(ByVal player1 As Boolean, ByVal cost As Integer, ByVal code As Integer)
+
+    Private Function Spell(player1 As Boolean, cost As Integer, code As Integer)
         If (player1 And mana1f.Tag < cost) Or (player1 = False And mana2f.Tag < cost) Then
             If player1 Then
                 color1.Enabled = True
@@ -3449,7 +3871,7 @@ Back:
             End If
             Return False
         Else
-            ChangePower(player1, -cost, False, True, False, False, False, False, True)
+            ChangePower(player1, - cost, False, True, False, False, False, False, True)
             If code = 0 Then
                 Charge(False, 15, 1.8, 1.5)
             ElseIf code = 1 Then
@@ -3472,35 +3894,43 @@ Back:
                 Charge(False, 27, 1.5, 1.15)
             ElseIf code = 10 Then
                 ShowTitle("The " & Form8.EnemyName.Text & " changes to turtle.", Color.Blue)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound20.wm")
-                battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image16.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound20.wm")
+                battler.Image =
+                    Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image16.wm")
                 RemoveStatus(True, 28)
                 AddStatus(True, 27, 8.1)
                 CoolDown(True, 1.5)
             ElseIf code = 11 Then
                 ShowTitle("The " & Form8.EnemyName.Text & " changes to turkey.", Color.Blue)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound20.wm")
-                battler.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image17.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound20.wm")
+                battler.Image =
+                    Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image17.wm")
                 RemoveStatus(True, 27)
                 AddStatus(True, 28, 8.1)
                 CoolDown(True, 1.5)
             ElseIf code = 12 Then
                 Dim hitpower As Integer = random_.Next(1, 101)
                 ShowTitle("The witch puts magic power on you (" & MagicPowerStage & "/3)", Color.Black)
-                My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
+                My.Computer.Audio.Play(
+                    My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound15.wm")
                 If MagicPowerStage = 3 Then
                     MagicPowerStage = 0
                     If hitpower >= 98 - MissProbability1 Then
                         ShowTitle("The magic power goes away.", Color.Gold)
-                        My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
+                        My.Computer.Audio.Play(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound6.wm")
                     ElseIf hitpower <= 3 + CriticalProbability1 Then
-                        ChangePower(False, -200, True)
+                        ChangePower(False, - 200, True)
                         ShowTitle("The magic power explodes (Critical Hit!)", Color.Red)
-                        My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
+                        My.Computer.Audio.Play(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound23.wm")
                     Else
-                        ChangePower(False, -100)
+                        ChangePower(False, - 100)
                         ShowTitle("The magic power explodes.", Color.OrangeRed)
-                        My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
+                        My.Computer.Audio.Play(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound24.wm")
                     End If
                 End If
                 CoolDown(True, 2.33)
@@ -3526,19 +3956,25 @@ Back:
             Return True
         End If
     End Function
+
     Private Sub color1_Tick(sender As Object, e As EventArgs) Handles color1.Tick
         color1.Enabled = False
         mana1t.ForeColor = Color.Blue
     End Sub
+
     Private Sub color2_Tick(sender As Object, e As EventArgs) Handles color2.Tick
         color2.Enabled = False
         mana2t.ForeColor = Color.Blue
     End Sub
+
     Private Sub CheckForCheating()
-        if mana1f.Tag=nothing Or mana2f.tag=nothing then
+        if mana1f.Tag = nothing Or mana2f.tag = nothing then
             exit sub
-            end if
-        If Not life1f.Tag.ToString = UnlockNumber(LockedLife1) Or Not life2f.Tag.ToString = UnlockNumber(LockedLife2) Or (mana1b.Visible And Not mana1f.Tag.ToString = UnlockNumber(LockedMana1)) Or (mana2b.Visible And Not mana2f.Tag.ToString = UnlockNumber(LockedMana2)) Then
+        end if
+        If _
+            Not life1f.Tag.ToString = UnlockNumber(LockedLife1) Or Not life2f.Tag.ToString = UnlockNumber(LockedLife2) Or
+            (mana1b.Visible And Not mana1f.Tag.ToString = UnlockNumber(LockedMana1)) Or
+            (mana2b.Visible And Not mana2f.Tag.ToString = UnlockNumber(LockedMana2)) Then
             Form1.music.Ctlcontrols.stop()
             EnemyAction.Enabled = False
             StatusCheck.Enabled = False
@@ -3554,14 +3990,18 @@ Back:
             shining.Enabled = False
             defeat.Enabled = False
             titleshow.Enabled = False
-            MsgBox("An unexpected external modification is found affecting the program." & vbCrLf & "Turn off the external modifier, then start the program again if you want." & vbCrLf & "Now the program is going to close.", vbCritical, "Unexpected Modification")
+            MsgBox(
+                "An unexpected external modification is found affecting the program." & vbCrLf &
+                "Turn off the external modifier, then start the program again if you want." & vbCrLf &
+                "Now the program is going to close.", vbCritical, "Unexpected Modification")
             End
         End If
     End Sub
-    Private Function LockNumber(ByVal number As Integer)
-        Dim exportion As String = ""
+
+    Private Function LockNumber(number As Integer)
+        Dim exportion = ""
         If number = Nothing Then Return "A"
-        For x As Integer = 0 To number.ToString.Length - 1
+        For x = 0 To number.ToString.Length - 1
             If number.ToString.Substring(x, 1) = "0" Then exportion = exportion & "A"
             If number.ToString.Substring(x, 1) = "1" Then exportion = exportion & "B"
             If number.ToString.Substring(x, 1) = "2" Then exportion = exportion & "C"
@@ -3576,10 +4016,11 @@ Back:
         If number < 0 Then exportion = exportion & "X"
         Return exportion
     End Function
-    Private Function UnlockNumber(ByVal password As String)
-        Dim exportion As String = ""
+
+    Private Function UnlockNumber(password As String)
+        Dim exportion = ""
         If password = "" Then Return 0
-        For x As Integer = 0 To password.ToString.Length - 1
+        For x = 0 To password.ToString.Length - 1
             If password.ToString.Substring(x, 1) = "A" Then exportion = exportion & "0"
             If password.ToString.Substring(x, 1) = "B" Then exportion = exportion & "1"
             If password.ToString.Substring(x, 1) = "C" Then exportion = exportion & "2"

@@ -1,5 +1,4 @@
 ﻿Public Class Form12
-
     Public Sub initialization()
         skill.Text = ""
         skillt.Text = ""
@@ -9,7 +8,7 @@
         manacost.Visible = False
         Button1.Enabled = True
         ListBox1.Items.Clear()
-        For i As Integer = 0 To Form1.magics.Items.Count - 1
+        For i = 0 To Form1.magics.Items.Count - 1
             ListBox1.Items.Add(Form1.magics.Items(i))
         Next
     End Sub
@@ -67,7 +66,11 @@
             Form7.assist3t.Text = "Cause 100|sin(x°)| damage. x=your enemy's health."
             Form7.assist.Enabled = True
         ElseIf Form7.battle = 7 Then
-            MsgBox("The mixed turk&fish can attack very, very fast. You have less time for thinking." & vbCrLf & "Mr.Duck's function will be effective when the enemy's life is near 90 or 270, it can cause 120 damage when the life is 90 or 270." & vbCrLf & "The ""function"" is an absolute attack (The damage cannot be changed by other cause.)", 64, "Battle Tip")
+            MsgBox(
+                "The mixed turk&fish can attack very, very fast. You have less time for thinking." & vbCrLf &
+                "Mr.Duck's function will be effective when the enemy's life is near 90 or 270, it can cause 120 damage when the life is 90 or 270." &
+                vbCrLf & "The ""function"" is an absolute attack (The damage cannot be changed by other cause.)", 64,
+                "Battle Tip")
             Form7.StatusCheck.Enabled = True
             Form7.EnemyAction.Enabled = True
             Form7.assist.Tag = 0
@@ -110,44 +113,51 @@
         If ListBox1.SelectedItem = "Water egg" Then
             skill.Text = "Splash"
             skillt.Text = "Slow down your enemy's cool down."
-            content.Text = "This skill will slow down both your enemy's cool down speed and charge time in some seconds."
+            content.Text =
+                "This skill will slow down both your enemy's cool down speed and charge time in some seconds."
             Form7.magic_type = 1
             manacost.Visible = False
         ElseIf ListBox1.SelectedItem = "Cockscomb gun" Then
             skill.Text = "Launch"
             skillt.Text = "Cause 60 damage."
-            content.Text = "This skill needs less time to charge, but its cool down time will be very long. It still has the probability to miss the target."
+            content.Text =
+                "This skill needs less time to charge, but its cool down time will be very long. It still has the probability to miss the target."
             Form7.magic_type = 2
             manacost.Visible = False
         ElseIf ListBox1.SelectedItem = "Solar light" Then
             skill.Text = "Shine"
             skillt.Text = "Numb your enemy for 3 seconds."
-            content.Text = "This skill needs long time to charge but less time to cool down. It can benumb your enemy, he cannot do anything while being numbed, after that he'll get ""Slow down""."
+            content.Text =
+                "This skill needs long time to charge but less time to cool down. It can benumb your enemy, he cannot do anything while being numbed, after that he'll get ""Slow down""."
             Form7.magic_type = 3
             manacost.Visible = False
         ElseIf ListBox1.SelectedItem = "Duck function" Then
             skill.Text = "Function"
             skillt.Text = "Cause 70|sin(x°)| damage, x=enemy life. (Absolute damage)"
-            content.Text = "This skill needs both short time to charge or cool down. The damage ups to enemy life: 90 or 270, 450... can cause full damage. Exact full damage will become critical."
+            content.Text =
+                "This skill needs both short time to charge or cool down. The damage ups to enemy life: 90 or 270, 450... can cause full damage. Exact full damage will become critical."
             Form7.magic_type = 4
             manacost.Visible = False
         ElseIf ListBox1.SelectedItem = "Fireball" Then
             skill.Text = "Fireball"
             skillt.Text = "Cause 100 damage and burn the enemy."
-            content.Text = "This skill needs long time to charge but less time to cool down. It burns the enemy causing continuous damage, the defence can prevent the damage."
+            content.Text =
+                "This skill needs long time to charge but less time to cool down. It burns the enemy causing continuous damage, the defence can prevent the damage."
             Form7.magic_type = 5
             manacost.Visible = False
         ElseIf ListBox1.SelectedItem = "Snowflake" Then
             skill.Text = "Freeze"
             skillt.Text = "Cause 40 damage, freeze the enemy."
-            content.Text = "This skill takes mana to spell. It can cause magic damage and freeze the enemy, freezed enemy can still cool down, but cannot charge or do action."
+            content.Text =
+                "This skill takes mana to spell. It can cause magic damage and freeze the enemy, freezed enemy can still cool down, but cannot charge or do action."
             Form7.magic_type = 6
             manacost.Visible = True
             manacost.Text = "27"
         ElseIf ListBox1.SelectedItem = "Duck function+" Then
             skill.Text = "Function"
             skillt.Text = "Cause 120|cos(x°)| damage, x=enemy life. (Absolute damage)"
-            content.Text = "This skill needs both short time to charge or cool down. The damage ups to enemy life: 0 or 180, 360... can cause full damage. Exact full damage will become critical."
+            content.Text =
+                "This skill needs both short time to charge or cool down. The damage ups to enemy life: 0 or 180, 360... can cause full damage. Exact full damage will become critical."
             Form7.magic_type = 7
             manacost.Visible = True
             manacost.Text = "24"
@@ -161,28 +171,32 @@
         ElseIf ListBox1.SelectedItem = "HCl gun" Then
             skill.Text = "Launch"
             skillt.Text = "Cause 45 damage and corrode the enemy."
-            content.Text = "The HCl gun launches to the enemy, corrodes enemy, then it'll start to lose 1 percent of life per sec. It is especially useful to strong enemy or BOSS."
+            content.Text =
+                "The HCl gun launches to the enemy, corrodes enemy, then it'll start to lose 1 percent of life per sec. It is especially useful to strong enemy or BOSS."
             Form7.magic_type = 9
             manacost.Visible = True
             manacost.Text = "51"
         ElseIf ListBox1.SelectedItem = "Homework generator" Then
             skill.Text = "Generate"
             skillt.Text = "confuse, discombobulate, numb the enemy."
-            content.Text = "It has 70% probability to confuse, 45% to discombobulate, 20% to numb the enemy. These statuses can be superposed. It also has the probability to cause no effect."
+            content.Text =
+                "It has 70% probability to confuse, 45% to discombobulate, 20% to numb the enemy. These statuses can be superposed. It also has the probability to cause no effect."
             Form7.magic_type = 10
             manacost.Visible = True
             manacost.Text = "34"
         ElseIf ListBox1.SelectedItem = "H2S ejector" Then
             skill.Text = "Eject"
             skillt.Text = "Cause 500 damage, spread high poison."
-            content.Text = "The high-risk magic causes high damage, then poison both you and the enemy. Poisoned battler gets 25 damage per sec, this lasts for 25 secs."
+            content.Text =
+                "The high-risk magic causes high damage, then poison both you and the enemy. Poisoned battler gets 25 damage per sec, this lasts for 25 secs."
             Form7.magic_type = 11
             manacost.Visible = True
             manacost.Text = "96"
         Else
             skill.Visible = False
             skillt.Visible = False
-            content.Text = "Each magic item can enable a magic skill, in one battle you can only bring one magic power. Each magic skill has different charge time and cool down time."
+            content.Text =
+                "Each magic item can enable a magic skill, in one battle you can only bring one magic power. Each magic skill has different charge time and cool down time."
             Form7.magic_type = 0
             manacost.Visible = False
         End If

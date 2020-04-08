@@ -1,5 +1,4 @@
 ﻿Public Class Form3
-
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Timer1.Tag -= 1
         Button1.Text = "End.(" & Timer1.Tag & ")"

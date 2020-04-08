@@ -1,9 +1,11 @@
 ﻿
 Imports System.IO
+Imports System.Text
 
 Public Class Form2
     Private step_ As Integer = 0
-    Private s As IO.Stream
+    Private s As Stream
+
     Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Timer1.Enabled = True
     End Sub
@@ -13,8 +15,8 @@ Public Class Form2
         Form1.Show()
         Form1.Height = 241 + Form1.height_append
         Form1.Width = Form1.topic.Width + 10 + Form1.width_append
-        Form1.Left = Screen.PrimaryScreen.Bounds.Width.ToString / 2 - Form1.Width / 2
-        Form1.Top = Screen.PrimaryScreen.Bounds.Height.ToString / 2 - Form1.Height / 2
+        Form1.Left = Screen.PrimaryScreen.Bounds.Width.ToString/2 - Form1.Width/2
+        Form1.Top = Screen.PrimaryScreen.Bounds.Height.ToString/2 - Form1.Height/2
         Form1.topic.BringToFront()
         Form1.DifTip.BringToFront()
         Form1.savetip.BringToFront()
@@ -23,16 +25,20 @@ Public Class Form2
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         If step_ = 0 Then
             step_ = 1
-            content.Text = "The turkey lord often rampaged with his minions. He commanded a large turkey army and got great power."
+            content.Text =
+                "The turkey lord often rampaged with his minions. He commanded a large turkey army and got great power."
         ElseIf step_ = 1 Then
             step_ = 2
-            content.Text = "However, the immortality of turkey had fallen apart after a physics class. In an accidental chance, the physics teacher Ms. Li sat down on him and killed the turkey lord. Then he didn't appear again until one day..."
+            content.Text =
+                "However, the immortality of turkey had fallen apart after a physics class. In an accidental chance, the physics teacher Ms. Li sat down on him and killed the turkey lord. Then he didn't appear again until one day..."
         ElseIf step_ = 2 Then
             step_ = 3
-            content.Text = "One day when the teacher went into class and opened the door of host computer, massive turkey eggs dropped out from inside. People mentioned the turkey lord. He has resurrected!!"
+            content.Text =
+                "One day when the teacher went into class and opened the door of host computer, massive turkey eggs dropped out from inside. People mentioned the turkey lord. He has resurrected!!"
         ElseIf step_ = 3 Then
             step_ = 4
-            content.Text = "He had lost his powerful power and become a common turkey after he was sat down by Ms. Li. He was eager for power. But we... just desire his delicious meat for Thanksgiving day."
+            content.Text =
+                "He had lost his powerful power and become a common turkey after he was sat down by Ms. Li. He was eager for power. But we... just desire his delicious meat for Thanksgiving day."
         ElseIf step_ = 4 Then
             step_ = 5
             Button1.Text = "Get ready!"
@@ -44,15 +50,24 @@ Public Class Form2
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Timer1.Enabled = False
-        If Not My.Computer.FileSystem.DirectoryExists(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files") Then
-restart:
+        If _
+            Not _
+            My.Computer.FileSystem.DirectoryExists(
+                My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files") Then
+            restart:
             Label1.Visible = True
             Timer2.Enabled = True
         Else
-retry:
-            For i As Integer = 0 To ListBox1.Items.Count - 1
-                If My.Computer.FileSystem.FileExists(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\" & ListBox1.Items(i) & ".wm") = False Then
-                    Dim ComplexMsg = MsgBox("The program has to restart, probably it is because of an update (a new vision of program has run). Press ""Ignore"" then you can normally start the program. If this situation lasts endlessly, press ""Abort"" to stop the program.", vbAbortRetryIgnore, "Restart")
+            retry:
+            For i = 0 To ListBox1.Items.Count - 1
+                If _
+                    My.Computer.FileSystem.FileExists(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\" & ListBox1.Items(i) &
+                        ".wm") = False Then
+                    Dim ComplexMsg =
+                            MsgBox(
+                                "The program has to restart, probably it is because of an update (a new vision of program has run). Press ""Ignore"" then you can normally start the program. If this situation lasts endlessly, press ""Abort"" to stop the program.",
+                                vbAbortRetryIgnore, "Restart")
                     If ComplexMsg = vbAbort Then
                         End
                         Exit Sub
@@ -66,7 +81,7 @@ retry:
             Next
             If My.Computer.FileSystem.FileExists("settings.ini") Then
                 Dim RT As StreamReader
-                RT = New StreamReader("settings.ini", System.Text.ASCIIEncoding.Default)
+                RT = New StreamReader("settings.ini", ASCIIEncoding.Default)
                 My.Settings.savetime = RT.ReadLine().Split(":")(1)
                 My.Settings.chapter = RT.ReadLine().Split(":")(1)
                 My.Settings.place = RT.ReadLine().Split(":")(1)
@@ -89,7 +104,7 @@ retry:
                 title.Text = "Prologue of legend"
                 content.Text = "Once upon a time there was a turkey lord which had ultimate power."
             Else
-nextpage:
+                nextpage:
                 Hide()
                 Form16.Show()
                 Form16.Initialization()
@@ -99,7 +114,8 @@ nextpage:
 
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
         Timer2.Enabled = False
-        My.Computer.FileSystem.CreateDirectory(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files")
+        My.Computer.FileSystem.CreateDirectory(
+            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files")
         Export(My.Resources.Cities_of_Tomorrow, "music1")
         Export(My.Resources.Defeat, "sound1")
         Export(My.Resources.bump, "sound3")
@@ -616,7 +632,7 @@ nextpage:
         Exit Sub
     End Sub
 
-    Private Sub Export(ByVal resourceItem As Byte(), path As String)
+    Private Sub Export(resourceItem As Byte(), path As String)
         s = File.Create(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\" & path & ".wm")
         s.Write(resourceItem, 0, resourceItem.Length)
     End Sub

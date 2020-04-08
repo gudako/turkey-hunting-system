@@ -33,7 +33,7 @@
         start.Enabled = True
     End Sub
 
-    Dim DamnUNoTip As New ToolTip
+    Dim ReadOnly DamnUNoTip As New ToolTip
 
     Public Sub StupidDelay()
         DamnUNoTip.SetToolTip(skill1, skill1.Text)

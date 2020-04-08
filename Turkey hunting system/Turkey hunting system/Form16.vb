@@ -1,4 +1,6 @@
-﻿Public Class Form16
+﻿Imports System.IO
+
+Public Class Form16
     Private Sub exit__Click(sender As Object, e As EventArgs) Handles exit_.Click
         End
     End Sub
@@ -54,7 +56,7 @@
         Form1.savetip.BringToFront()
         Form1.weapon_level = My.Settings.weapon
         Form1.shield_level = My.Settings.shield
-        For i As Integer = 0 To My.Settings.magics.Split("/").Count - 2
+        For i = 0 To My.Settings.magics.Split("/").Count - 2
             Form1.magics.Items.Add(My.Settings.magics.Split("/")(i))
         Next
         Form1.revive = My.Settings.revival
@@ -64,20 +66,20 @@
         If Not My.Settings.potionshop = "" Then
             Form13.Show()
             Form13.Hide()
-            For i As Integer = 0 To ((My.Settings.potionshop.Split("/").Count - 1) / 3) - 1
-                Dim NewItem As ListViewItem = New ListViewItem
+            For i = 0 To ((My.Settings.potionshop.Split("/").Count - 1)/3) - 1
+                Dim NewItem = New ListViewItem
                 With NewItem
-                    .SubItems(0).Text = My.Settings.potionshop.Split("/")(0 + 3 * i)
-                    .SubItems.Add(My.Settings.potionshop.Split("/")(1 + 3 * i))
-                    .SubItems.Add(My.Settings.potionshop.Split("/")(2 + 3 * i))
+                    .SubItems(0).Text = My.Settings.potionshop.Split("/")(0 + 3*i)
+                    .SubItems.Add(My.Settings.potionshop.Split("/")(1 + 3*i))
+                    .SubItems.Add(My.Settings.potionshop.Split("/")(2 + 3*i))
                 End With
                 Form13.ItemsList.Items.Add(NewItem)
             Next
         End If
-        For i As Integer = 0 To My.Settings.items.Split("/").Count - 2
+        For i = 0 To My.Settings.items.Split("/").Count - 2
             Form1.items.Items.Add(My.Settings.items.Split("/")(i))
         Next
-        For i As Integer = 0 To My.Settings.unlocked.Split("/").Count - 2
+        For i = 0 To My.Settings.unlocked.Split("/").Count - 2
             Form1.Unlocked.Items.Add(My.Settings.unlocked.Split("/")(i))
         Next
         If My.Settings.appendix = 0 Then
@@ -92,8 +94,10 @@
             Form1.place3_4.Visible = True
             Form1.place3_5.Visible = True
             Form1.BackColor = Color.White
-            Form1.picturebox1.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\scene1.wm")
-            Form1.content.Text = "Please select a place to search the turkey." & vbCrLf & vbCrLf & "The sound ensures the turkey is in the school."
+            Form1.picturebox1.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\scene1.wm")
+            Form1.content.Text = "Please select a place to search the turkey." & vbCrLf & vbCrLf &
+                                 "The sound ensures the turkey is in the school."
             Form1.topic.Text = "Chapter1"
             Form1.topic.Visible = True
             Form1.DifTip.Visible = True
@@ -183,7 +187,8 @@
             Form1.Disappear2()
             Form1.lock26_1.Tag = 2
             Form1.lock26_1.Image = Form1.ImageList1.Images(4)
-            Form1.actor.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image6.wm")
+            Form1.actor.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image6.wm")
             Form1.actor.Visible = True
             Form1.shining.Enabled = True
             Form1.itemlist.Visible = True
@@ -272,7 +277,8 @@
             Form1.SetParent1()
             Form1.Scene084appears()
             Form1.music.Ctlcontrols.stop()
-            Form1.actor.Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image2.wm")
+            Form1.actor.Image =
+                Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\image2.wm")
             Form1.actor.Visible = True
             Form1.actor.Top = 0
             Form1.MoveAtropos.Tag = 25185
@@ -321,7 +327,67 @@
 
         Form1.music.settings.volume = Form1.BackgroundVolume
         Form1.music.settings.setMode("loop", True)
-        Form1.Left = (Screen.PrimaryScreen.Bounds.Width - Form1.Width) / 2
-        Form1.Top = (Screen.PrimaryScreen.Bounds.Height - Form1.Height) / 2
+        Form1.Left = (Screen.PrimaryScreen.Bounds.Width - Form1.Width)/2
+        Form1.Top = (Screen.PrimaryScreen.Bounds.Height - Form1.Height)/2
+    End Sub
+
+    Private Sub SaveProgress_Click(sender As Object, e As EventArgs) Handles SaveProgress.Click
+        Dim sd = New SaveFileDialog()
+        sd.Filter="*.txt|*.txt"
+        sd.ShowDialog()
+        if sd.FileName="" Then Exit Sub
+        Try
+            Dim sw =New StreamWriter(sd.FileName)
+            sw.WriteLine(My.Settings.savetime)
+            sw.WriteLine(My.Settings.chapter)
+            sw.WriteLine(My.Settings.place)
+            sw.WriteLine(My.Settings.weapon)
+            sw.WriteLine(My.Settings.shield)
+            sw.WriteLine(My.Settings.magics)
+            sw.WriteLine(My.Settings.revival)
+            sw.WriteLine(My.Settings.curative)
+            sw.WriteLine(My.Settings.appendix)
+            sw.WriteLine(My.Settings.potionshop)
+            sw.WriteLine(My.Settings.items)
+            sw.WriteLine(My.Settings.nest_destroyed)
+            sw.WriteLine(My.Settings.witch_book)
+            sw.WriteLine(My.Settings.unlocked)
+            sw.WriteLine(My.Settings.missions)
+            sw.Close()
+        Catch ex As Exception
+            MessageBox.Show("error")
+        End Try
+    End Sub
+
+    Private Sub LoadProgress_Click(sender As Object, e As EventArgs) Handles LoadProgress.Click
+        dim rd = New OpenFileDialog()
+        rd.Multiselect=false
+        rd.Filter="*.txt|*.txt"
+        rd.ShowDialog()
+        if rd.FileName="" Then exit Sub
+        Try
+            Dim sr =New StreamReader(rd.FileName)
+            My.Settings.savetime=sr.ReadLine()
+            My.Settings.chapter=sr.ReadLine()
+            My.Settings.place=sr.ReadLine()
+            My.Settings.weapon=sr.ReadLine()
+            My.Settings.shield=sr.ReadLine()
+            My.Settings.magics=sr.ReadLine()
+            My.Settings.revival=sr.ReadLine()
+            My.Settings.curative=sr.ReadLine()
+            My.Settings.appendix=sr.ReadLine()
+            My.Settings.potionshop=sr.ReadLine()
+            My.Settings.items=sr.ReadLine()
+            My.Settings.nest_destroyed=sr.ReadLine()
+            My.Settings.witch_book=sr.ReadLine()
+            My.Settings.unlocked=sr.ReadLine()
+            My.Settings.missions=sr.ReadLine()
+            sr.Close()
+            My.Settings.Save()
+            MessageBox.Show("got it")
+            End
+        Catch ex As Exception
+            MessageBox.Show("error")
+        End Try
     End Sub
 End Class

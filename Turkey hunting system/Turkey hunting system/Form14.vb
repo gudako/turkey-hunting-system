@@ -1,5 +1,6 @@
 ﻿Public Class Form14
-    Private AnswerBox As ListBox = New ListBox
+    Private ReadOnly AnswerBox As ListBox = New ListBox
+
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         TextBox1.Clear()
         Hide()
@@ -16,7 +17,8 @@
                 TextBox1.Clear()
                 Hide()
                 Form1.Show()
-                MsgBox("Now we can ask the big smelly milk cow for 1 solar coin. He is in biology lab.", 0, "How to do the next step")
+                MsgBox("Now we can ask the big smelly milk cow for 1 solar coin. He is in biology lab.", 0,
+                       "How to do the next step")
             End If
         ElseIf TextBox1.Text = "" Then
             MsgBox("The password is empty.", 48, "Empty")
@@ -27,16 +29,17 @@
     End Sub
 
     Public Sub ClearAll()
-        ComboBox1.SelectedIndex = -1
-        ComboBox2.SelectedIndex = -1
-        ComboBox3.SelectedIndex = -1
+        ComboBox1.SelectedIndex = - 1
+        ComboBox2.SelectedIndex = - 1
+        ComboBox3.SelectedIndex = - 1
         RefreshAnswers()
     End Sub
 
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
-        If ComboBox1.SelectedIndex = 0 Then ComboBox1.SelectedIndex = -1
-        If ComboBox1.SelectedIndex = ComboBox2.SelectedIndex Or ComboBox1.SelectedIndex = ComboBox3.SelectedIndex Then ComboBox1.SelectedIndex = -1
-        If ComboBox1.SelectedIndex = -1 Then
+        If ComboBox1.SelectedIndex = 0 Then ComboBox1.SelectedIndex = - 1
+        If ComboBox1.SelectedIndex = ComboBox2.SelectedIndex Or ComboBox1.SelectedIndex = ComboBox3.SelectedIndex Then _
+            ComboBox1.SelectedIndex = - 1
+        If ComboBox1.SelectedIndex = - 1 Then
             Label4.ForeColor = Color.Black
             ComboBox1.ForeColor = Color.Black
         Else
@@ -46,9 +49,10 @@
     End Sub
 
     Private Sub ComboBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox2.SelectedIndexChanged
-        If ComboBox2.SelectedIndex = 0 Then ComboBox2.SelectedIndex = -1
-        If ComboBox2.SelectedIndex = ComboBox1.SelectedIndex Or ComboBox2.SelectedIndex = ComboBox3.SelectedIndex Then ComboBox2.SelectedIndex = -1
-        If ComboBox2.SelectedIndex = -1 Then
+        If ComboBox2.SelectedIndex = 0 Then ComboBox2.SelectedIndex = - 1
+        If ComboBox2.SelectedIndex = ComboBox1.SelectedIndex Or ComboBox2.SelectedIndex = ComboBox3.SelectedIndex Then _
+            ComboBox2.SelectedIndex = - 1
+        If ComboBox2.SelectedIndex = - 1 Then
             Label5.ForeColor = Color.Black
             ComboBox2.ForeColor = Color.Black
         Else
@@ -58,9 +62,10 @@
     End Sub
 
     Private Sub ComboBox3_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox3.SelectedIndexChanged
-        If ComboBox3.SelectedIndex = 0 Then ComboBox3.SelectedIndex = -1
-        If ComboBox3.SelectedIndex = ComboBox1.SelectedIndex Or ComboBox3.SelectedIndex = ComboBox2.SelectedIndex Then ComboBox3.SelectedIndex = -1
-        If ComboBox3.SelectedIndex = -1 Then
+        If ComboBox3.SelectedIndex = 0 Then ComboBox3.SelectedIndex = - 1
+        If ComboBox3.SelectedIndex = ComboBox1.SelectedIndex Or ComboBox3.SelectedIndex = ComboBox2.SelectedIndex Then _
+            ComboBox3.SelectedIndex = - 1
+        If ComboBox3.SelectedIndex = - 1 Then
             Label6.ForeColor = Color.Black
             ComboBox3.ForeColor = Color.Black
         Else
@@ -70,14 +75,14 @@
     End Sub
 
     Private Sub RefreshAnswers()
-        Dim MirrorCombobox As ComboBox = New ComboBox
-        For i As Integer = 0 To AnswerBox.Items.Count - 1
+        Dim MirrorCombobox = New ComboBox
+        For i = 0 To AnswerBox.Items.Count - 1
             MirrorCombobox.Items.Add(AnswerBox.Items(i))
         Next
         ComboBox1.Items.Clear()
         ComboBox2.Items.Clear()
         ComboBox3.Items.Clear()
-        For i As Integer = 0 To MirrorCombobox.Items.Count - 1
+        For i = 0 To MirrorCombobox.Items.Count - 1
             ComboBox1.Items.Add(MirrorCombobox.Items(i))
             ComboBox2.Items.Add(MirrorCombobox.Items(i))
             ComboBox3.Items.Add(MirrorCombobox.Items(i))
@@ -91,12 +96,16 @@
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         If Form1.picturebox2.Tag = 34 Then
-            If ComboBox1.SelectedItem = "I'm wrong." And ComboBox2.SelectedItem = "I certainly will correct it." And ComboBox3.SelectedItem = "Don't be angry." Then
+            If _
+                ComboBox1.SelectedItem = "I'm wrong." And ComboBox2.SelectedItem = "I certainly will correct it." And
+                ComboBox3.SelectedItem = "Don't be angry." Then
                 Form1.picturebox2.Tag = 35
                 MsgBox("All right.", 64, "Passed")
                 Form1.items.Items.Add("Turkey key")
                 Form1.magics.Items.Add("Snowflake")
-                MsgBox("You get two items:" & vbCrLf & "1. Snowflake magic." & vbCrLf & "2. The key to turkey catching association.", 0, "New items")
+                MsgBox(
+                    "You get two items:" & vbCrLf & "1. Snowflake magic." & vbCrLf &
+                    "2. The key to turkey catching association.", 0, "New items")
                 Hide()
                 Form11.start(30, "Snowflake magic", "This mana-required magic helps you a lot.", "Next")
             Else
@@ -149,7 +158,7 @@
             If MsgBox("Complete the Time Travel?", vbExclamation + vbYesNo + vbDefaultButton2, "Next part") = vbYes Then
                 Hide()
                 Form1.Show()
-                Form1.SetHeight(479, -1)
+                Form1.SetHeight(479, - 1)
                 Form1.GroupBox1.Visible = False
                 Form1.life.Visible = False
                 Form1.lifetext.Visible = False
@@ -180,21 +189,24 @@
     Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
         Label13.Tag += 1
         If Label13.Tag = 1 Then
-            Label13.Text = "The fire is always spreading rapidly. If one place is on fire, it will spread fire to ambient places. If one place's fire is too strong, it'll get destroyed. If this destroyed place is required, or you're in that place, you get failed."
+            Label13.Text =
+                "The fire is always spreading rapidly. If one place is on fire, it will spread fire to ambient places. If one place's fire is too strong, it'll get destroyed. If this destroyed place is required, or you're in that place, you get failed."
         ElseIf Label13.Tag = 2 Then
-            Label13.Text = "The fire causes damage all the time, stronger fire causes higher damage. If your life turns to 0, you get failed. However, you can use the heal potion and revival potion to deal your life."
+            Label13.Text =
+                "The fire causes damage all the time, stronger fire causes higher damage. If your life turns to 0, you get failed. However, you can use the heal potion and revival potion to deal your life."
         ElseIf Label13.Tag = 3 Then
             Button6.Text = "Escape!"
-            Label13.Text = "This time you need not to mind your physical power anymore. The only thing you required is to escape: the faster the better."
+            Label13.Text =
+                "This time you need not to mind your physical power anymore. The only thing you required is to escape: the faster the better."
             Form1.ChangeMusic.Enabled = False
             Form1.music.settings.volume = 100
             Form1.music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music13.wm"
         ElseIf Label13.Tag = 4 Then
             Hide()
             Form1.Show()
-            Form1.SetHeight(900, -1)
+            Form1.SetHeight(900, - 1)
             Form1.OnFire = True
-            Form1.life.Maximum = 300 + Form1.shield_level * 150
+            Form1.life.Maximum = 300 + Form1.shield_level*150
             Form1.life.Value = Form1.life.Maximum
             Form1.lifetext.Text = Form1.life.Value & "/" & Form1.life.Maximum
             Form1.fire.Enabled = True

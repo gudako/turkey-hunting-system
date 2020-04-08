@@ -11,7 +11,7 @@
         If Form1.NoMoreForm1 Then Form20.AfterBattle(code) Else Form1.AfterBattle(code)
     End Sub
 
-    Public Sub start(ByVal code_ As Integer, text_ As String)
+    Public Sub start(code_ As Integer, text_ As String)
         code = code_
         content.Text = text_
     End Sub

@@ -21,12 +21,15 @@
     End Sub
 
     Public Sub RefreshAll()
-        For i As Integer = 0 To 2
+        For i = 0 To 2
             If ItemsList.Items.Count >= i + 1 Then
                 With ItemsList.Items(i)
                     potionbox(i).Visible = True
                     potionbox(i).Text = .SubItems(0).Text
-                    potion(i).Image = Image.FromFile(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\potion" & .SubItems(1).Text & ".wm")
+                    potion(i).Image =
+                        Image.FromFile(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\potion" &
+                            .SubItems(1).Text & ".wm")
                     price(i).Tag = .SubItems(2).Text
                     price(i).Text = AddDot(.SubItems(2).Text)
                     table(i).Text = "solar corona coin" & CheckS(.SubItems(2).Text)
@@ -53,7 +56,9 @@
         Else
             If Form1.picturebox2.Tag = 17 Then
                 Form1.picturebox2.Tag = 18
-                MsgBox("There is a safe in toilet of floor2, we can have a look, probably there'll be solar coins near it.", 0, "Go to toilet")
+                MsgBox(
+                    "There is a safe in toilet of floor2, we can have a look, probably there'll be solar coins near it.",
+                    0, "Go to toilet")
             End If
             Hide()
             Form1.Show()
@@ -72,20 +77,20 @@
         purchase(2)
     End Sub
 
-    Public Sub SetCoins(ByVal target As Integer)
+    Public Sub SetCoins(target As Integer)
         coins.Tag = target
         coins.Text = AddDot(target)
         Label11.Text = "Your solar corona coin" & CheckS(target) & ":"
     End Sub
 
-    Private Function AddDot(ByVal number As Integer)
-        Dim number_ As String = ""
+    Private Function AddDot(number As Integer)
+        Dim number_ = ""
         If number.ToString.Length >= 3 Then
-            For i As Integer = 0 To number.ToString.Length / 3 - 1
+            For i = 0 To number.ToString.Length/3 - 1
                 If i = 0 Then
-                    number_ = number.ToString.Substring(number.ToString.Length - 3 * (i + 1), 3)
+                    number_ = number.ToString.Substring(number.ToString.Length - 3*(i + 1), 3)
                 Else
-                    number_ = number.ToString.Substring(number.ToString.Length - 3 * (i + 1), 3) & "," & number_
+                    number_ = number.ToString.Substring(number.ToString.Length - 3*(i + 1), 3) & "," & number_
                 End If
             Next
         End If
@@ -101,7 +106,7 @@
     End Function
 
 
-    Friend Function CheckS(ByVal number As Integer)
+    Friend Function CheckS(number As Integer)
         If number > 1 Then
             Return "s"
         Else
@@ -109,13 +114,21 @@
         End If
     End Function
 
-    Private Sub purchase(ByVal code As Integer)
-        If MsgBox("Do you want to buy """ & potionbox(code).Text & """ for " & price(code).Text & " solar coin" & CheckS(price(code).Text) & "?", vbYesNo, "Confirm") = vbYes Then
+    Private Sub purchase(code As Integer)
+        If _
+            MsgBox(
+                "Do you want to buy """ & potionbox(code).Text & """ for " & price(code).Text & " solar coin" &
+                CheckS(price(code).Text) & "?", vbYesNo, "Confirm") = vbYes Then
             If coins.Tag < price(code).Tag Then
-                MsgBox("Insufficient corona coin." & vbCrLf & "You need another " & AddDot(Int(price(code).Tag) - Int(coins.Tag)) & " corona coin" & CheckS(AddDot(Int(price(code).Tag) - Int(coins.Tag))) & ".", 0, "You need more")
+                MsgBox(
+                    "Insufficient corona coin." & vbCrLf & "You need another " &
+                    AddDot(Int(price(code).Tag) - Int(coins.Tag)) & " corona coin" &
+                    CheckS(AddDot(Int(price(code).Tag) - Int(coins.Tag))) & ".", 0, "You need more")
             Else
                 SetCoins(coins.Tag - price(code).Tag)
-                If Form1.mute.Checked = False Then My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound42.wm")
+                If Form1.mute.Checked = False Then _
+                    My.Computer.Audio.Play(
+                        My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound42.wm")
                 If potionbox(code).Text = "Sulphuric acid (0%)" Then
                     Form1.picturebox2.Tag = 17
                     MsgBox("0% sulphuric acid! It Is Water! What the ghost... there's no use to buy.", 0, "0%!")
@@ -124,9 +137,13 @@
                     Form1.items.Items.Add("Nitric acid")
                 ElseIf potionbox(code).Text = "Copper powder" Then
                     MsgBox("You successfully bought the Copper powder.", 0, "Purchase")
-                    If Form1.mute.Checked = False Then My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound46.wm")
+                    If Form1.mute.Checked = False Then _
+                        My.Computer.Audio.Play(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound46.wm")
                     MsgBox("A problem happened to the vendor machine!", 0, "Machine problem")
-                    If Form1.mute.Checked = False Then My.Computer.Audio.Play(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound42.wm")
+                    If Form1.mute.Checked = False Then _
+                        My.Computer.Audio.Play(
+                            My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\sound42.wm")
                     MsgBox("The Caesium dropped out the machine! You got the Caesium.", 0, "Machine problem")
                     DeleteThing("Caesium")
                     Form1.items.Items.Add("Caesium")
@@ -139,8 +156,8 @@
         End If
     End Sub
 
-    Public Sub AddThing(ByVal thing As String, imagecode As Integer, price As Integer)
-        Dim NewItem As ListViewItem = New ListViewItem
+    Public Sub AddThing(thing As String, imagecode As Integer, price As Integer)
+        Dim NewItem = New ListViewItem
         With NewItem
             .SubItems(0).Text = thing
             .SubItems.Add(imagecode)
@@ -149,8 +166,8 @@
         ItemsList.Items.Add(NewItem)
     End Sub
 
-    Public Sub DeleteThing(ByVal thing As String)
-        For i As Integer = 0 To ItemsList.Items.Count - 1
+    Public Sub DeleteThing(thing As String)
+        For i = 0 To ItemsList.Items.Count - 1
             If ItemsList.Items(i).SubItems(0).Text = thing Then
                 ItemsList.Items.Remove(ItemsList.Items(i))
                 Exit For

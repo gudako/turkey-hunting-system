@@ -1,10 +1,11 @@
 ﻿Public Class Form5
     Private code_ As Integer
-    Public Sub start(ByVal code As Integer, ByVal text_ As String, ByVal time As Integer)
+
+    Public Sub start(code As Integer, text_ As String, time As Integer)
         Form1.Hide()
         content.Text = text_
         bar.Value = 0
-        bar.Maximum = time * 100
+        bar.Maximum = time*100
         Timer1.Enabled = True
         code_ = code
         Show()

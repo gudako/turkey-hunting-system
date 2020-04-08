@@ -11,7 +11,7 @@
         Form1.Information(code_)
     End Sub
 
-    Public Sub start(ByVal text_ As String, code As Integer)
+    Public Sub start(text_ As String, code As Integer)
         Form1.Hide()
         code_ = code
         content.Text = text_
