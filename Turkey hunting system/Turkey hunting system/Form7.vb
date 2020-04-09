@@ -253,7 +253,7 @@ Public Class Form7
                 mana1f.Width = mana1f.Tag/mana1b.Tag*mana1b.Width
                 mana1t.Text = "Mana:" & AddDot(mana1f.Tag) & "/" & AddDot(mana1b.Tag)
             End If
-            If mana2b.Visible Then
+            If mana2b.Visible and not mana2f.Tag = nothing Then
                 mana2f.Width = mana2f.Tag/mana2b.Tag*mana2b.Width
                 mana2t.Text = "Mana:" & AddDot(mana2f.Tag) & "/" & AddDot(mana2b.Tag)
             End If

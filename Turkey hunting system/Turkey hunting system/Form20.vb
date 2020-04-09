@@ -720,6 +720,7 @@ Public Class Form20
                 Form1.music.URL = GetFile("music17")
                 Form1.music.Ctlcontrols.play()
                 cutscenes.Enabled = False
+                ClimbSpeed_=0.05
             ElseIf cutscenes.Tag = 1101 Then
                 dialogue.Visible = True
                 dialogue.ForeColor = Color.Red
@@ -1067,7 +1068,9 @@ Public Class Form20
                 If cutscenes.Tag Mod 10 < 5 Then scene.Image = Image.FromFile(GetFile("image8")) Else _
                     scene.Image = Image.FromFile(GetFile("image9"))
             ElseIf cutscenes.Tag = 5260 Then
-
+                SceneAppears(18,SwitchMode.gradual_change)
+                MessageBox.Show("The game has announced end here. Sealed for historical reason. The new turkey RPG will come out.")
+                End
             End If
         ElseIf Actor.Tag = 1 Then
             Actor.Top += ClimbSpeed_
@@ -1343,6 +1346,7 @@ Public Class Form20
         ElseIf scene_code = 13 Then
             AddTile(place13_1, 2)
             AddTile(lock13_2, 5)
+            AddTile(backward, 1)
         ElseIf scene_code = 14 Then
             AddTile(backward, 1)
         ElseIf scene_code = 15 Then
@@ -1900,7 +1904,7 @@ Public Class Form20
                 CurrentChar += 1
             Else
                 If CurrentReceiveChar < ChangingMessageClicker.Length Then
-                    message_clicker.Text = message_clicker.Text & ChangingMessageClicker.Substring(CurrentChar, 1)
+                    message_clicker.Text = message_clicker.Text & ChangingMessageClicker.Substring(CurrentReceiveChar, 1)
                     CurrentReceiveChar += 1
                 End If
             End If
@@ -2110,7 +2114,7 @@ Public Class Form20
         If Enable() = False Then Exit Sub
         Unable = True
         deadrooster.Visible = True
-        deadrooster.Size = New Size(700*ZoomX, 480*ZoomY)
+        deadrooster.Size = New Size(700*ZoomX, 550*ZoomY)
         deadrooster.Location = New Point(90*ZoomX, 50*ZoomY)
         deadrooster.BackgroundImageLayout = ImageLayout.Stretch
         Tip("The rooster is dead! What means ""Illusive Lust""??")
