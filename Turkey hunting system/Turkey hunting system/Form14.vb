@@ -204,7 +204,7 @@
         ElseIf Label13.Tag = 4 Then
             Hide()
             Form1.Show()
-            Form1.SetHeight(900, - 1)
+            Form1.SetHeight(750, - 1)
             Form1.OnFire = True
             Form1.life.Maximum = 300 + Form1.shield_level*150
             Form1.life.Value = Form1.life.Maximum
