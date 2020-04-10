@@ -193,7 +193,7 @@
                 "The fire is always spreading rapidly. If one place is on fire, it will spread fire to ambient places. If one place's fire is too strong, it'll get destroyed. If this destroyed place is required, or you're in that place, you get failed."
         ElseIf Label13.Tag = 2 Then
             Label13.Text =
-                "The fire causes damage all the time, stronger fire causes higher damage. If your life turns to 0, you get failed. However, you can use the heal potion and revival potion to deal your life."
+                "The fire causes damage all the time, stronger fire causes higher damage. If your life turns to 0, you get failed. However, you can use the heal potion to recover your life."
         ElseIf Label13.Tag = 3 Then
             Button6.Text = "Escape!"
             Label13.Text =

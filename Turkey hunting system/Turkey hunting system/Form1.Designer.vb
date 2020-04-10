@@ -2643,9 +2643,10 @@ Partial Class Form1
         Me.Button7.Name = "Button7"
         Me.Button7.Size = New System.Drawing.Size(200, 30)
         Me.Button7.TabIndex = 131
-        Me.Button7.Text = "Revive(0)+100%"
+        Me.Button7.Text = ""
         Me.Button7.UseVisualStyleBackColor = True
         Me.Button7.Visible = False
+        me.button7.enabled=false
         '
         'place19_1
         '

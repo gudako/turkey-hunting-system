@@ -557,9 +557,9 @@ Public Class Form1
             GameOver("You've been caught by the teachers.")
         ElseIf code = 2 Then
             revive += 1
-            Form11.start(2, "New item!",
-                         "You get a Six God revival potion from the rabbit. You can use it when you get defeated in battle.",
-                         "Yes.")
+            Form11.start(2, "press next",
+                         "just press it",
+                         "next")
             music.settings.volume = BackgroundVolume
             music.settings.volume = BackgroundVolume
             music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music1.wm"
@@ -620,7 +620,6 @@ Public Class Form1
         ElseIf code = 14 Then
             music.settings.volume = BackgroundVolume
             music.URL = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\temporary files\music1.wm"
-            MsgBox("You get a revival potion from the turk&fish.", 64, "Revival Potion")
             MsgBox("Well done! Let's go out from the terrifying biology lab. The turkey is still near.", 64,
                    "Well Done!")
         ElseIf code = 15 Then
@@ -3183,12 +3182,6 @@ Public Class Form1
             Button6.Enabled = False
         Else
             Button6.Enabled = True
-        End If
-        Button7.Text = "Revive(" & heal & ")+100%"
-        If revive = 0 Then
-            Button7.Enabled = False
-        Else
-            Button7.Enabled = True
         End If
     End Sub
 

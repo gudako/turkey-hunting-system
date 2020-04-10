@@ -181,6 +181,7 @@ Partial Class Form16
         Me.revivalpotions.TabIndex = 7
         Me.revivalpotions.Text = "2"
         Me.revivalpotions.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.revivalpotions.Visible = false
         '
         'Label9
         '
@@ -191,6 +192,7 @@ Partial Class Form16
         Me.Label9.Size = New System.Drawing.Size(179, 30)
         Me.Label9.TabIndex = 6
         Me.Label9.Text = "Revival potions:"
+        Me.Label9.Visible = false
         '
         'place
         '
